@@ -16,7 +16,7 @@ namespace TrueShip.TSWebHelper
 
     public class WebHelper
     {
-        TSLogger.Logger logservice = new TSLogger.Logger();
+        //TSLogger.Logger logservice = new TSLogger.Logger();
         
         #region getregion
         public Dictionary<string, dynamic> submitApiGet(string endpoint, string querystring)
@@ -34,7 +34,7 @@ namespace TrueShip.TSWebHelper
             request.ContentType = "application/json";
             try
             {
-                logservice.tsLogNoLineBreak("Calling @ '" + getAPI);
+                //logservice.tsLogNoLineBreak("Calling @ '" + getAPI);
                 WebResponse response = request.GetResponse();
                 var jsonresponse = GetJsonResponse(response);
                 var jSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
@@ -43,7 +43,7 @@ namespace TrueShip.TSWebHelper
             }
             catch (WebException webe)
             {
-                logservice.tsLogWebServiceError(webe, getAPI);
+                //logservice.tsLogWebServiceError(webe, getAPI);
                 return null;
             }
         }

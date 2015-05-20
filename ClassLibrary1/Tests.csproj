@@ -7,8 +7,8 @@
     <ProjectGuid>{624757A7-EE43-4CBB-9C0E-2C1271DDD0C4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
-    <AssemblyName>ClassLibrary1</AssemblyName>
+    <RootNamespace>TrueShipAPITests</RootNamespace>
+    <AssemblyName>TrueShipTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TrueShip.TSWebHelper;
 using TrueShip.Models;
-using TSLogger;
 using System.Web.Script.Serialization;
 using System.Web;
 using System.Net;
@@ -15,7 +14,7 @@ namespace TrueShip.TrueShip_Access
     public class TruesShipBasicServices
     {
         TrueShip.TSWebHelper.WebHelper tsWebHelper = new WebHelper();
-        TSLogger.Logger logrunner = new TSLogger.Logger();
+        //TSLogger.Logger logrunner = new TSLogger.Logger();
         string FORMAT = "JSON";
 
         #region getremainingorders
@@ -57,9 +56,9 @@ namespace TrueShip.TrueShip_Access
             {
                 foreach (KeyValuePair<string, dynamic> dictItem in jsonresponse)
                 {
-                    logthis = (string)dictItem.Key + ": ";
-                    logthis = logthis + dictItem.Value.ToString();
-                    logrunner.tsLogNoLineBreak(logthis);
+                    //logthis = (string)dictItem.Key + ": ";
+                    //logthis = logthis + dictItem.Value.ToString();
+                    //logrunner.tsLogNoLineBreak(logthis);
                 }
                 return true;
             }
@@ -109,12 +108,12 @@ namespace TrueShip.TrueShip_Access
                 offset));
             #endregion
             var jsonresponse = tsWebHelper.submitApiGet(APIENDPOINT, querystring);
-            logrunner.tsLogNoLineBreak(APIENDPOINT.ToString());
+            //logrunner.tsLogNoLineBreak(APIENDPOINT.ToString());
             foreach (KeyValuePair<string, dynamic> dictItem in jsonresponse)
             {
                 logthis = (string)dictItem.Key + ": ";
                 logthis = logthis + dictItem.Value.ToString();
-                logrunner.tsLogNoLineBreak(logthis);
+                //logrunner.tsLogNoLineBreak(logthis);
             }
             return true;
         }
@@ -127,7 +126,7 @@ namespace TrueShip.TrueShip_Access
     public class TrueShipOrderHelperClass
     {
         TrueShip.TSWebHelper.WebHelper tsWebHelper = new WebHelper();
-        TSLogger.Logger logrunner = new TSLogger.Logger();
+        //TSLogger.Logger logrunner = new TSLogger.Logger();
         string FORMAT = "JSON";
 
         #region getallordersbydate
@@ -224,7 +223,7 @@ namespace TrueShip.TrueShip_Access
     public class TrueShipOrderSync : TrueShipOrderHelperClass
     {
         TrueShip.TSWebHelper.WebHelper tsWebHelper = new WebHelper();
-        TSLogger.Logger logrunner = new TSLogger.Logger();
+        //TSLogger.Logger logrunner = new TSLogger.Logger();
         string FORMAT = "JSON";
         
         #region get one order
@@ -612,7 +611,7 @@ namespace TrueShip.TrueShip_Access
     public class TrueShipLocationSync : TrueShipOrderHelperClass
     {
         TrueShip.TSWebHelper.WebHelper tsWebHelper = new WebHelper();
-        TSLogger.Logger logrunner = new TSLogger.Logger();
+        //TSLogger.Logger logrunner = new TSLogger.Logger();
 
         #region get box items from unshipped orders
         public List<dynamic> getUnshippedOrderItemsAfterDateTime(string bearertoken, int id, string datefilter, DateTime lastsync)
@@ -673,16 +672,16 @@ namespace TrueShip.TrueShip_Access
                     oneorderitem.Key,
                     bearertoken));
                 var reSerializedOrder = jserializer.Serialize(oneorderitem.Value);
-                logrunner.tsLogNoLineBreak(reSerializedOrder);
-                logrunner.tsLogNoLineBreak("Calling @ '" + putApi + "'");
+                //logrunner.tsLogNoLineBreak(reSerializedOrder);
+                //logrunner.tsLogNoLineBreak("Calling @ '" + putApi + "'");
                 try
                 {
                     var request = client.UploadString(putApi, "PATCH", reSerializedOrder);
-                    logrunner.tsLogNoLineBreak("Order Successfully Updated Via API!");
+                    //logrunner.tsLogNoLineBreak("Order Successfully Updated Via API!");
                 }
                 catch (WebException webe)
                 {
-                    logrunner.tsLogNoLineBreak(webe.Message);
+                    //logrunner.tsLogNoLineBreak(webe.Message);
                 }
             }
             return true;
