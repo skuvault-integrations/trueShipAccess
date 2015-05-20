@@ -12,7 +12,7 @@ namespace TrueShipAPITests
         #region createchannelconfig
         private static TrueShipConfiguration.tsConfiguration getConfig()
         {
-            TrueShipConfiguration.tsConfiguration config = new TrueShipConfiguration.tsConfiguration()
+            var config = new TrueShipConfiguration.tsConfiguration()
             {
                 BEARERTOKEN = "1dde9c91fe72fd4168dc403d79b09b7d",
                 LASTORDERSYNC = Convert.ToDateTime("2015-01-01T00:00:00"),
@@ -25,6 +25,7 @@ namespace TrueShipAPITests
 
         static void Main()
         {
+
             #region startlogger
             TSLogger.Logger logservice = new TSLogger.Logger();
             logservice.clearLogs();
@@ -41,8 +42,9 @@ namespace TrueShipAPITests
             #endregion
 
             logservice.tsLogLineBreak("Beginning API Calls...");
-            var fullModule = false;
+            var fullModule = true;
             var verifyUpdates = true;
+            
             if (fullModule == true)
             {
                 #region tsBasicAPICalls
@@ -101,12 +103,14 @@ namespace TrueShipAPITests
                 tsLocationServices.updateOrderItemPickLocations(ts_config.BEARERTOKEN, ts_config.COMPANYID, boxItemUpdates);
                 #endregion
             }
+
             if (verifyUpdates == true)
             {
                 #region verify updates occurred
-                //var timespantolookforupdates = DateTime.Now.AddSeconds(-240);
                 logservice.tsLogLineBreak("");
                 logservice.tsLogNoLineBreak("Confirm that the updates were successful.");
+                //var timespantolookforupdates = DateTime.Now.AddSeconds(-240);
+                //var locationOrderUpdateConfirmation = tsOrderServices.getOrders(ts_config.BEARERTOKEN, ts_config.COMPANYID, timespantolookforupdates);
                 var locationOrderUpdateConfirmation = tsOrderServices.getOrders(ts_config.BEARERTOKEN, ts_config.COMPANYID, ts_config.LASTORDERSYNC);
                 foreach (var order in locationOrderUpdateConfirmation)
                 {
@@ -123,6 +127,7 @@ namespace TrueShipAPITests
                 }
                 #endregion
             }
+
         }
     }
 }
