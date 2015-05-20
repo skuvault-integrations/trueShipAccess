@@ -7,8 +7,8 @@
     <ProjectGuid>{624757A7-EE43-4CBB-9C0E-2C1271DDD0C4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
-    <AssemblyName>ClassLibrary1</AssemblyName>
+    <RootNamespace>TrueShipAPITests</RootNamespace>
+    <AssemblyName>TrueShipTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,10 +48,6 @@
     <Compile Include="ts_api_tests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary2\TrueShipClientConfig.csproj">
-      <Project>{d1347368-fe42-4611-a1eb-ea2d51079066}</Project>
-      <Name>TrueShipClientConfig</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TrueShip\TrueShip.csproj">
       <Project>{229786d0-5720-4ee3-a379-1e55f1254480}</Project>
       <Name>TrueShip</Name>
