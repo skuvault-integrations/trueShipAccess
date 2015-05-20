@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\jsonModels.cs" />
+    <Compile Include="Models\ts_client_config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web Services\service_classes.cs" />
     <Compile Include="Web Services\web_helper.cs" />

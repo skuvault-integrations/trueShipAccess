@@ -41,7 +41,7 @@ namespace TrueShipAPITests
             #endregion
 
             logservice.tsLogLineBreak("Beginning API Calls...");
-            var fullModule = false;
+            var fullModule = true;
             var verifyUpdates = true;
             if (fullModule == true)
             {
