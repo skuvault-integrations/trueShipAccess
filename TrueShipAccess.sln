@@ -5,13 +5,13 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AccessProject", "AccessProject", "{D1DFAA40-15A4-486F-A339-A60871A8C8B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueShip", "TrueShip\TrueShip.csproj", "{229786D0-5720-4EE3-A379-1E55F1254480}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "ClassLibrary1\Tests.csproj", "{624757A7-EE43-4CBB-9C0E-2C1271DDD0C4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSLogger", "TSLogger\TSLogger.csproj", "{D44C1A52-912B-4444-B28E-5E6778E8E135}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionTests", "SolutionTests", "{97136E3D-37E3-42A9-983A-16B2A843D986}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueShip", "..\2\TrueShipAccess\TrueShip.csproj", "{229786D0-5720-4EE3-A379-1E55F1254480}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\2\TrueShip_Tests\TSTests\Tests.csproj", "{624757A7-EE43-4CBB-9C0E-2C1271DDD0C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSLogger", "..\2\TrueShip_Tests\TSLogger\TSLogger.csproj", "{D44C1A52-912B-4444-B28E-5E6778E8E135}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,6 +6,7 @@ using System.Web.Script.Serialization;
 using System.Web;
 using System.Net;
 using System.Text;
+//using TSLogger;
 
 namespace TrueShip.TrueShip_Access
 {
@@ -56,8 +57,8 @@ namespace TrueShip.TrueShip_Access
             {
                 foreach (KeyValuePair<string, dynamic> dictItem in jsonresponse)
                 {
-                    //logthis = (string)dictItem.Key + ": ";
-                    //logthis = logthis + dictItem.Value.ToString();
+                    logthis = (string)dictItem.Key + ": ";
+                    logthis = logthis + dictItem.Value.ToString();
                     //logrunner.tsLogNoLineBreak(logthis);
                 }
                 return true;
