@@ -50,11 +50,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TrueShipAccess\TrueShipAccess.csproj">
       <Project>{229786d0-5720-4ee3-a379-1e55f1254480}</Project>
-      <Name>TrueShip</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TSLogger\TSLogger.csproj">
-      <Project>{d44c1a52-912b-4444-b28e-5e6778e8e135}</Project>
-      <Name>TSLogger</Name>
+      <Name>TrueShipAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
