@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TrueShipConfiguration
+namespace TrueShipAccess.Models
 {
-    public class tsConfiguration
+    public class TrueShipConfiguration
     {
         public string BEARERTOKEN { get; set; }
         public DateTime LASTORDERSYNC { get; set; }

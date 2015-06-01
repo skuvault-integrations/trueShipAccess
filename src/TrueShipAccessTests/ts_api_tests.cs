@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using TrueShip.TrueShip_Access;
-using TrueShipConfiguration;
+using TrueShipAccess;
+using TrueShipAccess.Misc;
+using TrueShipAccess.Models;
 
-namespace TrueShipAPITests
+namespace TrueShipAccessTests
 {
     public class TrueShipTests
     {
 
         #region createchannelconfig
-        private static TrueShipConfiguration.tsConfiguration getConfig()
+        private static TrueShipConfiguration getConfig()
         {
-            TrueShipConfiguration.tsConfiguration config = new TrueShipConfiguration.tsConfiguration()
+            TrueShipConfiguration config = new TrueShipConfiguration()
             {
-                BEARERTOKEN = "1dde9c91fe72fd4168dc403d79b09b7d",
+                BEARERTOKEN = "token",
                 LASTORDERSYNC = Convert.ToDateTime("2015-01-01T00:00:00"),
                 LASTLOCATIONSYNC = Convert.ToDateTime("2015-01-01T00:00:00"),
                 COMPANYID = 1
@@ -26,12 +26,12 @@ namespace TrueShipAPITests
         static void Main()
         {
             #region startlogger
-            TSLogger.Logger logservice = new TSLogger.Logger();
+            TrueShipLogger logservice = new TrueShipLogger();
             logservice.clearLogs();
             #endregion
             #region loadcompany
             logservice.tsLogNoLineBreak("Loading Company Configuration...");
-            var ts_config = (tsConfiguration)getConfig();
+            var ts_config = (TrueShipConfiguration)getConfig();
             #endregion
             #region startsyncs
             logservice.tsLogNoLineBreak("Creating TrueShip Controller...");
@@ -90,13 +90,13 @@ namespace TrueShipAPITests
                 #region locationsync
                 logservice.tsLogNoLineBreak("Update A Few Orders With Locations.");
                 var boxItemList = tsLocationServices.getUnshippedOrderItemsAfterDateTime(ts_config.BEARERTOKEN, ts_config.COMPANYID, "created_at", ts_config.LASTORDERSYNC);
-                var boxItemUpdates = new List<KeyValuePair<string, TrueShip.Models.PickLocation>>();
+                var boxItemUpdates = new List<KeyValuePair<string, PickLocation>>();
                 foreach (var oneboxitem in boxItemList)
                 {
-                    var pickLocation = new TrueShip.Models.PickLocation();
+                    var pickLocation = new PickLocation();
                     var somePickLocation = "wherever " + oneboxitem["part_number"] + " is!"; //Look up Sku locations
                     pickLocation.pick_location = somePickLocation; //Load Sku Locations into a Model
-                    boxItemUpdates.Add(new KeyValuePair<string, TrueShip.Models.PickLocation>(oneboxitem["resource_uri"], pickLocation));
+                    boxItemUpdates.Add(new KeyValuePair<string, PickLocation>(oneboxitem["resource_uri"], pickLocation));
                 }
                 tsLocationServices.updateOrderItemPickLocations(ts_config.BEARERTOKEN, ts_config.COMPANYID, boxItemUpdates);
                 #endregion

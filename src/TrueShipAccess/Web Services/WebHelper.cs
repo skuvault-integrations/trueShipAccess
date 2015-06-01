@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Web.Http;
-using System.Runtime.Serialization;
-using System.Web;
-using System.Web.Script.Serialization;
 using System.IO;
-using TSLogger;
-using System.Text;
+using System.Net;
+using TrueShipAccess.Misc;
 
-namespace TrueShip.TSWebHelper
+namespace TrueShipAccess
 {
-
     public class WebHelper
     {
-        TSLogger.Logger logservice = new TSLogger.Logger();
+        TrueShipLogger logservice = new TrueShipLogger();
         
         #region getregion
         public Dictionary<string, dynamic> submitApiGet(string endpoint, string querystring)

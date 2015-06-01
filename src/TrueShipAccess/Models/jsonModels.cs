@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TrueShip.Models
+namespace TrueShipAccess.Models
 {
     #region order backup resource
     public class OrderBackupResource

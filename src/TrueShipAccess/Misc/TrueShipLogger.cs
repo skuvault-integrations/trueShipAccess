@@ -2,18 +2,25 @@
 using System.IO;
 using System.Net;
 
-namespace TSLogger
+namespace TrueShipAccess.Misc
 {
-    public class Logger
+    public class TrueShipLogger
     {
         string path = "C:\\Temp\\log.txt";
         
         public Boolean clearLogs()
         {
-            System.IO.FileStream stream = new System.IO.FileStream(path, FileMode.Truncate);
-            System.IO.StreamWriter logger = new System.IO.StreamWriter(stream);
-            logger.Write("TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString());
-            logger.Close();
+            var logDir = Path.GetDirectoryName(path);
+            if (logDir != null && !Directory.Exists(logDir))
+            {
+                Directory.CreateDirectory(logDir);
+
+                System.IO.FileStream stream = new System.IO.FileStream(path, FileMode.Truncate);
+                System.IO.StreamWriter logger = new System.IO.StreamWriter(stream);
+                logger.Write("TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString());
+                logger.Close();
+            }
+            
             return true;
         }
         
