@@ -12,13 +12,11 @@ namespace TrueShipAccessTests
         #region createchannelconfig
         private static TrueShipConfiguration getConfig()
         {
-            TrueShipConfiguration config = new TrueShipConfiguration()
-            {
-                BEARERTOKEN = "token",
-                LASTORDERSYNC = Convert.ToDateTime("2015-01-01T00:00:00"),
-                LASTLOCATIONSYNC = Convert.ToDateTime("2015-01-01T00:00:00"),
-                COMPANYID = 1
-            };
+            TrueShipConfiguration config = new TrueShipConfiguration("",
+                Convert.ToDateTime("2015-01-01T00:00:00"),
+                Convert.ToDateTime("2015-01-01T00:00:00"),
+                1);
+
             return config;
         }
         #endregion
