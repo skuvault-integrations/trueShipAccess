@@ -2,48 +2,46 @@
 
 namespace TrueShipAccess.Models
 {
-    public class CompaniesResource
+    public class CompanyResponse
     {
         public class Meta
         {
-            public int limit { get; set; }
-            public string next { get; set; }
-            public int offset { get; set; }
-            public object previous { get; set; }
+            public int Limit { get; set; }
+            public string Next { get; set; }
+            public int Offset { get; set; }
+            public object Previous { get; set; }
             public int total_count { get; set; }
         }
 
-        public class Object
+        public class Company
         {
             public string company_id { get; set; }
             public string created_at { get; set; }
-            public int id { get; set; }
-            public string name { get; set; }
+            public int Id { get; set; }
+            public string Name { get; set; }
             public string resource_uri { get; set; }
             public string updated_at { get; set; }
         }
 
-        public class Companies : IEnumerable<Object>
+        public class Companies : IEnumerable<Company>
         {
-            public Meta meta { get; set; }
-            public List<Object> objects { get; set; }
+            public Meta Meta { get; set; }
+            public List<Company> Objects { get; set; }
 
             public Companies()
             {
-                this.objects = new List<Object>();
+                this.Objects = new List<Company>();
             }
 
-            public IEnumerator<Object> GetEnumerator()
+            public IEnumerator<Company> GetEnumerator()
             {
-                return objects.GetEnumerator();
+                return Objects.GetEnumerator();
             }
             
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
             }
-
         }
-
     }
 }

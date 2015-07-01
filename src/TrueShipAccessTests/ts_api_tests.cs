@@ -6,46 +6,46 @@ using TrueShipAccess.Models;
 
 namespace TrueShipAccessTests
 {
-    public class TrueShipTests
+    public static class TrueShipTests
     {
-
-        #region createchannelconfig
-        private static TrueShipConfiguration getConfig()
+	    private static TrueShipConfiguration getConfig()
         {
-            TrueShipConfiguration config = new TrueShipConfiguration("",
+            TrueShipConfiguration config = new TrueShipConfiguration(
                 Convert.ToDateTime("2015-01-01T00:00:00"),
-                Convert.ToDateTime("2015-01-01T00:00:00"),
-                1);
+                Convert.ToDateTime("2015-01-01T00:00:00"));
 
             return config;
         }
-        #endregion
 
-        static void Main()
+	    private static TrueShipCredentials GetCredentials()
+	    {
+			return new TrueShipCredentials(1, "1dde9c91fe72fd4168dc403d79b09b7d");
+	    }
+
+	    static void Main()
         {
-            #region startlogger
-            TrueShipLogger logservice = new TrueShipLogger();
+	        TrueShipLogger logservice = new TrueShipLogger();
             logservice.clearLogs();
-            #endregion
-            #region loadcompany
-            logservice.tsLogNoLineBreak("Loading Company Configuration...");
-            var ts_config = (TrueShipConfiguration)getConfig();
-            #endregion
-            #region startsyncs
-            logservice.tsLogNoLineBreak("Creating TrueShip Controller...");
-            var tsBasicServices = new TruesShipBasicServices();
-            var tsOrderServices = new TrueShipOrderSync();
-            var tsLocationServices = new TrueShipLocationSync();
-            #endregion
 
-            logservice.tsLogLineBreak("Beginning API Calls...");
+	        logservice.tsLogNoLineBreak("Loading Company Configuration...");
+            var tsConfig = getConfig();
+
+	        logservice.tsLogNoLineBreak("Creating TrueShip Controller...");
+			var trueShipFactory = new TrueShipFactory(getConfig());
+			var trusShipSerivces = trueShipFactory.CreateService(GetCredentials());
+
+			//var tsBasicServices = new TruesShipBasicServices(GetCredentials(), getConfig() );
+			//var tsOrderServices = new TrueShipOrderSync(GetCredentials(), getConfig());
+			//var tsLocationServices = new TrueShipLocationSync(GetCredentials(), getConfig());
+
+	        logservice.tsLogLineBreak("Beginning API Calls...");
             var fullModule = true;
             var verifyUpdates = true;
             if (fullModule == true)
             {
                 #region tsBasicAPICalls
                 logservice.tsLogNoLineBreak("Get the number of remaining orders.");
-                var remainingOrders = tsBasicServices.GetRemainingOrders(ts_config.BEARERTOKEN, ts_config.COMPANYID);
+                var remainingOrders = trusShipSerivces.GetRemainingOrders();
                 logservice.tsLogLineBreak(string.Format("API Calls Remaining: {0}", remainingOrders.remaining_orders));
 
                 //DOESN'T WORK, RETURNS 401 UNAUTHORIZED.  I bet if I specified an account id it would work, but I can't get one.
@@ -53,50 +53,64 @@ namespace TrueShipAccessTests
                 //tsBasicServices.GetAccounts(ts_config.BEARERTOKEN);
 
                 logservice.tsLogNoLineBreak("Get a list of companies.");
-                var someCompanies = tsBasicServices.GetCompanies(ts_config.BEARERTOKEN);
-                foreach (var company in someCompanies)
+                var someCompanies = trusShipSerivces.GetCompanies(0);
+	            someCompanies.Wait();
+                foreach (var company in someCompanies.Result)
                 {
                     logservice.tsLogNoLineBreak(string.Format("Company Id: {0}", company.company_id));
                     logservice.tsLogNoLineBreak(string.Format("Created At: {0}", company.created_at));
-                    logservice.tsLogNoLineBreak(string.Format("Id: {0}", company.id));
-                    logservice.tsLogNoLineBreak(string.Format("Company Name: {0}", company.name));
+                    logservice.tsLogNoLineBreak(string.Format("Id: {0}", company.Id));
+                    logservice.tsLogNoLineBreak(string.Format("Company Name: {0}", company.Name));
                     logservice.tsLogLineBreak(string.Format("Updated At: {0}", company.updated_at));
                 }
                 #endregion
 
                 #region ordersync
                 logservice.tsLogNoLineBreak("Get one order by id.");
-                var orderOne = tsOrderServices.GetOrderById(ts_config.BEARERTOKEN, "TRUE000001");
+                var orderOne = trusShipSerivces.GetOrderById("TRUE000001");
                 logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", orderOne.primary_id));
                 logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderOne.status_shipped.ToString()));
 
                 logservice.tsLogNoLineBreak("Get a second order by id.");
-                var orderTwo = tsOrderServices.GetOrderById(ts_config.BEARERTOKEN, "TRUE000002");
+				var orderTwo = trusShipSerivces.GetOrderById("TRUE000002");
                 logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", orderTwo.primary_id));
-                logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderTwo.status_shipped.ToString()));
+                logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderTwo.status_shipped));
 
                 logservice.tsLogNoLineBreak("Get a list of orders after a certain date.");
-                var ordersDict = tsOrderServices.getOrders(ts_config.BEARERTOKEN, ts_config.COMPANYID, ts_config.LASTORDERSYNC);
-                foreach (var order in ordersDict)
+				var ordersDict = trusShipSerivces.GetOrders(tsConfig.LastOrderSync);
+	            ordersDict.Wait();
+                foreach (var order in ordersDict.Result)
                 {
                     logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.primary_id));
-                    logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped.ToString()));
+                    logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped));
                 }
                 logservice.tsLogLineBreak("");
+
+				logservice.tsLogNoLineBreak("Get a list of orders by date range");
+	            var orders = trusShipSerivces.GetOrdersAsync(DateTime.MinValue, DateTime.MaxValue).Result;
+				foreach (var order in orders)
+				{
+					logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.primary_id));
+					logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped));
+				}
+				logservice.tsLogLineBreak("");
+
                 #endregion
 
                 #region locationsync
                 logservice.tsLogNoLineBreak("Update A Few Orders With Locations.");
-                var boxItemList = tsLocationServices.getUnshippedOrderItemsAfterDateTime(ts_config.BEARERTOKEN, ts_config.COMPANYID, "created_at", ts_config.LASTORDERSYNC);
+                var boxItemList = trusShipSerivces.GetUnshippedOrderItemsAfterDateTime(GetCredentials().CompanyId, "created_at", tsConfig.LastOrderSync);
+	            boxItemList.Wait();
+
                 var boxItemUpdates = new List<KeyValuePair<string, PickLocation>>();
-                foreach (var oneboxitem in boxItemList)
+                foreach (var oneboxitem in boxItemList.Result)
                 {
                     var pickLocation = new PickLocation();
-                    var somePickLocation = "wherever " + oneboxitem["part_number"] + " is!"; //Look up Sku locations
+                    var somePickLocation = "wherever " + oneboxitem.PartNumber + " is!"; //Look up Sku locations
                     pickLocation.pick_location = somePickLocation; //Load Sku Locations into a Model
-                    boxItemUpdates.Add(new KeyValuePair<string, PickLocation>(oneboxitem["resource_uri"], pickLocation));
+                    boxItemUpdates.Add(new KeyValuePair<string, PickLocation>(oneboxitem.ResourceUri, pickLocation));
                 }
-                tsLocationServices.updateOrderItemPickLocations(ts_config.BEARERTOKEN, ts_config.COMPANYID, boxItemUpdates);
+                trusShipSerivces.UpdateOrderItemPickLocations(boxItemUpdates);
                 #endregion
             }
             if (verifyUpdates == true)
@@ -105,17 +119,18 @@ namespace TrueShipAccessTests
                 //var timespantolookforupdates = DateTime.Now.AddSeconds(-240);
                 logservice.tsLogLineBreak("");
                 logservice.tsLogNoLineBreak("Confirm that the updates were successful.");
-                var locationOrderUpdateConfirmation = tsOrderServices.getOrders(ts_config.BEARERTOKEN, ts_config.COMPANYID, ts_config.LASTORDERSYNC);
-                foreach (var order in locationOrderUpdateConfirmation)
+                var locationOrderUpdateConfirmation = trusShipSerivces.GetOrders(tsConfig.LastOrderSync);
+	            locationOrderUpdateConfirmation.Wait();
+                foreach (var order in locationOrderUpdateConfirmation.Result)
                 {
                     logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.primary_id));
                     logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped.ToString()));
                     foreach (var orderitem in order.Boxes)
                     {
-                        foreach (var orderitem2 in orderitem.boxes_items_dict)
+                        foreach (var orderitem2 in orderitem.Items)
                         {
-                            logservice.tsLogNoLineBreak(string.Format("SKU: {0}", orderitem2.Value["part_number"]));
-                            logservice.tsLogNoLineBreak(string.Format("Pick Location: {0}", orderitem2.Value["pick_location"]));
+                            logservice.tsLogNoLineBreak(string.Format("SKU: {0}", orderitem2.PartNumber));
+                            logservice.tsLogNoLineBreak(string.Format("Pick Location: {0}", orderitem2.PickLocation));
                         }
                     }
                 }
