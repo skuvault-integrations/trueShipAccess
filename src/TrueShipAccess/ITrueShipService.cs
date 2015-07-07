@@ -7,20 +7,67 @@ namespace TrueShipAccess
 {
 	public interface ITrueShipService
 	{
-		Task<IEnumerable<TrueShipOrderResource>> GetOrders(DateTime lastOrderSync);
+		/// <summary>
+		/// Expected format (JSON or XML).
+		/// </summary>
+		string Format { get; set; }
+		/// <summary>
+		/// The number of entries to limit the returned data to.
+		/// </summary>
+		int Limit { get; set; }
+		/// <summary>
+		/// Retrieve a list of orders by last updated time
+		/// </summary>
+		/// <param name="lastSync"></param>
+		/// <returns></returns>
+		Task<IEnumerable<OrdersResource.Order>> GetOrders(DateTime lastSync);
 
-		Task<IEnumerable<TrueShipOrderResource>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo);
+		Task<IEnumerable<OrdersResource.Order>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo);
 
-		RemainingOrdersResource GetRemainingOrders();
+		/// <summary>
+		/// Retrieve the number of remaining orders for the company with the specified ID
+		/// </summary>
+		/// <param name="companyId"></param>
+		/// <returns></returns>
+		Task<RemainingOrdersResource> GetRemainingOrders(int? companyId = null);
 
-		TrueShipOrderResource GetOrderById(string id);
+		/// <summary>
+		/// Retrieve a single order by ID.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<OrdersResource.Order> GetOrder(string id);
 
 		Task<List<Item>> GetUnshippedOrderItemsAfterDateTime(int id, string datefilter, DateTime lastsync);
-
+		/// <summary>
+		/// Update pick_location for order items by item id
+		/// </summary>
+		/// <param name="orderitemlist"></param>
+		/// <returns></returns>
 		Task<bool> UpdateOrderItemPickLocations(IEnumerable<KeyValuePair<string, PickLocation>> orderitemlist);
 
-		Task<IEnumerable<Box>> GetBoxes(int limit, int offset, int orderId = -1);
+		/// <summary>
+		/// Retrieve a list of boxes.
+		/// </summary>
+		/// <param name="limit">The number of entries to limit the returned data to</param>
+		/// <param name="offset">The entry to start the returned data with</param>
+		/// <param name="orderId">Order ID for which you want retrieve boxes</param>
+		/// <returns></returns>
+		Task<IEnumerable<Box>> GetBoxes(int limit, int offset, int? orderId = null);
+		/// <summary>
+		/// Retrieve a list of box items.
+		/// </summary>
+		/// <param name="limit">The number of entries to limit the returned data to.</param>
+		/// <param name="offset">The entry to start the returned data with.</param>
+		/// <param name="boxId">Box ID for which you want retrieve items.</param>
+		/// <returns></returns>
+		Task<IEnumerable<Item>> GetItems(int limit, int offset, int? boxId = null);
 
-		Task<IEnumerable<CompanyResponse.Company>> GetCompanies(int offset);
+		/// <summary>
+		/// Retrieve a list of companies.
+		/// </summary>
+		/// <param name="offset">The entry to start the returned data with.</param>
+		/// <returns></returns>
+		Task<IEnumerable<CompanyResource.Company>> GetCompanies(int offset);
 	}
 }

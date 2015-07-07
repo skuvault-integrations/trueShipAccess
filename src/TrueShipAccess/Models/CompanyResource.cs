@@ -2,17 +2,12 @@
 
 namespace TrueShipAccess.Models
 {
-    public class CompanyResponse
+	/// <summary>
+	/// Retrieve a list of companies.
+	/// https://www.readycloud.com/static/api-doc/apireference.html#company-resource
+	/// </summary>
+    public class CompanyResource
     {
-        public class Meta
-        {
-            public int Limit { get; set; }
-            public string Next { get; set; }
-            public int Offset { get; set; }
-            public object Previous { get; set; }
-            public int total_count { get; set; }
-        }
-
         public class Company
         {
             public string company_id { get; set; }
@@ -23,12 +18,12 @@ namespace TrueShipAccess.Models
             public string updated_at { get; set; }
         }
 
-        public class Companies : IEnumerable<Company>
+        public class Response : IEnumerable<Company>
         {
             public Meta Meta { get; set; }
             public List<Company> Objects { get; set; }
 
-            public Companies()
+            public Response()
             {
                 this.Objects = new List<Company>();
             }

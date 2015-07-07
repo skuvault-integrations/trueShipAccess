@@ -10,7 +10,7 @@ namespace TrueShipAccessTests
     {
 	    private static TrueShipConfiguration getConfig()
         {
-            TrueShipConfiguration config = new TrueShipConfiguration(
+            var config = new TrueShipConfiguration(
                 Convert.ToDateTime("2015-01-01T00:00:00"),
                 Convert.ToDateTime("2015-01-01T00:00:00"));
 
@@ -46,7 +46,8 @@ namespace TrueShipAccessTests
                 #region tsBasicAPICalls
                 logservice.tsLogNoLineBreak("Get the number of remaining orders.");
                 var remainingOrders = trusShipSerivces.GetRemainingOrders();
-                logservice.tsLogLineBreak(string.Format("API Calls Remaining: {0}", remainingOrders.remaining_orders));
+	            remainingOrders.Wait();
+                logservice.tsLogLineBreak(string.Format("API Calls Remaining: {0}", remainingOrders.Result.remaining_orders));
 
                 //DOESN'T WORK, RETURNS 401 UNAUTHORIZED.  I bet if I specified an account id it would work, but I can't get one.
                 //logservice.tsLogNoLineBreak("Get a list of accounts.");
@@ -67,22 +68,25 @@ namespace TrueShipAccessTests
 
                 #region ordersync
                 logservice.tsLogNoLineBreak("Get one order by id.");
-                var orderOne = trusShipSerivces.GetOrderById("TRUE000001");
-                logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", orderOne.primary_id));
-                logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderOne.status_shipped.ToString()));
+                var orderOne = trusShipSerivces.GetOrder("TRUE000001");
+	            orderOne.Wait();
+                logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", orderOne.Result.PrimaryId));
+                logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderOne.Result.StatusShipped.ToString()));
 
                 logservice.tsLogNoLineBreak("Get a second order by id.");
-				var orderTwo = trusShipSerivces.GetOrderById("TRUE000002");
-                logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", orderTwo.primary_id));
-                logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderTwo.status_shipped));
+				var orderTwo = trusShipSerivces.GetOrder("TRUE000002");
+	            orderTwo.Wait();
+
+                logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", orderTwo.Result.PrimaryId));
+                logservice.tsLogLineBreak(string.Format("Status Shipped: {0}", orderTwo.Result.StatusShipped));
 
                 logservice.tsLogNoLineBreak("Get a list of orders after a certain date.");
 				var ordersDict = trusShipSerivces.GetOrders(tsConfig.LastOrderSync);
 	            ordersDict.Wait();
                 foreach (var order in ordersDict.Result)
                 {
-                    logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.primary_id));
-                    logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped));
+                    logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.PrimaryId));
+                    logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.StatusShipped));
                 }
                 logservice.tsLogLineBreak("");
 
@@ -90,8 +94,8 @@ namespace TrueShipAccessTests
 	            var orders = trusShipSerivces.GetOrdersAsync(DateTime.MinValue, DateTime.MaxValue).Result;
 				foreach (var order in orders)
 				{
-					logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.primary_id));
-					logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped));
+					logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.PrimaryId));
+					logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.StatusShipped));
 				}
 				logservice.tsLogLineBreak("");
 
@@ -123,8 +127,8 @@ namespace TrueShipAccessTests
 	            locationOrderUpdateConfirmation.Wait();
                 foreach (var order in locationOrderUpdateConfirmation.Result)
                 {
-                    logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.primary_id));
-                    logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.status_shipped.ToString()));
+                    logservice.tsLogNoLineBreak(string.Format("NEW ORDER: {0}", order.PrimaryId));
+                    logservice.tsLogNoLineBreak(string.Format("Shipped: {0}", order.StatusShipped.ToString()));
                     foreach (var orderitem in order.Boxes)
                     {
                         foreach (var orderitem2 in orderitem.Items)

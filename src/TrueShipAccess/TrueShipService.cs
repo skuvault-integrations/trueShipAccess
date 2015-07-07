@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CuttingEdge.Conditions;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
 
@@ -19,13 +19,12 @@ namespace TrueShipAccess
 
 		private string _format = "JSON";
 		private int _limit = 10;
-		
-		private int Limit
+
+		public int Limit
 		{
 			get { return _limit; }
 			set { _limit = value; }
 		}
-
 		public string Format
 		{
 			get { return _format; }
@@ -47,21 +46,20 @@ namespace TrueShipAccess
 			: this(credentials, config, new WebRequestServices(config, credentials)) { }
 
 
-		public async Task<IEnumerable<TrueShipOrderResource>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo)
+		public async Task<IEnumerable<OrdersResource.Order>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo)
 		{
 			try
 			{
 				var uri = string.Format("{0}/{1}", _config.ApiBaseUri, "orders");
 				var query = string.Format("bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._credentials.AccessToken, dateFrom, dateTo);
 
-				OrdersResponse result = null;
+				OrdersResource.Response result = null;
 				await ActionPolicies
 					.GetAsync
 					.Do(async () =>
 					{
-						result = await _webRequestServices.SubmitGet<OrdersResponse>(uri, query);
-					})
-					.ConfigureAwait(false);
+						result = await _webRequestServices.SubmitGet<OrdersResource.Response>(uri, query).ConfigureAwait(false);
+					});
 
 				return result.Objects;
 			}
@@ -73,36 +71,33 @@ namespace TrueShipAccess
 			}
 		}
 
-		/// <summary>
-		/// Retrieve the number of remaining orders of your company, if you only have one.
-		/// </summary>
-		/// <returns></returns>
-		public RemainingOrdersResource GetRemainingOrders()
+		public async Task<RemainingOrdersResource> GetRemainingOrders(int? companyId)
 		{
-			var APIENDPOINT = "remaining_orders";
 			var querystring = string.Format("bearer_token={0}", this._credentials.AccessToken);
+			if (companyId.HasValue)
+			{
+				querystring += "id=" + companyId;
+			}
 
-			var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, APIENDPOINT);
+			var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, "remaining_orders");
 
-			var jsonresponse = _webRequestServices.SubmitGet<RemainingOrdersResource>(serviceUrl, querystring);
-			jsonresponse.Wait();
+			RemainingOrdersResource data = null;
+			await ActionPolicies
+				.GetAsync
+				.Do(async () =>
+				{
+					data = await _webRequestServices.SubmitGet<RemainingOrdersResource>(serviceUrl, querystring).ConfigureAwait(false);
+				});
 
-			return jsonresponse.Result;
+			return data;
 		}
 
-		/// <summary>
-		/// Retrieve a list of boxes.
-		/// </summary>
-		/// <param name="limit">The number of entries to limit the returned data to</param>
-		/// <param name="offset">The entry to start the returned data with</param>
-		/// <param name="orderId">Order ID for which you want retrieve boxes</param>
-		/// <returns></returns>
-		public async Task<IEnumerable<Box>> GetBoxes(int limit, int offset, int orderId = -1)
+		public async Task<IEnumerable<Box>> GetBoxes(int limit, int offset, int? orderId)
 		{
 			const string apiEndpoint = "boxes";
 			var query = string.Format("bearer_token={0}&offset={1}&limit={2}&expand=all", this._credentials.AccessToken, offset, limit);
 
-			if (orderId > -1)
+			if (orderId.HasValue)
 			{
 				query += "&order=" + orderId;
 			}
@@ -114,48 +109,54 @@ namespace TrueShipAccess
 				.GetAsync
 				.Do(async () =>
 				{
-					var response = await this._webRequestServices.SubmitGet<BoxesResponse>(serviceUrl, query);
+					var response = await this._webRequestServices.SubmitGet<BoxesResource.Response>(serviceUrl, query).ConfigureAwait(false);
 
 					items = response.Objects;
-				}).ConfigureAwait(false);
+				});
 
 			return items;
 		}
 
-		/// <summary>
-		/// Retrieve a list of companies.
-		/// </summary>
-		/// <param name="offset">The entry to start the returned data with</param>
-		/// <returns></returns>
-		public async Task<IEnumerable<CompanyResponse.Company>> GetCompanies(int offset)
+		public async Task<IEnumerable<Item>> GetItems(int limit, int offset, int? boxId = null)
+		{
+			var query = string.Format("bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, limit, offset);
+			var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, "items");
+
+			var items = new List<Item>();
+
+			await ActionPolicies
+				.GetAsync
+				.Do(async () =>
+				{
+					var response =
+						await this._webRequestServices.SubmitGet<ItemsResource.Response>(serviceUrl, query).ConfigureAwait(false);
+					items.AddRange(response.Objects);
+				});
+
+			return items;
+		}
+
+		public async Task<IEnumerable<CompanyResource.Company>> GetCompanies(int offset)
 		{   //Accounts with only 1 company must use this call
 			const string apiendpoint = "company";
 			string querystring = string.Format("bearer_token={0}&limit={1}&offset={2}", _credentials.AccessToken, Limit, offset);
 
 			var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, apiendpoint);
 			
-			var companyList = new List<CompanyResponse.Company>();
+			var companyList = new List<CompanyResource.Company>();
 
 			await ActionPolicies
 				.GetAsync
 				.Do(async () =>
 				{
-					var response = await this._webRequestServices.SubmitGet<CompanyResponse.Companies>(serviceUrl, querystring);
+					var response = await this._webRequestServices.SubmitGet<CompanyResource.Response>(serviceUrl, querystring).ConfigureAwait(false);
 					companyList = response.Objects;
-				})
-				.ConfigureAwait(false);
+				});
 			
 			return companyList;
 		}
 
-		/// <summary>
-		/// Retrieve a single order by ID
-		/// </summary>
-		/// <param name="id">ID of the order to get</param>
-		/// <param name="datefield"></param>
-		/// <param name="lastsync"></param>
-		/// <returns></returns>
-		public async Task<IEnumerable<TrueShipOrderResource>> GetAllOrdersByDate(int id, string datefield, DateTime lastsync)
+		public async Task<IEnumerable<OrdersResource.Order>> GetAllOrdersByDate(int id, string datefield, DateTime lastsync)
 		{
 			string EXPAND = "all";
 			string formatteddate = string.Format("{0:s}",
@@ -172,19 +173,18 @@ namespace TrueShipAccess
 				this._credentials.AccessToken,
 				EXPAND,
 				filter);
-			var listOrders = new List<TrueShipOrderResource>();
+			var listOrders = new List<OrdersResource.Order>();
 			int grabNumber = 1;
 
-			string querystring1 = querystring;
-			IEnumerable<TrueShipOrderResource> orders = new List<TrueShipOrderResource>();
-			var response = new OrdersResponse();
+			IEnumerable<OrdersResource.Order> orders = new List<OrdersResource.Order>();
+			var response = new OrdersResource.Response();
 			await ActionPolicies
 				.GetAsync
 				.Do(async () =>
 				{
-					response = await _webRequestServices.SubmitGet<OrdersResponse>(serviceUrl, querystring1);
+					response = await _webRequestServices.SubmitGet<OrdersResource.Response>(serviceUrl, querystring).ConfigureAwait(false);
 					orders = response.Objects;
-				}).ConfigureAwait(false);
+				});
 
 			listOrders.AddRange(orders);
 
@@ -201,7 +201,7 @@ namespace TrueShipAccess
 						EXPAND,
 						filter);
 
-					response = await this._webRequestServices.SubmitGet<OrdersResponse>(serviceUrl, querystring);
+					response = await this._webRequestServices.SubmitGet<OrdersResource.Response>(serviceUrl, querystring).ConfigureAwait(false);
 
 					orders = response.Objects;
 				});
@@ -213,7 +213,7 @@ namespace TrueShipAccess
 			return listOrders;
 		}
 
-		public async Task<List<TrueShipOrderResource>> GetOrdersByDateByShipStatus(string bearertoken, int id, string datefield, string shippingstatus, DateTime lastsync)
+		public async Task<List<OrdersResource.Order>> GetOrdersByDateByShipStatus(string bearertoken, int id, string datefield, string shippingstatus, DateTime lastsync)
 		{
 			string EXPAND = "boxes,boxes__items";
 			string formatteddate = string.Format("{0:s}",
@@ -226,10 +226,10 @@ namespace TrueShipAccess
 			string APIENDPOINT = "orders";
 			
 
-			var listJsonResponses = new List<TrueShipOrderResource>();
+			var listJsonResponses = new List<OrdersResource.Order>();
 			int grabNumber = 1;
-			IEnumerable<TrueShipOrderResource> orders = new List<TrueShipOrderResource>();
-			OrdersResponse response = null;
+			IEnumerable<OrdersResource.Order> orders = new List<OrdersResource.Order>();
+			OrdersResource.Response response = null;
 
 			await ActionPolicies
 				.GetAsync
@@ -243,10 +243,10 @@ namespace TrueShipAccess
 							EXPAND,
 							FILTER);
 
-					response = await this._webRequestServices.SubmitGet<OrdersResponse>(serviceUrl, querystring);
+					response = await this._webRequestServices.SubmitGet<OrdersResource.Response>(serviceUrl, querystring).ConfigureAwait(false);
 					
 					orders = response.Objects;
-				}).ConfigureAwait(false);
+				});
 
 			
 			listJsonResponses.AddRange(orders);
@@ -264,9 +264,8 @@ namespace TrueShipAccess
 				await ActionPolicies.GetAsync.Do(async () =>
 				{
 					var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, APIENDPOINT);
-					response = await this._webRequestServices.SubmitGet<OrdersResponse>(serviceUrl, querystring);
-				}).ConfigureAwait(false);
-
+					response = await this._webRequestServices.SubmitGet<OrdersResource.Response>(serviceUrl, querystring).ConfigureAwait(false);
+				});
 
 				listJsonResponses.AddRange(response.Objects);
 				grabNumber++;
@@ -277,68 +276,69 @@ namespace TrueShipAccess
 		public async Task<List<Item>> GetUnshippedOrderItemsAfterDateTime(int id, string datefilter, DateTime lastsync)
 		{
 			const string statusShipped = "False";
-			var jsonResponseList = await this.GetOrdersByDateByShipStatus(this._credentials.AccessToken, id, datefilter, statusShipped, lastsync);
-			
 			var boxList = new List<Item>();
-			if (jsonResponseList != null)
+
+			await ActionPolicies.GetAsync.Do(async () =>
 			{
-				foreach (var oneresponse in jsonResponseList)
+				var jsonResponseList =
+					await this.GetOrdersByDateByShipStatus(this._credentials.AccessToken, id, datefilter, statusShipped, lastsync).
+					ConfigureAwait(false);
+
+				if (jsonResponseList != null)
 				{
-					foreach (var onebox in oneresponse.Boxes)
+					foreach (var order in jsonResponseList)
 					{
-						var boxesItems = onebox.Items;
-						if (boxesItems != null)
+						foreach (var box in order.Boxes)
 						{
-							boxList.AddRange(boxesItems);
+							var boxesItems = box.Items;
+							if (boxesItems != null)
+							{
+								boxList.AddRange(boxesItems);
+							}
 						}
 					}
 				}
+			});
 
-				return boxList;
-			}
-			else { return boxList; }
+			return boxList;
 		}
 
 		public async Task<Boolean> UpdateOrderItemPickLocations(IEnumerable<KeyValuePair<string, PickLocation>> orderitemlist)
 		{
 			var client = new HttpClient();
 
-			foreach (KeyValuePair<string, PickLocation> oneorderitem in orderitemlist)
+			foreach (var oneorderitem in orderitemlist)
 			{
 				var request = this._webRequestServices.CreateUpdateOrderItemPickLocationRequest(oneorderitem );
 
-				//logrunner.tsLogNoLineBreak(reSerializedOrder);
-				//logrunner.tsLogNoLineBreak("Calling @ '" + putApi + "'");
 				try
 				{
-					var response = await client.SendAsync(request);
-
-					var responseData = await response.Content.ReadAsStringAsync();
+					HttpResponseMessage response = null;
+					await ActionPolicies.GetAsync.Do(async () =>
+					{
+						response = await client.SendAsync(request).ConfigureAwait(false);
+					});
 
 					if (response.StatusCode == HttpStatusCode.Accepted)
 					{
-						return true;
+						continue;
 					}
-
 					if (response.StatusCode == HttpStatusCode.Unauthorized)
 					{
 						throw new TrueShipAuthException("Unauthorized", new Exception());
 					}
 
-					Debug.WriteLine(responseData);
-
-					//logrunner.tsLogNoLineBreak("Order Successfully Updated Via API!");
+					throw new TrueShipCommonException(response.ReasonPhrase);
 				}
 				catch (WebException webe)
 				{
 					return false;
-					//logrunner.tsLogNoLineBreak(webe.Message);
 				}
 			}
 			return true;
 		}
 
-		public TrueShipOrderResource GetOrderById(string id)
+		public async Task<OrdersResource.Order> GetOrder(string id)
 		{
 			string EXPAND = "all";
 			string filter = "primary_id=" + id;
@@ -350,34 +350,29 @@ namespace TrueShipAccess
 				filter);
 
 			var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, APIENDPOINT);
-			var jsonresponse = this._webRequestServices.SubmitGet<OrdersResponse>( serviceUrl, querystring);
-			jsonresponse.Wait();
 
-			return jsonresponse.Result.Objects.Single();
+			OrdersResource.Order data = null;
+			await ActionPolicies
+				.GetAsync
+				.Do(async () =>
+				{
+					var response = await this._webRequestServices.SubmitGet<OrdersResource.Response>(serviceUrl, querystring).ConfigureAwait(false);
+					data = response.Objects.Single();
+				});
+
+			return data;
 		}
 
-		public async Task<IEnumerable<TrueShipOrderResource>> GetOrders(DateTime lastsync)
+		public async Task<IEnumerable<OrdersResource.Order>> GetOrders(DateTime lastSync)
 		{
 			const string datefilter = "updated_at";
 
-			return await this.GetAllOrdersByDate( this._credentials.CompanyId, datefilter, lastsync);
+			return await this.GetAllOrdersByDate( this._credentials.CompanyId, datefilter, lastSync);
 		}
 
-		public OrderBackupResource.OrderBackupResponse GetOrderBackupDetails(string orderid)
+		private void LogTraceException(string message, TrueShipException exception)
 		{
-			var APIENDPOINT = string.Format("order_backup_details/{0}", orderid);
-			var querystring = string.Format("bearer_token={0}", this._credentials.AccessToken);
-			var serviceUrl = string.Format("{0}/{1}", this._config.ApiBaseUri, APIENDPOINT);
-
-			var jsonresponse = this._webRequestServices.SubmitGet<OrderBackupResource.OrderBackupResponse>( serviceUrl, querystring);
-			jsonresponse.Wait();
-
-			return jsonresponse.Result;
-		}
-
-		private void LogTraceException(string message, TrueShipException TrueShipException)
-		{
-			TrueShipLogger.Log().Trace(TrueShipException, message);
+			TrueShipLogger.Log().Trace(exception, message);
 		}
 	}
 }

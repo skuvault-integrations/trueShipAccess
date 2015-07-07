@@ -11,18 +11,12 @@ using TrueShipAccess.Models;
 
 namespace TrueShipAccess
 {
-	public interface IWebRequestServices
-	{
-		Task<T> SubmitGet<T>(string serviceUrl, string querystring) where T : class;
-		HttpRequestMessage CreateUpdateOrderItemPickLocationRequest(KeyValuePair<string, PickLocation> oneorderitem);
-	}
-
 	public class WebRequestServices: IWebRequestServices
 	{
 		private readonly TrueShipConfiguration _config;
 		private readonly TrueShipCredentials _credentials;
-		
-		TrueShipLogger logservice = new TrueShipLogger();
+
+		readonly TrueShipLogger _logservice = new TrueShipLogger();
 		
 		public WebRequestServices( TrueShipConfiguration config, TrueShipCredentials credentials )
 		{
@@ -44,14 +38,14 @@ namespace TrueShipAccess
 			request.ContentType = "application/json";
 			try
 			{
-				logservice.tsLogNoLineBreak("Calling @ '" + getApi);
+				_logservice.tsLogNoLineBreak("Calling @ '" + getApi);
 				var response = await request.GetResponseAsync();
 
 				return JsonSerializer.DeserializeFromStream<T>(response.GetResponseStream());
 			}
 			catch (WebException webe)
 			{
-				logservice.tsLogWebServiceError(webe, getApi);
+				_logservice.tsLogWebServiceError(webe, getApi);
 
 				var response = webe.Response as HttpWebResponse;
 				if (response != null)

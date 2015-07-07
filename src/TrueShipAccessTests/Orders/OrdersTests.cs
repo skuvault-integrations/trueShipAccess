@@ -71,7 +71,7 @@ namespace TrueShipAccessTests.Orders
 			//------------ Assert
 			Assert.IsNotNull(orders);
 			orders.Result.Should().NotBeEmpty();
-			CollectionAssert.AreEquivalent(ExistingOrderIds.OrderIds, orders.Result.Select(x => x.primary_id));
+			CollectionAssert.AreEquivalent(ExistingOrderIds.OrderIds, orders.Result.Select(x => x.PrimaryId));
 		}
 
 		[Test]
