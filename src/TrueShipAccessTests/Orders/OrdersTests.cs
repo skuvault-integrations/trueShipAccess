@@ -18,8 +18,9 @@ namespace TrueShipAccessTests.Orders
 
 	public class ExistingOrderIds
 	{
-		public static readonly List<string> OrderIds = new List<string> { "TRUE000001", "TRUE000002", "TRUE000003" };
-		public static readonly List<string> BoxIds = new List<string>
+		public static readonly List< string > OrderIds = new List< string > { "TRUE000001", "TRUE000002", "TRUE000003" };
+
+		public static readonly List< string > BoxIds = new List< string >
 		{
 			"/api/v1/items/7747246/",
 			"/api/v1/items/7747245/",
@@ -33,75 +34,74 @@ namespace TrueShipAccessTests.Orders
 		};
 	}
 
-	[TestFixture]
+	[ TestFixture ]
 	public class OrdersTests
 	{
 		private ITrueShipFactory _factory;
 		public TrueShipConfiguration Config { get; set; }
 		public TrueShipCredentials Credentials { get; set; }
 
-		[SetUp]
+		[ SetUp ]
 		public void Init()
 		{
 			const string credentialsFilePath = @"..\..\Files\TrueShipCredentials.csv";
 
 			var cc = new CsvContext();
 			var testConfig =
-				cc.Read<TestConfig>(credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' }).FirstOrDefault();
+				cc.Read< TestConfig >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' } ).FirstOrDefault();
 
-			if (testConfig != null)
+			if( testConfig != null )
 			{
-				this.Config = new TrueShipConfiguration(DateTime.MinValue, DateTime.MinValue);
-				this.Credentials = new TrueShipCredentials(testConfig.CompanyId, testConfig.AccessToken);
+				this.Config = new TrueShipConfiguration( DateTime.MinValue, DateTime.MinValue );
+				this.Credentials = new TrueShipCredentials( testConfig.CompanyId, testConfig.AccessToken );
 
-				this._factory = new TrueShipFactory(this.Config);
+				this._factory = new TrueShipFactory( this.Config );
 			}
 		}
 
-		[Test]
+		[ Test ]
 		public void GetOrders()
 		{
 			//------------ Arrange
-			var service = _factory.CreateService(this.Credentials);
+			var service = _factory.CreateService( this.Credentials );
 
 			//------------ Act
-			var orders = service.GetOrdersAsync(this.Config.LastOrderSync, DateTime.MaxValue);
+			var orders = service.GetOrdersAsync( this.Config.LastOrderSync, DateTime.MaxValue );
 			orders.Wait();
 
 			//------------ Assert
-			Assert.IsNotNull(orders);
+			Assert.IsNotNull( orders );
 			orders.Result.Should().NotBeEmpty();
-			CollectionAssert.AreEquivalent(ExistingOrderIds.OrderIds, orders.Result.Select(x => x.PrimaryId));
+			CollectionAssert.AreEquivalent( ExistingOrderIds.OrderIds, orders.Result.Select( x => x.PrimaryId ) );
 		}
 
-		[Test]
+		[ Test ]
 		public async Task CanUpdateOrderPickLocation()
 		{
 			//------------ Arrange
-			var service = _factory.CreateService(this.Credentials);
+			var service = _factory.CreateService( this.Credentials );
 
 			//------------ Act
-			var wasUpdated = await service.UpdateOrderItemPickLocations(new List<KeyValuePair<string, PickLocation>>
+			var wasUpdated = await service.UpdateOrderItemPickLocations( new List< KeyValuePair< string, PickLocation > >
 			{
-				new KeyValuePair<string, PickLocation>(ExistingOrderIds.BoxIds.First(), new PickLocation
+				new KeyValuePair< string, PickLocation >( ExistingOrderIds.BoxIds.First(), new PickLocation
 				{
 					pick_location = "Somwhere1"
-				})
-			});
-
+				} )
+			} );
 
 			//------------ Assert
-			Assert.IsTrue(wasUpdated);
+			Assert.IsTrue( wasUpdated );
 		}
 
-		[Test]
+		[ Test ]
 		public void CanGetBoxes()
 		{
 			//------------ Arrange
-			var service = _factory.CreateService(this.Credentials);
+			var service = _factory.CreateService( this.Credentials );
 
 			//------------ Act
-			var boxes = service.GetBoxes(10, 0);
+			var boxes = service.GetBoxes( 10, 0 );
 			boxes.Wait();
 
 			//------------ Assert

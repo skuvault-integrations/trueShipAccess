@@ -8,7 +8,8 @@ namespace TrueShipAccess.Models
 		public object Next { get; set; }
 		public int Offset { get; set; }
 		public object Previous { get; set; }
-		[DataMember(Name = "total_count")]
+
+		[ DataMember( Name = "total_count" ) ]
 		public int TotalCount { get; set; }
 	}
 }

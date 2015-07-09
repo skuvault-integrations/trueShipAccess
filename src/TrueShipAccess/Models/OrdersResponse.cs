@@ -11,7 +11,7 @@ namespace TrueShipAccess.Models
 	{
 		public class BillTo
 		{
-			[DataMember(Name = "resource_uri")]
+			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
 		}
 
@@ -19,13 +19,18 @@ namespace TrueShipAccess.Models
 		{
 			public int Id { get; set; }
 			public string Box { get; set; }
-			[DataMember(Name = "created_at")]
+
+			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAt { get; set; }
+
 			public string Name { get; set; }
-			[DataMember(Name = "resource_uri")]
+
+			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
+
 			public string Value { get; set; }
-			[DataMember(Name = "updated_at")]
+
+			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAt { get; set; }
 		}
 
@@ -94,81 +99,113 @@ namespace TrueShipAccess.Models
 		{
 			public object Account { get; set; }
 			public object Channel { get; set; }
-			[DataMember(Name = "created_at")]
+
+			[ DataMember( Name = "created_at" ) ]
 			public string created_at { get; set; }
+
 			public object Name { get; set; }
 			public string Order { get; set; }
+
 			/// <summary>
 			/// order_source_id
 			/// </summary>
-			[DataMember(Name = "order_source_id")]
+			[ DataMember( Name = "order_source_id" ) ]
 			public object OrderSourceId { get; set; }
+
 			public string ResourceUri { get; set; }
-			[DataMember(Name = "retrieved_at")]
+
+			[ DataMember( Name = "retrieved_at" ) ]
 			public string RetrievedAt { get; set; }
-			[DataMember(Name = "updated_at")]
+
+			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAt { get; set; }
 		}
 
 		public class Order
 		{
-			[DataMember(Name = "bill_to")]
+			[ DataMember( Name = "bill_to" ) ]
 			public BillTo BillTo { get; set; }
-			public List<Box> Boxes { get; set; }
+
+			public List< Box > Boxes { get; set; }
 			public Charges Charges { get; set; }
-			[DataMember(Name = "created_at")]
+
+			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAt { get; set; }
-			[DataMember(Name = "custom_fields")]
-			public List<object> CustomFields { get; set; }
-			[DataMember(Name = "customer_number")]
+
+			[ DataMember( Name = "custom_fields" ) ]
+			public List< object > CustomFields { get; set; }
+
+			[ DataMember( Name = "customer_number" ) ]
 			public object CustomerNumber { get; set; }
-			[DataMember(Name = "future_ship_at")]
+
+			[ DataMember( Name = "future_ship_at" ) ]
 			public object FutureShipAt { get; set; }
-			[DataMember(Name ="imported_at" )]
+
+			[ DataMember( Name = "imported_at" ) ]
 			public string ImportedAt { get; set; }
+
 			public string Message { get; set; }
-			[DataMember(Name = "numerical_id")]
+
+			[ DataMember( Name = "numerical_id" ) ]
 			public string NumericalId { get; set; }
-			[DataMember(Name = "order_time")]
+
+			[ DataMember( Name = "order_time" ) ]
 			public string OrderTime { get; set; }
-			[DataMember(Name = "po_number")]
+
+			[ DataMember( Name = "po_number" ) ]
 			public object PoNumber { get; set; }
-			[DataMember(Name = "primary_id")]
+
+			[ DataMember( Name = "primary_id" ) ]
 			public string PrimaryId { get; set; }
-			[DataMember(Name = "printed_at")]
+
+			[ DataMember( Name = "printed_at" ) ]
 			public object PrintedAt { get; set; }
-			[DataMember(Name = "resource_uri")]
+
+			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
-			[DataMember(Name = "revision_id")]
+
+			[ DataMember( Name = "revision_id" ) ]
 			public int RevisionId { get; set; }
-			[DataMember(Name = "revisions_resource_uri")]
+
+			[ DataMember( Name = "revisions_resource_uri" ) ]
 			public string RevisionsResourceUri { get; set; }
-			[DataMember(Name = "ship_from")]
+
+			[ DataMember( Name = "ship_from" ) ]
 			public ShipFrom ShipFrom { get; set; }
-			[DataMember(Name = "ship_time")]
+
+			[ DataMember( Name = "ship_time" ) ]
 			public object ShipTime { get; set; }
-			[DataMember(Name = "ship_to")]
+
+			[ DataMember( Name = "ship_to" ) ]
 			public ShipTo ShipTo { get; set; }
-			[DataMember(Name = "ship_type")]
+
+			[ DataMember( Name = "ship_type" ) ]
 			public string ShipType { get; set; }
-			[DataMember(Name = "ship_via")]
+
+			[ DataMember( Name = "ship_via" ) ]
 			public string ShipVia { get; set; }
+
 			public object Source { get; set; }
-			public List<Source> Sources { get; set; }
-			[DataMember(Name = "status_shipped")]
+			public List< Source > Sources { get; set; }
+
+			[ DataMember( Name = "status_shipped" ) ]
 			public bool StatusShipped { get; set; }
+
 			public object Terms { get; set; }
-			[DataMember(Name = "unique_id")]
+
+			[ DataMember( Name = "unique_id" ) ]
 			public string UniqueId { get; set; }
-			[DataMember(Name = "updated_at")]
+
+			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAt { get; set; }
+
 			public object Warehouse { get; set; }
 		}
 
 		public class Response
 		{
 			public Meta Meta { get; set; }
-			public IEnumerable<Order> Objects { get; set; }
+			public IEnumerable< Order > Objects { get; set; }
 		}
 	}
 }

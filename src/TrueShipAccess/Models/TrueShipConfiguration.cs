@@ -14,7 +14,7 @@ namespace TrueShipAccess.Models
 
 		public string ServiceBaseUri { get; private set; }
 
-		public TrueShipConfiguration(DateTime lastOrderSync, DateTime lastLocationSync)
+		public TrueShipConfiguration( DateTime lastOrderSync, DateTime lastLocationSync )
 		{
 			this.LastOrderSync = lastOrderSync;
 			this.LastLocationSync = lastLocationSync;

@@ -7,60 +7,60 @@ namespace TrueShipAccess.Misc
 {
 	public class TrueShipLogger
 	{
-		string path = "C:\\Temp\\log.txt";
+		private string path = "C:\\Temp\\log.txt";
 
 		public Boolean clearLogs()
 		{
-			var logDir = Path.GetDirectoryName(path);
-			if (logDir != null && !Directory.Exists(logDir))
+			var logDir = Path.GetDirectoryName( path );
+			if( logDir != null && !Directory.Exists( logDir ) )
 			{
-				Directory.CreateDirectory(logDir);
+				Directory.CreateDirectory( logDir );
 
-				System.IO.FileStream stream = new System.IO.FileStream(path, FileMode.Truncate);
-				System.IO.StreamWriter logger = new System.IO.StreamWriter(stream);
-				logger.Write("TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString());
+				System.IO.FileStream stream = new System.IO.FileStream( path, FileMode.Truncate );
+				System.IO.StreamWriter logger = new System.IO.StreamWriter( stream );
+				logger.Write( "TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString() );
 				logger.Close();
 			}
 
 			return true;
 		}
 
-		public Boolean tsLogNoLineBreak(string message)
+		public Boolean tsLogNoLineBreak( string message )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter(path, true);
-			string logmessage = string.Format("{0}", message);
-			logger.WriteLine(logmessage);
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			string logmessage = string.Format( "{0}", message );
+			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
 
-		public Boolean tsLogLineBreak(string message)
+		public Boolean tsLogLineBreak( string message )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter(path, true);
-			string logmessage = string.Format("{0}\r\n", message);
-			logger.WriteLine(logmessage);
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			string logmessage = string.Format( "{0}\r\n", message );
+			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
 
-		public Boolean tsLogWebService(string endpoint, string response)
+		public Boolean tsLogWebService( string endpoint, string response )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter(path, true);
-			string logmessage = string.Format("[TrueShip]\tResponse\t{0}\r\n{1}\r\n", endpoint, response);
-			logger.WriteLine(logmessage);
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			string logmessage = string.Format( "[TrueShip]\tResponse\t{0}\r\n{1}\r\n", endpoint, response );
+			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
 
-		public Boolean tsLogWebServiceError(WebException e, Uri uri)
+		public Boolean tsLogWebServiceError( WebException e, Uri uri )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter(path, true);
-			string logmessage = string.Format("[TrueShip]\t{0}\t{1}\r\n{2}\r\n{3}\r\n",
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			string logmessage = string.Format( "[TrueShip]\t{0}\t{1}\r\n{2}\r\n{3}\r\n",
 				"API Call Failed!",
 				uri.ToString(),
 				e.Status,
-				e.Message);
-			logger.WriteLine(logmessage);
+				e.Message );
+			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
@@ -94,6 +94,5 @@ namespace TrueShipAccess.Misc
 		{
 			Log().Trace( "[trueship] Internal error:{0}.", info );
 		}
-
 	}
 }

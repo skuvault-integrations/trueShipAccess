@@ -7,7 +7,7 @@ namespace TrueShipAccess
 {
 	public interface IWebRequestServices
 	{
-		Task<T> SubmitGet<T>(string serviceUrl, string querystring) where T : class;
-		HttpRequestMessage CreateUpdateOrderItemPickLocationRequest(KeyValuePair<string, PickLocation> oneorderitem);
+		Task< T > SubmitGet< T >( string serviceUrl, string querystring ) where T : class;
+		HttpRequestMessage CreateUpdateOrderItemPickLocationRequest( KeyValuePair< string, PickLocation > oneorderitem );
 	}
 }

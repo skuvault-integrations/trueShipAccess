@@ -11,7 +11,7 @@ namespace TrueShipAccess.Models
 		public class Response
 		{
 			public Meta Meta { get; set; }
-			public List<Item> Objects { get; set; }
+			public List< Item > Objects { get; set; }
 		}
 	}
 }
