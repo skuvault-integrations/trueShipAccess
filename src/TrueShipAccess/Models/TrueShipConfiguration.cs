@@ -2,7 +2,7 @@
 
 namespace TrueShipAccess.Models
 {
-	public class TrueShipConfiguration
+	public sealed class TrueShipConfiguration
 	{
 		public DateTime LastOrderSync { get; set; }
 		public DateTime LastLocationSync { get; set; }

@@ -62,9 +62,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Companies\CompanyTests.cs" />
     <Compile Include="Orders\OrdersTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ts_api_tests.cs" />
+    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrueShipAccess\TrueShipAccess.csproj">

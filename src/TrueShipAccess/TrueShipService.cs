@@ -1,17 +1,17 @@
-﻿using CuttingEdge.Conditions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using CuttingEdge.Conditions;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
+using TrueShipAccess.WebServices;
 
 namespace TrueShipAccess
 {
-	public class TrueShipService : ITrueShipService
+	public sealed class TrueShipService : ITrueShipService
 	{
 		private readonly TrueShipCredentials _credentials;
 		private readonly TrueShipConfiguration _config;
@@ -22,14 +22,14 @@ namespace TrueShipAccess
 
 		public int Limit
 		{
-			get { return _limit; }
-			set { _limit = value; }
+			get { return this._limit; }
+			set { this._limit = value; }
 		}
 
 		public string Format
 		{
-			get { return _format; }
-			set { _format = value; }
+			get { return this._format; }
+			set { this._format = value; }
 		}
 
 		public TrueShipService( TrueShipCredentials credentials, TrueShipConfiguration config, IWebRequestServices webRequestServices )
@@ -52,7 +52,7 @@ namespace TrueShipAccess
 		{
 			try
 			{
-				var uri = string.Format( "{0}/{1}", _config.ApiBaseUri, "orders" );
+				var uri = string.Format( "{0}/{1}", this._config.ApiBaseUri, "orders" );
 				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._credentials.AccessToken, dateFrom, dateTo );
 
 				OrdersResource.Response result = null;
@@ -60,7 +60,7 @@ namespace TrueShipAccess
 					.GetAsync
 					.Do( async () =>
 					{
-						result = await _webRequestServices.SubmitGet< OrdersResource.Response >( uri, query )
+						result = await this._webRequestServices.SubmitGet< OrdersResource.Response >( uri, query )
 							.ConfigureAwait( false );
 					} );
 
@@ -87,7 +87,7 @@ namespace TrueShipAccess
 				.GetAsync
 				.Do( async () =>
 				{
-					data = await _webRequestServices.SubmitGet< RemainingOrdersResource >( serviceUrl, querystring ).ConfigureAwait( false );
+					data = await this._webRequestServices.SubmitGet< RemainingOrdersResource >( serviceUrl, querystring ).ConfigureAwait( false );
 				} );
 
 			return data;
@@ -139,7 +139,7 @@ namespace TrueShipAccess
 		{
 			//Accounts with only 1 company must use this call
 			const string apiendpoint = "company";
-			string querystring = string.Format( "bearer_token={0}&limit={1}&offset={2}", _credentials.AccessToken, Limit, offset );
+			string querystring = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, this.Limit, offset );
 
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, apiendpoint );
 
@@ -167,9 +167,7 @@ namespace TrueShipAccess
 				formatteddate );
 			string APIENDPOINT = "orders";
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
-			var querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}",
-				Format,
-				Limit,
+			var querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}", this.Format, this.Limit,
 				this._credentials.AccessToken,
 				EXPAND,
 				filter );
@@ -182,21 +180,19 @@ namespace TrueShipAccess
 				.GetAsync
 				.Do( async () =>
 				{
-					response = await _webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					response = await this._webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
 					orders = response.Objects;
 				} );
 
 			listOrders.AddRange( orders );
 
-			decimal totalBatches = ( decimal )response.Meta.TotalCount / Limit;
+			decimal totalBatches = ( decimal )response.Meta.TotalCount / this.Limit;
 			while( totalBatches - grabNumber > 0 )
 			{
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
 					serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
-					querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}",
-						Format,
-						Limit,
+					querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}", this.Format, this.Limit,
 						this._credentials.AccessToken,
 						EXPAND,
 						filter );
@@ -235,9 +231,7 @@ namespace TrueShipAccess
 				.Do( async () =>
 				{
 					var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
-					var querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}",
-						Format,
-						Limit,
+					var querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}", this.Format, this.Limit,
 						bearertoken,
 						EXPAND,
 						FILTER );
@@ -249,12 +243,12 @@ namespace TrueShipAccess
 
 			listJsonResponses.AddRange( orders );
 
-			var totalBatches = ( decimal )response.Meta.TotalCount / Limit;
+			var totalBatches = ( decimal )response.Meta.TotalCount / this.Limit;
 			while( totalBatches - grabNumber > 0 )
 			{
 				var querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}",
-					Format,
-					Limit,
+					this.Format,
+					this.Limit,
 					bearertoken,
 					EXPAND,
 					FILTER );
@@ -322,7 +316,7 @@ namespace TrueShipAccess
 
 					throw new TrueShipCommonException( response.ReasonPhrase );
 				}
-				catch( WebException webe )
+				catch( WebException )
 				{
 					return false;
 				}
@@ -336,8 +330,8 @@ namespace TrueShipAccess
 			string filter = "primary_id=" + id;
 			string APIENDPOINT = "orders";
 			var querystring = string.Format( "format={0}&&bearer_token={1}&expand={2}&{3}",
-				Format,
-				_credentials.AccessToken,
+				this.Format,
+				this._credentials.AccessToken,
 				EXPAND,
 				filter );
 

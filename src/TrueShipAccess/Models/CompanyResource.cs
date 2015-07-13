@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
 {
@@ -8,14 +9,19 @@ namespace TrueShipAccess.Models
 	/// </summary>
 	public class CompanyResource
 	{
+		[DataContract]
 		public class Company
 		{
-			public string company_id { get; set; }
-			public string created_at { get; set; }
+			[DataMember(Name = "company_id")]
+			public string CompanyId { get; set; }
+			[DataMember(Name = "created_at")]
+			public string CreatedAt { get; set; }
 			public int Id { get; set; }
 			public string Name { get; set; }
-			public string resource_uri { get; set; }
-			public string updated_at { get; set; }
+			[DataMember(Name = "resource_uri")]
+			public string ResourceUri { get; set; }
+			[DataMember(Name = "updated_at")]
+			public string UpdatedAt { get; set; }
 		}
 
 		public class Response : IEnumerable< Company >
@@ -30,7 +36,7 @@ namespace TrueShipAccess.Models
 
 			public IEnumerator< Company > GetEnumerator()
 			{
-				return Objects.GetEnumerator();
+				return this.Objects.GetEnumerator();
 			}
 
 			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

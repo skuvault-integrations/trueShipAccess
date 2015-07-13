@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
 {
+	[DataContract]
 	public class Meta
 	{
 		public int Limit { get; set; }

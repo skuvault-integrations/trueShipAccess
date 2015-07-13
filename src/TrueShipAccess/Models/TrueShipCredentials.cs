@@ -2,7 +2,7 @@
 
 namespace TrueShipAccess.Models
 {
-	public class TrueShipCredentials
+	public sealed class TrueShipCredentials
 	{
 		public int CompanyId { get; private set; }
 		public string AccessToken { get; private set; }

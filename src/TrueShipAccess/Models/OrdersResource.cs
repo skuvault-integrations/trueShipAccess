@@ -9,92 +9,81 @@ namespace TrueShipAccess.Models
 	/// </summary>
 	public class OrdersResource
 	{
+		[DataContract]
 		public class BillTo
 		{
 			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
 		}
 
+		[DataContract]
 		public class CustomField
 		{
 			public int Id { get; set; }
 			public string Box { get; set; }
-
 			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAt { get; set; }
-
 			public string Name { get; set; }
-
 			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
-
 			public string Value { get; set; }
-
 			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAt { get; set; }
 		}
 
-		public class Charges
-		{
-			public object actual_shipcost { get; set; }
-			public object calculated_grand_total { get; set; }
-			public object calculated_shipping { get; set; }
-			public object calculated_tax { get; set; }
-			public object calculated_total { get; set; }
-			public object grand_total { get; set; }
-			public object grand_total_source { get; set; }
-			public object imported_grand_total { get; set; }
-			public object imported_shipping { get; set; }
-			public object imported_tax { get; set; }
-			public object imported_total { get; set; }
-			public object shipping { get; set; }
-			public object shipping_source { get; set; }
-			public object Tax { get; set; }
-			public object tax_source { get; set; }
-			public object Total { get; set; }
-			public object total_source { get; set; }
-		}
-
+		[DataContract]
 		public class ShipFrom
 		{
+			[DataMember(Name = "a_type")]
 			public string a_type { get; set; }
+			[DataMember(Name = "address_1")]
 			public string address_1 { get; set; }
+			[DataMember(Name = "address_2")]
 			public object address_2 { get; set; }
 			public string City { get; set; }
 			public string Company { get; set; }
 			public string Country { get; set; }
 			public string Email { get; set; }
-			public string first_name { get; set; }
+			[DataMember(Name = "first_name")]
+			public string FirstName { get; set; }
+			[DataMember(Name = "last_name")]
 			public string last_name { get; set; }
 			public string Order { get; set; }
 			public string Phone { get; set; }
+			[DataMember(Name = "post_code")]
 			public string post_code { get; set; }
 			public bool residential { get; set; }
-			public string resource_uri { get; set; }
 			public string State { get; set; }
 			public bool Validated { get; set; }
 		}
 
+		[DataContract]
 		public class ShipTo
 		{
+			[DataMember(Name = "a_type")]
 			public string a_type { get; set; }
+			[DataMember(Name = "address_1")]
 			public string address_1 { get; set; }
+			[DataMember(Name = "address_2")]
 			public object address_2 { get; set; }
 			public string City { get; set; }
 			public string Company { get; set; }
 			public string Country { get; set; }
 			public string Email { get; set; }
-			public string first_name { get; set; }
-			public string last_name { get; set; }
+			[DataMember(Name = "first_name")]
+			public string FirstName { get; set; }
+			[DataMember(Name = "last_name")]
+			public string LastName { get; set; }
 			public string Order { get; set; }
 			public string Phone { get; set; }
-			public string post_code { get; set; }
-			public bool residential { get; set; }
-			public string resource_uri { get; set; }
+			[DataMember(Name = "post_code")]
+			public string PostCode { get; set; }
+			public bool Residential { get; set; }
 			public string State { get; set; }
 			public bool Validated { get; set; }
 		}
 
+		[DataContract]
 		public class Source
 		{
 			public object Account { get; set; }
@@ -106,9 +95,6 @@ namespace TrueShipAccess.Models
 			public object Name { get; set; }
 			public string Order { get; set; }
 
-			/// <summary>
-			/// order_source_id
-			/// </summary>
 			[ DataMember( Name = "order_source_id" ) ]
 			public object OrderSourceId { get; set; }
 
@@ -121,13 +107,13 @@ namespace TrueShipAccess.Models
 			public string UpdatedAt { get; set; }
 		}
 
+		[DataContract]
 		public class Order
 		{
 			[ DataMember( Name = "bill_to" ) ]
 			public BillTo BillTo { get; set; }
 
 			public List< Box > Boxes { get; set; }
-			public Charges Charges { get; set; }
 
 			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAt { get; set; }

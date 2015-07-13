@@ -2,6 +2,7 @@
 
 namespace TrueShipAccess.Models
 {
+	[DataContract]
 	public class Charge
 	{
 		[ DataMember( Name = "unit_price" ) ]

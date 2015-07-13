@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using LINQtoCSV;
 using NUnit.Framework;
-using TrueShipAccess;
 using TrueShipAccess.Models;
 
 namespace TrueShipAccessTests.Orders
@@ -35,35 +33,13 @@ namespace TrueShipAccessTests.Orders
 	}
 
 	[ TestFixture ]
-	public class OrdersTests
+	public class OrdersTests : TestBase
 	{
-		private ITrueShipFactory _factory;
-		public TrueShipConfiguration Config { get; set; }
-		public TrueShipCredentials Credentials { get; set; }
-
-		[ SetUp ]
-		public void Init()
-		{
-			const string credentialsFilePath = @"..\..\Files\TrueShipCredentials.csv";
-
-			var cc = new CsvContext();
-			var testConfig =
-				cc.Read< TestConfig >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' } ).FirstOrDefault();
-
-			if( testConfig != null )
-			{
-				this.Config = new TrueShipConfiguration( DateTime.MinValue, DateTime.MinValue );
-				this.Credentials = new TrueShipCredentials( testConfig.CompanyId, testConfig.AccessToken );
-
-				this._factory = new TrueShipFactory( this.Config );
-			}
-		}
-
 		[ Test ]
 		public void GetOrders()
 		{
 			//------------ Arrange
-			var service = _factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Credentials );
 
 			//------------ Act
 			var orders = service.GetOrdersAsync( this.Config.LastOrderSync, DateTime.MaxValue );
@@ -79,7 +55,7 @@ namespace TrueShipAccessTests.Orders
 		public async Task CanUpdateOrderPickLocation()
 		{
 			//------------ Arrange
-			var service = _factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Credentials );
 
 			//------------ Act
 			var wasUpdated = await service.UpdateOrderItemPickLocations( new List< KeyValuePair< string, PickLocation > >
@@ -98,7 +74,7 @@ namespace TrueShipAccessTests.Orders
 		public void CanGetBoxes()
 		{
 			//------------ Arrange
-			var service = _factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Credentials );
 
 			//------------ Act
 			var boxes = service.GetBoxes( 10, 0 );
@@ -106,6 +82,19 @@ namespace TrueShipAccessTests.Orders
 
 			//------------ Assert
 			boxes.Result.Should().NotBeEmpty();
+		}
+
+		[Test]
+		public void GetRemainingOrders()
+		{
+			//------------ Arrange
+			var service = this._factory.CreateService(this.Credentials);
+
+			//------------ Act
+			var orders = service.GetRemainingOrders();
+			orders.Wait();
+			//------------ Assert
+			orders.Result.remaining_orders.Should().BeGreaterThan(0);
 		}
 	}
 }

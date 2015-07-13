@@ -9,6 +9,7 @@ namespace TrueShipAccess.Models
 	/// </summary>
 	public class BoxesResource
 	{
+		[DataContract]
 		public class Charges
 		{
 			[ DataMember( Name = "actual_ship_cost" ) ]

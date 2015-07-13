@@ -1,17 +1,17 @@
-﻿using CuttingEdge.Conditions;
-using ServiceStack.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using CuttingEdge.Conditions;
+using ServiceStack.Text;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
 
-namespace TrueShipAccess
+namespace TrueShipAccess.WebServices
 {
-	public class WebRequestServices : IWebRequestServices
+	public sealed class WebRequestServices : IWebRequestServices
 	{
 		private readonly TrueShipConfiguration _config;
 		private readonly TrueShipCredentials _credentials;
@@ -38,14 +38,14 @@ namespace TrueShipAccess
 			request.ContentType = "application/json";
 			try
 			{
-				_logservice.tsLogNoLineBreak( "Calling @ '" + getApi );
+				this._logservice.tsLogNoLineBreak( "Calling @ '" + getApi );
 				var response = await request.GetResponseAsync();
 
 				return JsonSerializer.DeserializeFromStream< T >( response.GetResponseStream() );
 			}
 			catch( WebException webe )
 			{
-				_logservice.tsLogWebServiceError( webe, getApi );
+				this._logservice.tsLogWebServiceError( webe, getApi );
 
 				var response = webe.Response as HttpWebResponse;
 				if( response != null )
