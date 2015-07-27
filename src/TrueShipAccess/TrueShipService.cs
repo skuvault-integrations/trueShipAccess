@@ -48,19 +48,19 @@ namespace TrueShipAccess
 		{
 		}
 
-		public async Task< IEnumerable< OrdersResource.Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
+		public async Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
 			try
 			{
 				var uri = string.Format( "{0}/{1}", this._config.ApiBaseUri, "orders" );
 				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._credentials.AccessToken, dateFrom, dateTo );
 
-				OrdersResource.Response result = null;
+				OrderResource result = null;
 				await ActionPolicies
 					.GetAsync
 					.Do( async () =>
 					{
-						result = await this._webRequestServices.SubmitGet< OrdersResource.Response >( uri, query )
+						result = await this._webRequestServices.SubmitGet< OrderResource >( uri, query )
 							.ConfigureAwait( false );
 					} );
 
@@ -93,7 +93,7 @@ namespace TrueShipAccess
 			return data;
 		}
 
-		public async Task< IEnumerable< Box > > GetBoxes( int limit, int offset, int? orderId )
+		public async Task< IEnumerable< TrueShipBox > > GetBoxes( int limit, int offset, int? orderId )
 		{
 			const string apiEndpoint = "boxes";
 			var query = string.Format( "bearer_token={0}&offset={1}&limit={2}&expand=all", this._credentials.AccessToken, offset, limit );
@@ -103,12 +103,12 @@ namespace TrueShipAccess
 
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, apiEndpoint );
 
-			var items = new List< Box >();
+			var items = new List< TrueShipBox >();
 			await ActionPolicies
 				.GetAsync
 				.Do( async () =>
 				{
-					var response = await this._webRequestServices.SubmitGet< BoxesResource.Response >( serviceUrl, query ).ConfigureAwait( false );
+					var response = await this._webRequestServices.SubmitGet< BoxesResource >( serviceUrl, query ).ConfigureAwait( false );
 
 					items = response.Objects;
 				} );
@@ -116,26 +116,54 @@ namespace TrueShipAccess
 			return items;
 		}
 
-		public async Task< IEnumerable< Item > > GetItems( int limit, int offset, int? boxId = null )
+		public async Task< IEnumerable< TrueShipItem > > GetItems()
+		{
+			var items = new List< TrueShipItem >();
+			var hasMoreItems = false;
+			var offset = 0;
+
+			do
+			{
+				var query = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, this.Limit, offset);
+				var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, "items" );
+
+				await ActionPolicies
+				.GetAsync
+				.Do( async () =>
+				{
+					var response =
+						await this._webRequestServices.SubmitGet< ItemsResource >( serviceUrl, query ).ConfigureAwait( false );
+
+					hasMoreItems = !string.IsNullOrWhiteSpace(response.Meta.Next);
+					offset = response.Meta.Offset + 1;
+
+					items.AddRange( response.Objects );
+				} );
+			} while (hasMoreItems);
+
+			return items;
+		}
+
+		public async Task< IEnumerable< TrueShipItem > > GetItems( int limit, int offset, int? boxId = null )
 		{
 			var query = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, limit, offset );
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, "items" );
 
-			var items = new List< Item >();
+			var items = new List< TrueShipItem >();
 
 			await ActionPolicies
 				.GetAsync
 				.Do( async () =>
 				{
 					var response =
-						await this._webRequestServices.SubmitGet< ItemsResource.Response >( serviceUrl, query ).ConfigureAwait( false );
+						await this._webRequestServices.SubmitGet< ItemsResource >( serviceUrl, query ).ConfigureAwait( false );
 					items.AddRange( response.Objects );
 				} );
 
 			return items;
 		}
 
-		public async Task< IEnumerable< CompanyResource.Company > > GetCompanies( int offset )
+		public async Task< IEnumerable< Company > > GetCompanies( int offset )
 		{
 			//Accounts with only 1 company must use this call
 			const string apiendpoint = "company";
@@ -143,20 +171,20 @@ namespace TrueShipAccess
 
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, apiendpoint );
 
-			var companyList = new List< CompanyResource.Company >();
+			var companyList = new List< Company >();
 
 			await ActionPolicies
 				.GetAsync
 				.Do( async () =>
 				{
-					var response = await this._webRequestServices.SubmitGet< CompanyResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					var response = await this._webRequestServices.SubmitGet< CompanyResource >( serviceUrl, querystring ).ConfigureAwait( false );
 					companyList = response.Objects;
 				} );
 
 			return companyList;
 		}
 
-		public async Task< IEnumerable< OrdersResource.Order > > GetAllOrdersByDate( int id, string datefield, DateTime lastsync )
+		public async Task< IEnumerable< OrderResource.TrueShipOrder > > GetAllOrdersByDate( int id, string datefield, DateTime lastsync )
 		{
 			string EXPAND = "all";
 			string formatteddate = string.Format( "{0:s}",
@@ -171,16 +199,16 @@ namespace TrueShipAccess
 				this._credentials.AccessToken,
 				EXPAND,
 				filter );
-			var listOrders = new List< OrdersResource.Order >();
+			var listOrders = new List< OrderResource.TrueShipOrder >();
 			int grabNumber = 1;
 
-			IEnumerable< OrdersResource.Order > orders = new List< OrdersResource.Order >();
-			var response = new OrdersResource.Response();
+			IEnumerable< OrderResource.TrueShipOrder > orders = new List< OrderResource.TrueShipOrder >();
+			var response = new OrderResource();
 			await ActionPolicies
 				.GetAsync
 				.Do( async () =>
 				{
-					response = await this._webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					response = await this._webRequestServices.SubmitGet< OrderResource >( serviceUrl, querystring ).ConfigureAwait( false );
 					orders = response.Objects;
 				} );
 
@@ -197,7 +225,7 @@ namespace TrueShipAccess
 						EXPAND,
 						filter );
 
-					response = await this._webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					response = await this._webRequestServices.SubmitGet< OrderResource >( serviceUrl, querystring ).ConfigureAwait( false );
 
 					orders = response.Objects;
 				} );
@@ -209,7 +237,7 @@ namespace TrueShipAccess
 			return listOrders;
 		}
 
-		public async Task< List< OrdersResource.Order > > GetOrdersByDateByShipStatus( string bearertoken, int id, string datefield, string shippingstatus, DateTime lastsync )
+		public async Task< List< OrderResource.TrueShipOrder > > GetOrdersByDateByShipStatus( string bearertoken, int id, string datefield, string shippingstatus, DateTime lastsync )
 		{
 			string EXPAND = "boxes,boxes__items";
 			string formatteddate = string.Format( "{0:s}",
@@ -221,10 +249,10 @@ namespace TrueShipAccess
 				formatteddate );
 			string APIENDPOINT = "orders";
 
-			var listJsonResponses = new List< OrdersResource.Order >();
+			var listJsonResponses = new List< OrderResource.TrueShipOrder >();
 			int grabNumber = 1;
-			IEnumerable< OrdersResource.Order > orders = new List< OrdersResource.Order >();
-			OrdersResource.Response response = null;
+			IEnumerable< OrderResource.TrueShipOrder > orders = new List< OrderResource.TrueShipOrder >();
+			OrderResource response = null;
 
 			await ActionPolicies
 				.GetAsync
@@ -236,7 +264,7 @@ namespace TrueShipAccess
 						EXPAND,
 						FILTER );
 
-					response = await this._webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					response = await this._webRequestServices.SubmitGet< OrderResource >( serviceUrl, querystring ).ConfigureAwait( false );
 
 					orders = response.Objects;
 				} );
@@ -256,7 +284,7 @@ namespace TrueShipAccess
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
 					var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
-					response = await this._webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					response = await this._webRequestServices.SubmitGet< OrderResource >( serviceUrl, querystring ).ConfigureAwait( false );
 				} );
 
 				listJsonResponses.AddRange( response.Objects );
@@ -265,10 +293,10 @@ namespace TrueShipAccess
 			return listJsonResponses;
 		}
 
-		public async Task< List< Item > > GetUnshippedOrderItemsAfterDateTime( int id, string datefilter, DateTime lastsync )
+		public async Task< List< TrueShipItem > > GetUnshippedOrderItemsAfterDateTime( int id, string datefilter, DateTime lastsync )
 		{
 			const string statusShipped = "False";
-			var boxList = new List< Item >();
+			var boxList = new List< TrueShipItem >();
 
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
@@ -324,7 +352,7 @@ namespace TrueShipAccess
 			return true;
 		}
 
-		public async Task< OrdersResource.Order > GetOrder( string id )
+		public async Task< OrderResource.TrueShipOrder > GetOrder( string id )
 		{
 			string EXPAND = "all";
 			string filter = "primary_id=" + id;
@@ -337,19 +365,19 @@ namespace TrueShipAccess
 
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
 
-			OrdersResource.Order data = null;
+			OrderResource.TrueShipOrder data = null;
 			await ActionPolicies
 				.GetAsync
 				.Do( async () =>
 				{
-					var response = await this._webRequestServices.SubmitGet< OrdersResource.Response >( serviceUrl, querystring ).ConfigureAwait( false );
+					var response = await this._webRequestServices.SubmitGet< OrderResource >( serviceUrl, querystring ).ConfigureAwait( false );
 					data = response.Objects.Single();
 				} );
 
 			return data;
 		}
 
-		public async Task< IEnumerable< OrdersResource.Order > > GetOrders( DateTime lastSync )
+		public async Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrders( DateTime lastSync )
 		{
 			const string datefilter = "updated_at";
 

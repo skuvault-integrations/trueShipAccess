@@ -22,9 +22,9 @@ namespace TrueShipAccess
 		/// </summary>
 		/// <param name="lastSync"></param>
 		/// <returns></returns>
-		Task< IEnumerable< OrdersResource.Order > > GetOrders( DateTime lastSync );
+		Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrders( DateTime lastSync );
 
-		Task< IEnumerable< OrdersResource.Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
+		Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
 
 		/// <summary>
 		/// Retrieve the number of remaining orders for the company with the specified ID
@@ -38,9 +38,9 @@ namespace TrueShipAccess
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		Task< OrdersResource.Order > GetOrder( string id );
+		Task< OrderResource.TrueShipOrder > GetOrder( string id );
 
-		Task< List< Item > > GetUnshippedOrderItemsAfterDateTime( int id, string datefilter, DateTime lastsync );
+		Task< List< TrueShipItem > > GetUnshippedOrderItemsAfterDateTime( int id, string datefilter, DateTime lastsync );
 
 		/// <summary>
 		/// Update pick_location for order items by item id
@@ -56,7 +56,7 @@ namespace TrueShipAccess
 		/// <param name="offset">The entry to start the returned data with</param>
 		/// <param name="orderId">Order ID for which you want retrieve boxes</param>
 		/// <returns></returns>
-		Task< IEnumerable< Box > > GetBoxes( int limit, int offset, int? orderId = null );
+		Task< IEnumerable< TrueShipBox > > GetBoxes( int limit, int offset, int? orderId = null );
 
 		/// <summary>
 		/// Retrieve a list of box items.
@@ -65,13 +65,19 @@ namespace TrueShipAccess
 		/// <param name="offset">The entry to start the returned data with.</param>
 		/// <param name="boxId">Box ID for which you want retrieve items.</param>
 		/// <returns></returns>
-		Task< IEnumerable< Item > > GetItems( int limit, int offset, int? boxId = null );
+		Task< IEnumerable< TrueShipItem > > GetItems( int limit, int offset, int? boxId = null );
 
+		/// <summary>
+		/// Retrieve a list of all items.
+		/// </summary>
+		/// <returns></returns>
+		Task<IEnumerable<TrueShipItem>> GetItems();
+		
 		/// <summary>
 		/// Retrieve a list of companies.
 		/// </summary>
 		/// <param name="offset">The entry to start the returned data with.</param>
 		/// <returns></returns>
-		Task< IEnumerable< CompanyResource.Company > > GetCompanies( int offset );
+		Task< IEnumerable< Company > > GetCompanies( int offset );
 	}
 }

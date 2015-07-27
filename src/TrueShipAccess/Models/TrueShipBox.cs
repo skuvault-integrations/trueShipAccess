@@ -4,12 +4,12 @@ using System.Runtime.Serialization;
 namespace TrueShipAccess.Models
 {
 	[DataContract]
-	public class Box
+	public class TrueShipBox
 	{
 		public BoxesResource.Charges Charges { get; set; }
 
 		[ DataMember( Name = "custom_fields" ) ]
-		public List< OrdersResource.CustomField > CustomFields { get; set; }
+		public List< OrderResource.CustomField > CustomFields { get; set; }
 
 		[ DataMember( Name = "delivery_confirmation" ) ]
 		public object DeliveryConfirmation { get; set; }
@@ -18,7 +18,7 @@ namespace TrueShipAccess.Models
 		public string GeneralDescription { get; set; }
 
 		public string Height { get; set; }
-		public List< Item > Items { get; set; }
+		public List< TrueShipItem > Items { get; set; }
 		public string Length { get; set; }
 		public string Order { get; set; }
 

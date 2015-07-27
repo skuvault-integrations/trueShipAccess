@@ -1,7 +1,11 @@
-﻿namespace TrueShipAccess.Models
+﻿using System.Runtime.Serialization;
+
+namespace TrueShipAccess.Models
 {
+	[DataContract]
 	public class PickLocation
 	{
-		public string pick_location { get; set; }
+		[DataMember(Name = "pick_location")]
+		public string Location { get; set; }
 	}
 }

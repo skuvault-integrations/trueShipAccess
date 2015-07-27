@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TrueShipAccess.Models;
 
-namespace TrueShipAccess
+namespace TrueShipAccess.WebServices
 {
 	public interface IWebRequestServices
 	{

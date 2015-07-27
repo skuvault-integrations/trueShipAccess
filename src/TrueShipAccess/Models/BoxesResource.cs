@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
 {
@@ -7,7 +6,7 @@ namespace TrueShipAccess.Models
 	/// Retrieve a list of boxes.
 	/// https://www.readycloud.com/static/api-doc/apireference.html#box-resource
 	/// </summary>
-	public class BoxesResource
+	public class BoxesResource : TrueShipBaseResponse<TrueShipBox>
 	{
 		[DataContract]
 		public class Charges
@@ -20,12 +19,6 @@ namespace TrueShipAccess.Models
 
 			[ DataMember( Name = "insured_value" ) ]
 			public object InsuredValue { get; set; }
-		}
-
-		public class Response
-		{
-			public Meta Meta { get; set; }
-			public List< Box > Objects { get; set; }
 		}
 	}
 }

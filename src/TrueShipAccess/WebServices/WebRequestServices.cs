@@ -36,26 +36,11 @@ namespace TrueShipAccess.WebServices
 			var request = ( HttpWebRequest )WebRequest.Create( getApi );
 			request.Method = WebRequestMethods.Http.Get;
 			request.ContentType = "application/json";
-			try
-			{
-				this._logservice.tsLogNoLineBreak( "Calling @ '" + getApi );
-				var response = await request.GetResponseAsync();
+			
+			this._logservice.tsLogNoLineBreak( "Calling @ '" + getApi );
+			var response = await request.GetResponseAsync();
 
-				return JsonSerializer.DeserializeFromStream< T >( response.GetResponseStream() );
-			}
-			catch( WebException webe )
-			{
-				this._logservice.tsLogWebServiceError( webe, getApi );
-
-				var response = webe.Response as HttpWebResponse;
-				if( response != null )
-				{
-					if( response.StatusCode == HttpStatusCode.Unauthorized )
-						throw new TrueShipAuthException( webe.Message, webe );
-				}
-
-				return null;
-			}
+			return JsonSerializer.DeserializeFromStream< T >( response.GetResponseStream() );
 		}
 
 		public HttpRequestMessage CreateUpdateOrderItemPickLocationRequest( KeyValuePair< string, PickLocation > oneorderitem )

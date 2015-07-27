@@ -7,7 +7,7 @@ namespace TrueShipAccess.Models
 	/// Retrieve a list of orders.
 	/// https://www.readycloud.com/static/api-doc/apireference.html#order-resource
 	/// </summary>
-	public class OrdersResource
+	public class OrderResource : TrueShipBaseResponse<OrderResource.TrueShipOrder>
 	{
 		[DataContract]
 		public class BillTo
@@ -108,12 +108,12 @@ namespace TrueShipAccess.Models
 		}
 
 		[DataContract]
-		public class Order
+		public class TrueShipOrder
 		{
 			[ DataMember( Name = "bill_to" ) ]
 			public BillTo BillTo { get; set; }
 
-			public List< Box > Boxes { get; set; }
+			public List< TrueShipBox > Boxes { get; set; }
 
 			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAt { get; set; }
@@ -186,12 +186,6 @@ namespace TrueShipAccess.Models
 			public string UpdatedAt { get; set; }
 
 			public object Warehouse { get; set; }
-		}
-
-		public class Response
-		{
-			public Meta Meta { get; set; }
-			public IEnumerable< Order > Objects { get; set; }
 		}
 	}
 }
