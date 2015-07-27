@@ -62,9 +62,10 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Misc\ActionPolicies.cs" />
+    <Compile Include="Models\Charges.cs" />
     <Compile Include="Models\TrueShipBox.cs" />
     <Compile Include="Models\BoxesResource.cs" />
-    <Compile Include="Models\Charge.cs" />
+    <Compile Include="Models\ChargeUnit.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\TrueShipItem.cs" />
     <Compile Include="Models\ItemsResource.cs" />

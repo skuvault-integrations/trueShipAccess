@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
@@ -63,9 +64,9 @@ namespace TrueShipAccess.Models
 			[DataMember(Name = "a_type")]
 			public string a_type { get; set; }
 			[DataMember(Name = "address_1")]
-			public string address_1 { get; set; }
+			public string Address1 { get; set; }
 			[DataMember(Name = "address_2")]
-			public object address_2 { get; set; }
+			public string Address2 { get; set; }
 			public string City { get; set; }
 			public string Company { get; set; }
 			public string Country { get; set; }
@@ -90,7 +91,7 @@ namespace TrueShipAccess.Models
 			public object Channel { get; set; }
 
 			[ DataMember( Name = "created_at" ) ]
-			public string created_at { get; set; }
+			public DateTime created_at { get; set; }
 
 			public object Name { get; set; }
 			public string Order { get; set; }
@@ -104,7 +105,7 @@ namespace TrueShipAccess.Models
 			public string RetrievedAt { get; set; }
 
 			[ DataMember( Name = "updated_at" ) ]
-			public string UpdatedAt { get; set; }
+			public DateTime UpdatedAt { get; set; }
 		}
 
 		[DataContract]
@@ -115,17 +116,16 @@ namespace TrueShipAccess.Models
 
 			public List< TrueShipBox > Boxes { get; set; }
 
-			[ DataMember( Name = "created_at" ) ]
-			public string CreatedAt { get; set; }
+			public Charges Charges { get;set;}
 
-			[ DataMember( Name = "custom_fields" ) ]
-			public List< object > CustomFields { get; set; }
+			[ DataMember( Name = "created_at" ) ]
+			public DateTime CreatedAt { get; set; }
 
 			[ DataMember( Name = "customer_number" ) ]
-			public object CustomerNumber { get; set; }
+			public string CustomerNumber { get; set; }
 
 			[ DataMember( Name = "future_ship_at" ) ]
-			public object FutureShipAt { get; set; }
+			public DateTime FutureShipAt { get; set; }
 
 			[ DataMember( Name = "imported_at" ) ]
 			public string ImportedAt { get; set; }
@@ -139,13 +139,13 @@ namespace TrueShipAccess.Models
 			public string OrderTime { get; set; }
 
 			[ DataMember( Name = "po_number" ) ]
-			public object PoNumber { get; set; }
+			public string PoNumber { get; set; }
 
 			[ DataMember( Name = "primary_id" ) ]
 			public string PrimaryId { get; set; }
 
 			[ DataMember( Name = "printed_at" ) ]
-			public object PrintedAt { get; set; }
+			public DateTime PrintedAt { get; set; }
 
 			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
@@ -160,7 +160,7 @@ namespace TrueShipAccess.Models
 			public ShipFrom ShipFrom { get; set; }
 
 			[ DataMember( Name = "ship_time" ) ]
-			public object ShipTime { get; set; }
+			public DateTime ShipTime { get; set; }
 
 			[ DataMember( Name = "ship_to" ) ]
 			public ShipTo ShipTo { get; set; }
@@ -177,15 +177,15 @@ namespace TrueShipAccess.Models
 			[ DataMember( Name = "status_shipped" ) ]
 			public bool StatusShipped { get; set; }
 
-			public object Terms { get; set; }
+			public string Terms { get; set; }
 
 			[ DataMember( Name = "unique_id" ) ]
 			public string UniqueId { get; set; }
 
 			[ DataMember( Name = "updated_at" ) ]
-			public string UpdatedAt { get; set; }
+			public DateTime UpdatedAt { get; set; }
 
-			public object Warehouse { get; set; }
+			public string Warehouse { get; set; }
 		}
 	}
 }

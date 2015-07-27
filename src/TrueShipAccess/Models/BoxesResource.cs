@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace TrueShipAccess.Models
+﻿namespace TrueShipAccess.Models
 {
 	/// <summary>
 	/// Retrieve a list of boxes.
@@ -8,17 +6,5 @@ namespace TrueShipAccess.Models
 	/// </summary>
 	public class BoxesResource : TrueShipBaseResponse<TrueShipBox>
 	{
-		[DataContract]
-		public class Charges
-		{
-			[ DataMember( Name = "actual_ship_cost" ) ]
-			public object ActualShipCost { get; set; }
-
-			[ DataMember( Name = "declared_value" ) ]
-			public object DeclaredValue { get; set; }
-
-			[ DataMember( Name = "insured_value" ) ]
-			public object InsuredValue { get; set; }
-		}
 	}
 }
