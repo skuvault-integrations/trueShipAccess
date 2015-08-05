@@ -188,3 +188,4 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 src/TrueShipAccess.sln.DotSettings
+src/TrueShipAccessTests/Files/
