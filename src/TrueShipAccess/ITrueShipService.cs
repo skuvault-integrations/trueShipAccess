@@ -36,9 +36,9 @@ namespace TrueShipAccess
 		/// <summary>
 		/// Retrieve a single order by ID.
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="orderId"></param>
 		/// <returns></returns>
-		Task< OrderResource.TrueShipOrder > GetOrder( string id );
+		Task< OrderResource.TrueShipOrder > GetOrder( string orderId );
 
 		Task< List< TrueShipItem > > GetUnshippedOrderItemsAfterDateTime( int id, string datefilter, DateTime lastsync );
 

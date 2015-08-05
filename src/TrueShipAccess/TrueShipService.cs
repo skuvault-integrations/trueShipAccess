@@ -96,36 +96,44 @@ namespace TrueShipAccess
 		public async Task< IEnumerable< TrueShipBox > > GetBoxes( int limit, int offset, int? orderId )
 		{
 			const string apiEndpoint = "boxes";
-			var query = string.Format( "bearer_token={0}&offset={1}&limit={2}&expand=all", this._credentials.AccessToken, offset, limit );
-
-			if( orderId.HasValue )
-				query += "&order=" + orderId;
 
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, apiEndpoint );
 
-			var items = new List< TrueShipBox >();
-			await ActionPolicies
+			var boxs = new List< TrueShipBox >();
+			var hasMoreBoxes = false;
+
+			do {
+				var query = string.Format( "bearer_token={0}&offset={1}&expand=all", this._credentials.AccessToken, offset );
+
+				if( orderId.HasValue )
+					query += "&order=" + orderId;
+				
+				await ActionPolicies
 				.GetAsync
 				.Do( async () =>
 				{
 					var response = await this._webRequestServices.SubmitGet< BoxesResource >( serviceUrl, query ).ConfigureAwait( false );
 
-					items = response.Objects;
-				} );
+					hasMoreBoxes = !string.IsNullOrWhiteSpace(response.Meta.Next);
+					offset = response.Meta.Offset + 1;
 
-			return items;
+					boxs.AddRange(response.Objects);
+				} );
+			} while(hasMoreBoxes);
+
+			return boxs;
 		}
 
 		public async Task< IEnumerable< TrueShipItem > > GetItems()
 		{
+			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, "items" );
 			var items = new List< TrueShipItem >();
 			var hasMoreItems = false;
 			var offset = 0;
 
 			do
 			{
-				var query = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, this.Limit, offset);
-				var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, "items" );
+				var query = string.Format( "bearer_token={0}&offset={1}", this._credentials.AccessToken, offset);
 
 				await ActionPolicies
 				.GetAsync
@@ -341,8 +349,6 @@ namespace TrueShipAccess
 						continue;
 					if( response.StatusCode == HttpStatusCode.Unauthorized )
 						throw new TrueShipAuthException( "Unauthorized", new Exception() );
-
-					throw new TrueShipCommonException( response.ReasonPhrase );
 				}
 				catch( WebException )
 				{
@@ -352,10 +358,10 @@ namespace TrueShipAccess
 			return true;
 		}
 
-		public async Task< OrderResource.TrueShipOrder > GetOrder( string id )
+		public async Task< OrderResource.TrueShipOrder > GetOrder( string orderId )
 		{
 			string EXPAND = "all";
-			string filter = "primary_id=" + id;
+			string filter = "primary_id=" + orderId;
 			string APIENDPOINT = "orders";
 			var querystring = string.Format( "format={0}&&bearer_token={1}&expand={2}&{3}",
 				this.Format,

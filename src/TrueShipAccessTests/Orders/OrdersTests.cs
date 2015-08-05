@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -42,13 +43,23 @@ namespace TrueShipAccessTests.Orders
 			var service = this._factory.CreateService( this.Credentials );
 
 			//------------ Act
-			var orders = service.GetOrdersAsync( this.Config.LastOrderSync, DateTime.MaxValue );
+			var orders = service.GetOrdersAsync( DateTime.MinValue, DateTime.MaxValue );
 			orders.Wait();
 
 			//------------ Assert
-			Assert.IsNotNull( orders );
+			orders.Should().NotBeNull();
 			orders.Result.Should().NotBeEmpty();
-			CollectionAssert.AreEquivalent( ExistingOrderIds.OrderIds, orders.Result.Select( x => x.PrimaryId ) );
+			orders.Result.Should().HaveCount(3);
+			orders.Result.Select(x => x.PrimaryId).ShouldAllBeEquivalentTo(ExistingOrderIds.OrderIds);
+
+			var syncDate = orders.Result.Last().UpdatedAt;
+
+			var filteredOrders = service.GetOrdersAsync(syncDate, DateTime.MaxValue);
+			filteredOrders.Wait();
+
+			//------------ Assert
+			filteredOrders.Should().NotBeNull();
+			filteredOrders.Result.Should().HaveCount(orders.Result.Count(x => x.UpdatedAt > syncDate));
 		}
 
 		[ Test ]
@@ -62,12 +73,12 @@ namespace TrueShipAccessTests.Orders
 			{
 				new KeyValuePair< string, PickLocation >( ExistingOrderIds.BoxIds.First(), new PickLocation
 				{
-					pick_location = "Somwhere1"
+					Location = "Somwhere11111"
 				} )
 			} );
 
 			//------------ Assert
-			Assert.IsTrue( wasUpdated );
+			wasUpdated.Should().BeTrue();
 		}
 
 		[ Test ]

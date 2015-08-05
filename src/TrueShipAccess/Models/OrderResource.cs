@@ -171,7 +171,7 @@ namespace TrueShipAccess.Models
 			[ DataMember( Name = "ship_via" ) ]
 			public string ShipVia { get; set; }
 
-			public object Source { get; set; }
+			public string Source { get; set; }
 			public List< Source > Sources { get; set; }
 
 			[ DataMember( Name = "status_shipped" ) ]
