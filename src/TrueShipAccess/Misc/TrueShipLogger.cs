@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using Netco.Logging;
@@ -11,14 +12,14 @@ namespace TrueShipAccess.Misc
 
 		public Boolean clearLogs()
 		{
-			var logDir = Path.GetDirectoryName( path );
+			var logDir = Path.GetDirectoryName( this.path );
 			if( logDir != null && !Directory.Exists( logDir ) )
 			{
 				Directory.CreateDirectory( logDir );
 
-				System.IO.FileStream stream = new System.IO.FileStream( path, FileMode.Truncate );
-				System.IO.StreamWriter logger = new System.IO.StreamWriter( stream );
-				logger.Write( "TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString() );
+				var stream = new FileStream( this.path, FileMode.Truncate );
+				var logger = new StreamWriter( stream );
+				logger.Write( "TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString( CultureInfo.InvariantCulture ) );
 				logger.Close();
 			}
 
@@ -27,7 +28,7 @@ namespace TrueShipAccess.Misc
 
 		public Boolean tsLogNoLineBreak( string message )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
 			string logmessage = string.Format( "{0}", message );
 			logger.WriteLine( logmessage );
 			logger.Close();
@@ -36,7 +37,7 @@ namespace TrueShipAccess.Misc
 
 		public Boolean tsLogLineBreak( string message )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
 			string logmessage = string.Format( "{0}\r\n", message );
 			logger.WriteLine( logmessage );
 			logger.Close();
@@ -45,7 +46,7 @@ namespace TrueShipAccess.Misc
 
 		public Boolean tsLogWebService( string endpoint, string response )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
 			string logmessage = string.Format( "[TrueShip]\tResponse\t{0}\r\n{1}\r\n", endpoint, response );
 			logger.WriteLine( logmessage );
 			logger.Close();
@@ -54,7 +55,7 @@ namespace TrueShipAccess.Misc
 
 		public Boolean tsLogWebServiceError( WebException e, Uri uri )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( path, true );
+			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
 			string logmessage = string.Format( "[TrueShip]\t{0}\t{1}\r\n{2}\r\n{3}\r\n",
 				"API Call Failed!",
 				uri.ToString(),
