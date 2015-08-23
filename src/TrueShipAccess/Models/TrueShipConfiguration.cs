@@ -4,16 +4,6 @@ namespace TrueShipAccess.Models
 {
 	public sealed class TrueShipConfiguration
 	{
-		public DateTime LastOrderSync{ get; set; }
-		public DateTime LastLocationSync{ get; set; }
-
-		public string ApiBaseUri
-		{
-			get { return this.ServiceBaseUri + "/api/v1"; }
-		}
-
-		public string ServiceBaseUri{ get; private set; }
-
 		public TrueShipConfiguration( DateTime lastOrderSync, DateTime lastLocationSync )
 		{
 			this.LastOrderSync = lastOrderSync;
@@ -21,5 +11,14 @@ namespace TrueShipAccess.Models
 
 			this.ServiceBaseUri = "https://www.readycloud.com";
 		}
+
+		public string ApiBaseUri
+		{
+			get { return this.ServiceBaseUri + "/api/v1"; }
+		}
+
+		public DateTime LastLocationSync { get; set; }
+		public DateTime LastOrderSync { get; set; }
+		public string ServiceBaseUri { get; private set; }
 	}
 }

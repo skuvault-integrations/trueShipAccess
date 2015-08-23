@@ -2,10 +2,10 @@
 
 namespace TrueShipAccess.Models
 {
-	[DataContract]
+	[ DataContract ]
 	public class PickLocation
 	{
-		[DataMember(Name = "pick_location")]
+		[ DataMember( Name = "pick_location" ) ]
 		public string Location { get; set; }
 	}
 }

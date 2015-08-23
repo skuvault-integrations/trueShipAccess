@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
 {
-	[DataContract]
+	[ DataContract ]
 	public class TrueShipBox
 	{
 		public Charges Charges { get; set; }

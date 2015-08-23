@@ -4,9 +4,6 @@ namespace TrueShipAccess.Models
 {
 	public sealed class TrueShipCredentials
 	{
-		public int CompanyId { get; private set; }
-		public string AccessToken { get; private set; }
-
 		public TrueShipCredentials( int companyId, string accessToken )
 		{
 			Condition.Requires( accessToken ).IsNotNullOrWhiteSpace();
@@ -14,5 +11,8 @@ namespace TrueShipAccess.Models
 			this.CompanyId = companyId;
 			this.AccessToken = accessToken;
 		}
+
+		public string AccessToken { get; private set; }
+		public int CompanyId { get; private set; }
 	}
 }

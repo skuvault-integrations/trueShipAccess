@@ -14,21 +14,21 @@ namespace TrueShipAccessTests
 		internal TrueShipConfiguration Config { get; set; }
 		internal TrueShipCredentials Credentials { get; set; }
 
-		[SetUp]
+		[ SetUp ]
 		public void Init()
 		{
 			const string credentialsFilePath = @"..\..\Files\TrueShipCredentials.csv";
 
 			var cc = new CsvContext();
 			var testConfig =
-				cc.Read<TestConfig>(credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' }).FirstOrDefault();
+				cc.Read< TestConfig >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' } ).FirstOrDefault();
 
-			if (testConfig != null)
+			if( testConfig != null )
 			{
-				this.Config = new TrueShipConfiguration(DateTime.MinValue, DateTime.MinValue);
-				this.Credentials = new TrueShipCredentials(testConfig.CompanyId, testConfig.AccessToken);
+				this.Config = new TrueShipConfiguration( DateTime.MinValue, DateTime.MinValue );
+				this.Credentials = new TrueShipCredentials( testConfig.CompanyId, testConfig.AccessToken );
 
-				this._factory = new TrueShipFactory(this.Config);
+				this._factory = new TrueShipFactory( this.Config );
 			}
 		}
 	}

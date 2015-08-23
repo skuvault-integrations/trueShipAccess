@@ -8,7 +8,7 @@ namespace TrueShipAccess.WebServices
 {
 	public interface IWebRequestServices
 	{
-		Task< T > SubmitGet< T >( string serviceUrl, string querystring, CancellationToken ct ) where T : class;
 		HttpRequestMessage CreateUpdateOrderItemPickLocationRequest( KeyValuePair< string, PickLocation > oneorderitem );
+		Task< T > SubmitGet< T >( string serviceUrl, string querystring, CancellationToken ct ) where T : class;
 	}
 }

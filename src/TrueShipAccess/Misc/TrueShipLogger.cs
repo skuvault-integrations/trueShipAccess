@@ -8,9 +8,39 @@ namespace TrueShipAccess.Misc
 {
 	public class TrueShipLogger
 	{
-		private string path = "C:\\Temp\\log.txt";
+		private readonly string path = "C:\\Temp\\log.txt";
 
-		public Boolean clearLogs()
+		public static ILogger Log()
+		{
+			return NetcoLogger.GetLogger( "TrueShipLogger" );
+		}
+
+		public static void LogTraceEnded( string info )
+		{
+			Log().Trace( "[trueship] End call:{0}.", info );
+		}
+
+		public static void LogTraceInnerEnded( string info )
+		{
+			Log().Trace( "[trueship] Internal End call:{0}.", info );
+		}
+
+		public static void LogTraceInnerError( string info )
+		{
+			Log().Trace( "[trueship] Internal error:{0}.", info );
+		}
+
+		public static void LogTraceInnerStarted( string info )
+		{
+			Log().Trace( "[trueship] Internal Start call:{0}.", info );
+		}
+
+		public static void LogTraceStarted( string info )
+		{
+			Log().Trace( "[trueship] Start call:{0}.", info );
+		}
+
+		public bool clearLogs()
 		{
 			var logDir = Path.GetDirectoryName( this.path );
 			if( logDir != null && !Directory.Exists( logDir ) )
@@ -26,74 +56,44 @@ namespace TrueShipAccess.Misc
 			return true;
 		}
 
-		public Boolean tsLogNoLineBreak( string message )
+		public bool tsLogLineBreak( string message )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
-			string logmessage = string.Format( "{0}", message );
+			var logger = new StreamWriter( this.path, true );
+			var logmessage = string.Format( "{0}\r\n", message );
 			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
 
-		public Boolean tsLogLineBreak( string message )
+		public bool tsLogNoLineBreak( string message )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
-			string logmessage = string.Format( "{0}\r\n", message );
+			var logger = new StreamWriter( this.path, true );
+			var logmessage = string.Format( "{0}", message );
 			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
 
-		public Boolean tsLogWebService( string endpoint, string response )
+		public bool tsLogWebService( string endpoint, string response )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
-			string logmessage = string.Format( "[TrueShip]\tResponse\t{0}\r\n{1}\r\n", endpoint, response );
+			var logger = new StreamWriter( this.path, true );
+			var logmessage = string.Format( "[TrueShip]\tResponse\t{0}\r\n{1}\r\n", endpoint, response );
 			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
 		}
 
-		public Boolean tsLogWebServiceError( WebException e, Uri uri )
+		public bool tsLogWebServiceError( WebException e, Uri uri )
 		{
-			System.IO.StreamWriter logger = new System.IO.StreamWriter( this.path, true );
-			string logmessage = string.Format( "[TrueShip]\t{0}\t{1}\r\n{2}\r\n{3}\r\n",
+			var logger = new StreamWriter( this.path, true );
+			var logmessage = string.Format( "[TrueShip]\t{0}\t{1}\r\n{2}\r\n{3}\r\n",
 				"API Call Failed!",
-				uri.ToString(),
+				uri,
 				e.Status,
 				e.Message );
 			logger.WriteLine( logmessage );
 			logger.Close();
 			return true;
-		}
-
-		public static ILogger Log()
-		{
-			return NetcoLogger.GetLogger( "TrueShipLogger" );
-		}
-
-		public static void LogTraceStarted( string info )
-		{
-			Log().Trace( "[trueship] Start call:{0}.", info );
-		}
-
-		public static void LogTraceEnded( string info )
-		{
-			Log().Trace( "[trueship] End call:{0}.", info );
-		}
-
-		public static void LogTraceInnerStarted( string info )
-		{
-			Log().Trace( "[trueship] Internal Start call:{0}.", info );
-		}
-
-		public static void LogTraceInnerEnded( string info )
-		{
-			Log().Trace( "[trueship] Internal End call:{0}.", info );
-		}
-
-		public static void LogTraceInnerError( string info )
-		{
-			Log().Trace( "[trueship] Internal error:{0}.", info );
 		}
 	}
 }

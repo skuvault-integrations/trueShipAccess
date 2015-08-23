@@ -2,7 +2,7 @@
 
 namespace TrueShipAccess.Models
 {
-	[DataContract]
+	[ DataContract ]
 	public class TrueShipItem
 	{
 		public ChargeUnit Charges { get; set; }

@@ -5,86 +5,107 @@ using System.Runtime.Serialization;
 namespace TrueShipAccess.Models
 {
 	/// <summary>
-	/// Retrieve a list of orders.
-	/// https://www.readycloud.com/static/api-doc/apireference.html#order-resource
+	///     Retrieve a list of orders.
+	///     https://www.readycloud.com/static/api-doc/apireference.html#order-resource
 	/// </summary>
-	public class OrderResource : TrueShipBaseResponse<OrderResource.TrueShipOrder>
+	public class OrderResource : TrueShipBaseResponse< OrderResource.TrueShipOrder >
 	{
-		[DataContract]
+		[ DataContract ]
 		public class BillTo
 		{
 			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
 		}
 
-		[DataContract]
+		[ DataContract ]
 		public class CustomField
 		{
-			public int Id { get; set; }
 			public string Box { get; set; }
+
 			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAt { get; set; }
+
+			public int Id { get; set; }
 			public string Name { get; set; }
+
 			[ DataMember( Name = "resource_uri" ) ]
 			public string ResourceUri { get; set; }
-			public string Value { get; set; }
+
 			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAt { get; set; }
+
+			public string Value { get; set; }
 		}
 
-		[DataContract]
+		[ DataContract ]
 		public class ShipFrom
 		{
-			[DataMember(Name = "a_type")]
+			[ DataMember( Name = "a_type" ) ]
 			public string a_type { get; set; }
-			[DataMember(Name = "address_1")]
+
+			[ DataMember( Name = "address_1" ) ]
 			public string address_1 { get; set; }
-			[DataMember(Name = "address_2")]
+
+			[ DataMember( Name = "address_2" ) ]
 			public object address_2 { get; set; }
+
 			public string City { get; set; }
 			public string Company { get; set; }
 			public string Country { get; set; }
 			public string Email { get; set; }
-			[DataMember(Name = "first_name")]
+
+			[ DataMember( Name = "first_name" ) ]
 			public string FirstName { get; set; }
-			[DataMember(Name = "last_name")]
+
+			[ DataMember( Name = "last_name" ) ]
 			public string last_name { get; set; }
+
 			public string Order { get; set; }
 			public string Phone { get; set; }
-			[DataMember(Name = "post_code")]
+
+			[ DataMember( Name = "post_code" ) ]
 			public string post_code { get; set; }
+
 			public bool residential { get; set; }
 			public string State { get; set; }
 			public bool Validated { get; set; }
 		}
 
-		[DataContract]
+		[ DataContract ]
 		public class ShipTo
 		{
-			[DataMember(Name = "a_type")]
+			[ DataMember( Name = "a_type" ) ]
 			public string a_type { get; set; }
-			[DataMember(Name = "address_1")]
+
+			[ DataMember( Name = "address_1" ) ]
 			public string Address1 { get; set; }
-			[DataMember(Name = "address_2")]
+
+			[ DataMember( Name = "address_2" ) ]
 			public string Address2 { get; set; }
+
 			public string City { get; set; }
 			public string Company { get; set; }
 			public string Country { get; set; }
 			public string Email { get; set; }
-			[DataMember(Name = "first_name")]
+
+			[ DataMember( Name = "first_name" ) ]
 			public string FirstName { get; set; }
-			[DataMember(Name = "last_name")]
+
+			[ DataMember( Name = "last_name" ) ]
 			public string LastName { get; set; }
+
 			public string Order { get; set; }
 			public string Phone { get; set; }
-			[DataMember(Name = "post_code")]
+
+			[ DataMember( Name = "post_code" ) ]
 			public string PostCode { get; set; }
+
 			public bool Residential { get; set; }
 			public string State { get; set; }
 			public bool Validated { get; set; }
 		}
 
-		[DataContract]
+		[ DataContract ]
 		public class Source
 		{
 			public object Account { get; set; }
@@ -108,15 +129,14 @@ namespace TrueShipAccess.Models
 			public DateTime UpdatedAt { get; set; }
 		}
 
-		[DataContract]
+		[ DataContract ]
 		public class TrueShipOrder
 		{
 			[ DataMember( Name = "bill_to" ) ]
 			public BillTo BillTo { get; set; }
 
 			public List< TrueShipBox > Boxes { get; set; }
-
-			public Charges Charges { get;set;}
+			public Charges Charges { get; set; }
 
 			[ DataMember( Name = "created_at" ) ]
 			public DateTime CreatedAt { get; set; }
