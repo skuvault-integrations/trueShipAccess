@@ -1,19 +1,21 @@
-﻿using FluentAssertions;
+﻿using System.Threading;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace TrueShipAccessTests.Companies
 {
-	[TestFixture]
+	[ TestFixture ]
 	public class CompanyTests : TestBase
 	{
-		[Test]
+		[ Test ]
 		public void GetCompanies()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService(this.Credentials);
+			var service = this._factory.CreateService( this.Credentials );
+			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
-			var companies = service.GetCompanies(0);
+			var companies = service.GetCompanies( 0, ctSource.Token );
 			companies.Wait();
 
 			//------------ Assert

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -11,14 +11,12 @@ namespace TrueShipAccessTests.Orders
 {
 	public class TestConfig
 	{
-		public int CompanyId { get; set; }
 		public string AccessToken { get; set; }
+		public int CompanyId { get; set; }
 	}
 
 	public class ExistingOrderIds
 	{
-		public static readonly List< string > OrderIds = new List< string > { "TRUE000001", "TRUE000002", "TRUE000003" };
-
 		public static readonly List< string > BoxIds = new List< string >
 		{
 			"/api/v1/items/7747246/",
@@ -31,35 +29,26 @@ namespace TrueShipAccessTests.Orders
 			"/api/v1/items/5203220/",
 			"/api/v1/items/5203219/"
 		};
+
+		public static readonly List< string > OrderIds = new List< string > { "TRUE000001", "TRUE000002", "TRUE000003" };
 	}
 
 	[ TestFixture ]
 	public class OrdersTests : TestBase
 	{
 		[ Test ]
-		public void GetOrders()
+		public void CanGetBoxes()
 		{
 			//------------ Arrange
 			var service = this._factory.CreateService( this.Credentials );
+			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
-			var orders = service.GetOrdersAsync( DateTime.MinValue, DateTime.MaxValue );
-			orders.Wait();
+			var boxes = service.GetBoxes( 10, 0, ctSource.Token );
+			boxes.Wait();
 
 			//------------ Assert
-			orders.Should().NotBeNull();
-			orders.Result.Should().NotBeEmpty();
-			orders.Result.Should().HaveCount(3);
-			orders.Result.Select(x => x.PrimaryId).ShouldAllBeEquivalentTo(ExistingOrderIds.OrderIds);
-
-			var syncDate = orders.Result.Last().UpdatedAt;
-
-			var filteredOrders = service.GetOrdersAsync(syncDate, DateTime.MaxValue);
-			filteredOrders.Wait();
-
-			//------------ Assert
-			filteredOrders.Should().NotBeNull();
-			filteredOrders.Result.Should().HaveCount(orders.Result.Count(x => x.UpdatedAt > syncDate));
+			boxes.Result.Should().NotBeEmpty();
 		}
 
 		[ Test ]
@@ -82,30 +71,44 @@ namespace TrueShipAccessTests.Orders
 		}
 
 		[ Test ]
-		public void CanGetBoxes()
+		public void GetOrders()
 		{
 			//------------ Arrange
 			var service = this._factory.CreateService( this.Credentials );
+			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
-			var boxes = service.GetBoxes( 10, 0 );
-			boxes.Wait();
+			var orders = service.GetOrdersAsync( DateTime.MinValue, DateTime.MaxValue, ctSource.Token );
+			orders.Wait();
 
 			//------------ Assert
-			boxes.Result.Should().NotBeEmpty();
+			orders.Should().NotBeNull();
+			orders.Result.Should().NotBeEmpty();
+			orders.Result.Should().HaveCount( 3 );
+			orders.Result.Select( x => x.PrimaryId ).ShouldAllBeEquivalentTo( ExistingOrderIds.OrderIds );
+
+			var syncDate = orders.Result.Last().UpdatedAt;
+
+			var filteredOrders = service.GetOrdersAsync( syncDate, DateTime.MaxValue, ctSource.Token );
+			filteredOrders.Wait();
+
+			//------------ Assert
+			filteredOrders.Should().NotBeNull();
+			filteredOrders.Result.Should().HaveCount( orders.Result.Count( x => x.UpdatedAt > syncDate ) );
 		}
 
-		[Test]
+		[ Test ]
 		public void GetRemainingOrders()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService(this.Credentials);
+			var service = this._factory.CreateService( this.Credentials );
+			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
-			var orders = service.GetRemainingOrders();
+			var orders = service.GetRemainingOrders( ctSource.Token );
 			orders.Wait();
 			//------------ Assert
-			orders.Result.remaining_orders.Should().BeGreaterThan(0);
+			orders.Result.remaining_orders.Should().BeGreaterThan( 0 );
 		}
 	}
 }

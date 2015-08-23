@@ -1,24 +1,25 @@
-﻿using FluentAssertions;
+﻿using System.Threading;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace TrueShipAccessTests.Items
 {
-	[TestFixture]
+	[ TestFixture ]
 	public class ItemsTests : TestBase
 	{
-		[Test]
+		[ Test ]
 		public void CanGetAllItems()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService(this.Credentials);
+			var service = this._factory.CreateService( this.Credentials );
+			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
-			var items = service.GetItems();
+			var items = service.GetItems( ctSource.Token );
 			items.Wait();
 
 			//------------ Assert
-			items.Result.Should().HaveCount(6);
-
+			items.Result.Should().HaveCount( 6 );
 		}
 	}
 }

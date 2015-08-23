@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CuttingEdge.Conditions;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using CuttingEdge.Conditions;
 using ServiceStack.Text;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
@@ -27,20 +28,14 @@ namespace TrueShipAccess.WebServices
 			this._credentials = credentials;
 		}
 
-		public async Task< T > SubmitGet< T >( string serviceUrl, string querystring ) where T : class
+		public async Task< T > SubmitGet< T >( string serviceUrl, string querystring, CancellationToken ct ) where T : class
 		{
-			var getApi = new Uri( string.Format( "{0}?{1}",
-				serviceUrl,
-				querystring ) );
-			Console.WriteLine( "GET " + getApi );
-			var request = ( HttpWebRequest )WebRequest.Create( getApi );
-			request.Method = WebRequestMethods.Http.Get;
-			request.ContentType = "application/json";
-			
-			this._logservice.tsLogNoLineBreak( "Calling @ '" + getApi );
-			var response = await request.GetResponseAsync();
+			var request = this.CreateHttpWebRequest(serviceUrl, querystring);
 
-			return JsonSerializer.DeserializeFromStream< T >( response.GetResponseStream() );
+			var response = await GetWrappedAsyncResponse(request, ct);
+			var stream = response.GetResponseStream();
+			
+			return JsonSerializer.DeserializeFromStream<T>(stream);
 		}
 
 		public HttpRequestMessage CreateUpdateOrderItemPickLocationRequest( KeyValuePair< string, PickLocation > oneorderitem )
@@ -58,6 +53,40 @@ namespace TrueShipAccess.WebServices
 			};
 
 			return request;
+		}
+
+		private HttpWebRequest CreateHttpWebRequest(string serviceUrl, string querystring)
+		{
+			var getApi = new Uri(string.Format("{0}?{1}",
+				serviceUrl,
+				querystring));
+
+			var request = (HttpWebRequest)WebRequest.Create(getApi);
+			request.Method = WebRequestMethods.Http.Get;
+			request.ContentType = "application/json";
+
+			return request;
+		}
+
+		private static async Task<HttpWebResponse> GetWrappedAsyncResponse(HttpWebRequest request, CancellationToken ct)
+		{
+			using (ct.Register(request.Abort))
+			{
+				try
+				{
+					var response = await request.GetResponseAsync();
+					ct.ThrowIfCancellationRequested();
+
+					return (HttpWebResponse)response;
+				}
+				catch (WebException ex)
+				{
+					if (ct.IsCancellationRequested)
+						throw new OperationCanceledException(ex.Message, ex, ct);
+
+					throw;
+				}
+			}
 		}
 	}
 }
