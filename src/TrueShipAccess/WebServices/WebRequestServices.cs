@@ -15,16 +15,12 @@ namespace TrueShipAccess.WebServices
 	public sealed class WebRequestServices : IWebRequestServices
 	{
 		private readonly TrueShipConfiguration _config;
-		private readonly TrueShipCredentials _credentials;
 		private readonly TrueShipLogger _logservice = new TrueShipLogger();
 
-		public WebRequestServices( TrueShipConfiguration config, TrueShipCredentials credentials )
+		public WebRequestServices( TrueShipConfiguration config )
 		{
 			Condition.Requires( config, "config" ).IsNotNull();
-			Condition.Requires( credentials, "credentials" ).IsNotNull();
-
 			this._config = config;
-			this._credentials = credentials;
 		}
 
 		public HttpRequestMessage CreateUpdateOrderItemPickLocationRequest( KeyValuePair< string, PickLocation > oneorderitem )
@@ -34,7 +30,7 @@ namespace TrueShipAccess.WebServices
 			var putApi = new Uri( string.Format( "{0}/{1}?bearer_token={2}",
 				this._config.ServiceBaseUri,
 				oneorderitem.Key,
-				this._credentials.AccessToken ) );
+				this._config.Credentials.AccessToken ) );
 
 			var request = new HttpRequestMessage( new HttpMethod( "PATCH" ), putApi )
 			{
@@ -49,6 +45,31 @@ namespace TrueShipAccess.WebServices
 			var request = this.CreateHttpWebRequest( serviceUrl, querystring );
 
 			var response = await GetWrappedAsyncResponse( request, ct );
+			var stream = response.GetResponseStream();
+
+			return JsonSerializer.DeserializeFromStream< T >( stream );
+		}
+
+		public static Uri MakeAbsoluteUri( string path, string query )
+		{
+			return new Uri( string.Format( "{0}?{1}", path, query ) );
+		}
+
+		public async Task< T > SubmitGet< T >( Uri absoluteUri, CancellationToken ct ) where T : class
+		{
+			var request = this.CreateHttpWebRequest( absoluteUri );
+
+			var response = await GetWrappedAsyncResponse( request, ct );
+			var stream = response.GetResponseStream();
+
+			return JsonSerializer.DeserializeFromStream<T>( stream );
+		}
+
+		public T SubmitGetBlocking< T >( string serviceUrl, string querystring ) where T : class
+		{
+			var request = this.CreateHttpWebRequest( serviceUrl, querystring );
+
+			var response = request.GetResponse();
 			var stream = response.GetResponseStream();
 
 			return JsonSerializer.DeserializeFromStream< T >( stream );
@@ -82,6 +103,15 @@ namespace TrueShipAccess.WebServices
 				querystring ) );
 
 			var request = ( HttpWebRequest )WebRequest.Create( getApi );
+			request.Method = WebRequestMethods.Http.Get;
+			request.ContentType = "application/json";
+
+			return request;
+		}
+
+		private HttpWebRequest CreateHttpWebRequest( Uri absoluteUri )
+		{
+			var request = ( HttpWebRequest ) WebRequest.Create( absoluteUri );
 			request.Method = WebRequestMethods.Http.Get;
 			request.ContentType = "application/json";
 

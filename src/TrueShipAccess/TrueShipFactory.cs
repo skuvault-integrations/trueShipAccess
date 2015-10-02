@@ -5,18 +5,22 @@ namespace TrueShipAccess
 {
 	public sealed class TrueShipFactory : ITrueShipFactory
 	{
-		private readonly TrueShipConfiguration _config;
+		private readonly string _appId;
 
-		public TrueShipFactory( TrueShipConfiguration config )
+		public TrueShipFactory( string appId )
 		{
-			Condition.Requires( config, "config" ).IsNotNull();
-
-			this._config = config;
+			Condition.Requires( appId, "appId" ).IsNotNull();
+			this._appId = appId;
 		}
 
-		public ITrueShipService CreateService( TrueShipCredentials userCredentials )
+		public ITrueShipCommonService CreateCommonService( TrueShipConfiguration config )
 		{
-			return new TrueShipService( userCredentials, this._config );
+			return new TrueShipCommonService( config );
+		}
+
+		public ITrueShipAuthService CreateAuthService()
+		{
+			return new TrueShipAuthService( this._appId );
 		}
 	}
 }

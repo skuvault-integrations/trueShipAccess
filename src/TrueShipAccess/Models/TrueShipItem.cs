@@ -5,6 +5,7 @@ namespace TrueShipAccess.Models
 	[ DataContract ]
 	public class TrueShipItem
 	{
+		[ DataMember( Name = "charges" ) ] 
 		public ChargeUnit Charges { get; set; }
 
 		[ DataMember( Name = "commodity_code" ) ]

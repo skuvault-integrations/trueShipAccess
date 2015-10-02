@@ -18,7 +18,10 @@ namespace TrueShipAccess.Models
 		public string GeneralDescription { get; set; }
 
 		public string Height { get; set; }
+
+		[ DataMember( Name = "items" ) ]
 		public List< TrueShipItem > Items { get; set; }
+
 		public string Length { get; set; }
 		public string Order { get; set; }
 

@@ -6,7 +6,7 @@ using TrueShipAccess.Models;
 
 namespace TrueShipAccess
 {
-	public interface ITrueShipService
+	public interface ITrueShipCommonService
 	{
 		/// <summary>
 		///     Expected format (JSON or XML).
@@ -85,7 +85,10 @@ namespace TrueShipAccess
 		///     Update pick_location for order items by item id
 		/// </summary>
 		/// <param name="orderitemlist"></param>
+		/// <param name="ct"></param> 
 		/// <returns></returns>
-		Task< bool > UpdateOrderItemPickLocations( IEnumerable< KeyValuePair< string, PickLocation > > orderitemlist );
+		Task< bool > UpdateOrderItemPickLocations( IEnumerable< KeyValuePair< string, PickLocation > > orderitemlist, CancellationToken ct );
+
+		IEnumerable< OrderResource.TrueShipOrder > GetOrders( DateTime dateFrom, DateTime dateTo );
 	}
 }

@@ -11,7 +11,7 @@ namespace TrueShipAccessTests.Companies
 		public void GetCompanies()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act

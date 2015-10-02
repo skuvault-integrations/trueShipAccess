@@ -135,7 +135,10 @@ namespace TrueShipAccess.Models
 			[ DataMember( Name = "bill_to" ) ]
 			public BillTo BillTo { get; set; }
 
+			[ DataMember( Name = "boxes") ]
 			public List< TrueShipBox > Boxes { get; set; }
+
+			[ DataMember( Name = "charges" ) ]
 			public Charges Charges { get; set; }
 
 			[ DataMember( Name = "created_at" ) ]

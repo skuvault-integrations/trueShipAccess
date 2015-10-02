@@ -25,10 +25,10 @@ namespace TrueShipAccessTests
 
 			if( testConfig != null )
 			{
-				this.Config = new TrueShipConfiguration( DateTime.MinValue, DateTime.MinValue );
 				this.Credentials = new TrueShipCredentials( testConfig.CompanyId, testConfig.AccessToken );
+				this.Config = new TrueShipConfiguration( this.Credentials );
 
-				this._factory = new TrueShipFactory( this.Config );
+				this._factory = new TrueShipFactory();
 			}
 		}
 	}

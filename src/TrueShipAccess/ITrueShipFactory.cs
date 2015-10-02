@@ -4,6 +4,7 @@ namespace TrueShipAccess
 {
 	public interface ITrueShipFactory
 	{
-		ITrueShipService CreateService( TrueShipCredentials userCredentials );
+		ITrueShipCommonService CreateCommonService( TrueShipConfiguration config );
+		ITrueShipAuthService CreateAuthService();
 	}
 }

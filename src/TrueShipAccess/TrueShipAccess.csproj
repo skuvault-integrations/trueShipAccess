@@ -61,6 +61,7 @@
     <Compile Include="..\Global\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ITrueShipAuthService.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Models\Charges.cs" />
     <Compile Include="Models\TrueShipBox.cs" />
@@ -73,11 +74,12 @@
     <Compile Include="Models\OrderResource.cs" />
     <Compile Include="Models\TrueShipBaseResponse.cs" />
     <Compile Include="Models\TrueShipCredentials.cs" />
+    <Compile Include="TrueShipAuthService.cs" />
     <Compile Include="TrueShipException.cs" />
     <Compile Include="TrueShipFactory.cs" />
-    <Compile Include="TrueShipService.cs" />
+    <Compile Include="TrueShipCommonService.cs" />
     <Compile Include="ITrueShipFactory.cs" />
-    <Compile Include="ITrueShipService.cs" />
+    <Compile Include="ITrueShipCommonService.cs" />
     <Compile Include="Misc\TrueShipLogger.cs" />
     <Compile Include="Models\CompanyResource.cs" />
     <Compile Include="Models\PickLocation.cs" />

@@ -11,7 +11,7 @@ namespace TrueShipAccessTests.Items
 		public void CanGetAllItems()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act

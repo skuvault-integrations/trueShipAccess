@@ -40,7 +40,7 @@ namespace TrueShipAccessTests.Orders
 		public void CanGetBoxes()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
@@ -55,7 +55,7 @@ namespace TrueShipAccessTests.Orders
 		public async Task CanUpdateOrderPickLocation()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Config );
 
 			//------------ Act
 			var wasUpdated = await service.UpdateOrderItemPickLocations( new List< KeyValuePair< string, PickLocation > >
@@ -74,7 +74,7 @@ namespace TrueShipAccessTests.Orders
 		public void GetOrders()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
@@ -101,7 +101,7 @@ namespace TrueShipAccessTests.Orders
 		public void GetRemainingOrders()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Credentials );
+			var service = this._factory.CreateService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act

@@ -6,33 +6,31 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using Netco.Extensions;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
 using TrueShipAccess.WebServices;
 
 namespace TrueShipAccess
 {
-	public sealed class TrueShipService : ITrueShipService
+	public sealed class TrueShipCommonService : ITrueShipCommonService
 	{
 		private readonly TrueShipConfiguration _config;
-		private readonly TrueShipCredentials _credentials;
 		private readonly IWebRequestServices _webRequestServices;
 		private string _format = "JSON";
 		private int _limit = 10;
 
-		public TrueShipService( TrueShipCredentials credentials, TrueShipConfiguration config, IWebRequestServices webRequestServices )
+		public TrueShipCommonService( TrueShipConfiguration config, IWebRequestServices webRequestServices )
 		{
-			Condition.Requires( credentials, "credentials" ).IsNotNull();
 			Condition.Requires( config, "config" ).IsNotNull();
 			Condition.Requires( webRequestServices, "webRequestServices" ).IsNotNull();
 
-			this._credentials = credentials;
 			this._config = config;
 			this._webRequestServices = webRequestServices;
 		}
 
-		public TrueShipService( TrueShipCredentials credentials, TrueShipConfiguration config )
-			: this( credentials, config, new WebRequestServices( config, credentials ) )
+		public TrueShipCommonService( TrueShipConfiguration config )
+			: this( config, new WebRequestServices( config ) )
 		{
 		}
 
@@ -48,19 +46,18 @@ namespace TrueShipAccess
 			set { this._limit = value; }
 		}
 
-		public async Task< IEnumerable< OrderResource.TrueShipOrder > > GetAllOrdersByDate( int id, string datefield, DateTime lastsync, CancellationToken ct )
+		public async Task< IEnumerable< OrderResource.TrueShipOrder > > GetAllOrdersByDate( string datefield, DateTime lastsync, CancellationToken ct )
 		{
 			var EXPAND = "all";
 			var formatteddate = string.Format( "{0:s}",
 				lastsync );
-			var filter = string.Format( "id={0}&{1}__gte={2}",
-				id,
+			var filter = string.Format( "{0}__gte={1}",
 				datefield,
 				formatteddate );
 			var APIENDPOINT = "orders";
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
 			var querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}", this.Format, this.Limit,
-				this._credentials.AccessToken,
+				this._config.Credentials.AccessToken,
 				EXPAND,
 				filter );
 			var listOrders = new List< OrderResource.TrueShipOrder >();
@@ -85,7 +82,7 @@ namespace TrueShipAccess
 				{
 					serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, APIENDPOINT );
 					querystring = string.Format( "format={0}&limit={1}&bearer_token={2}&expand={3}&{4}", this.Format, this.Limit,
-						this._credentials.AccessToken,
+						this._config.Credentials.AccessToken,
 						EXPAND,
 						filter );
 
@@ -112,7 +109,7 @@ namespace TrueShipAccess
 
 			do
 			{
-				var query = string.Format( "bearer_token={0}&offset={1}&expand=all", this._credentials.AccessToken, offset );
+				var query = string.Format( "bearer_token={0}&offset={1}&expand=all", this._config.Credentials.AccessToken, offset );
 
 				if( orderId.HasValue )
 					query += "&order=" + orderId;
@@ -137,7 +134,7 @@ namespace TrueShipAccess
 		{
 			//Accounts with only 1 company must use this call
 			const string apiendpoint = "company";
-			var querystring = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, this.Limit, offset );
+			var querystring = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._config.Credentials.AccessToken, this.Limit, offset );
 
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, apiendpoint );
 
@@ -163,7 +160,7 @@ namespace TrueShipAccess
 
 			do
 			{
-				var query = string.Format( "bearer_token={0}&offset={1}", this._credentials.AccessToken, offset );
+				var query = string.Format( "bearer_token={0}&offset={1}", this._config.Credentials.AccessToken, offset );
 
 				await ActionPolicies
 					.GetAsync
@@ -184,7 +181,7 @@ namespace TrueShipAccess
 
 		public async Task< IEnumerable< TrueShipItem > > GetItems( int limit, int offset, CancellationToken ct, int? boxId = null )
 		{
-			var query = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._credentials.AccessToken, limit, offset );
+			var query = string.Format( "bearer_token={0}&limit={1}&offset={2}", this._config.Credentials.AccessToken, limit, offset );
 			var serviceUrl = string.Format( "{0}/{1}", this._config.ApiBaseUri, "items" );
 
 			var items = new List< TrueShipItem >();
@@ -208,7 +205,7 @@ namespace TrueShipAccess
 			var APIENDPOINT = "orders";
 			var querystring = string.Format( "format={0}&&bearer_token={1}&expand={2}&{3}",
 				this.Format,
-				this._credentials.AccessToken,
+				this._config.Credentials.AccessToken,
 				EXPAND,
 				filter );
 
@@ -230,7 +227,7 @@ namespace TrueShipAccess
 		{
 			const string datefilter = "updated_at";
 
-			return await this.GetAllOrdersByDate( this._credentials.CompanyId, datefilter, lastSync, ct );
+			return await this.GetAllOrdersByDate( datefilter, lastSync, ct );
 		}
 
 		public async Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken ct )
@@ -238,22 +235,55 @@ namespace TrueShipAccess
 			try
 			{
 				var uri = string.Format( "{0}/{1}", this._config.ApiBaseUri, "orders" );
-				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._credentials.AccessToken, dateFrom, dateTo );
+//				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._config.Credentials.AccessToken, dateFrom, dateTo );
+				var query = string.Format( "bearer_token={0}&expand=all", this._config.Credentials.AccessToken );
+				var absoluteUri = WebRequestServices.MakeAbsoluteUri( uri, query ); 
+
+				var ordersAccumulator = new List< OrderResource.TrueShipOrder >();
+				do
+				{
+					OrderResource result = null;
+					await ActionPolicies
+						.GetAsync
+						.Do( async () =>
+						{
+							result = await this._webRequestServices.SubmitGet< OrderResource >( absoluteUri, ct )
+								.ConfigureAwait( false );
+						} );
+					absoluteUri = ( result.Meta.Next != null ) ? new Uri( result.Meta.Next ) : null;
+					ordersAccumulator.AddRange( result.Objects );
+				} while ( absoluteUri != null );
+
+				return ordersAccumulator;
+			}
+			catch( Exception ex )
+			{
+				var truShipEx = new TrueShipCommonException( "Error on GetOrdersAsync", ex );
+				this.LogTraceException( "Error. ", truShipEx );
+				throw truShipEx;
+			}
+		}
+
+		public IEnumerable< OrderResource.TrueShipOrder > GetOrders( DateTime dateFrom, DateTime dateTo )
+		{
+			try
+			{
+				var uri = string.Format( "{0}/{1}", this._config.ApiBaseUri, "orders" );
+				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._config.Credentials.AccessToken, dateFrom, dateTo );
 
 				OrderResource result = null;
-				await ActionPolicies
-					.GetAsync
-					.Do( async () =>
+				ActionPolicies
+					.Get
+					.Do( () =>
 					{
-						result = await this._webRequestServices.SubmitGet< OrderResource >( uri, query, ct )
-							.ConfigureAwait( false );
+						result = this._webRequestServices.SubmitGetBlocking< OrderResource >( uri, query );
 					} );
 
 				return result.Objects;
 			}
 			catch( Exception ex )
 			{
-				var truShipEx = new TrueShipCommonException( "Error on GetOrdersAsync", ex );
+				var truShipEx = new TrueShipCommonException( "Error on GetOrders", ex );
 				this.LogTraceException( "Error. ", truShipEx );
 				throw truShipEx;
 			}
@@ -317,7 +347,7 @@ namespace TrueShipAccess
 
 		public async Task< RemainingOrdersResource > GetRemainingOrders( CancellationToken ct, int? companyId = null )
 		{
-			var querystring = string.Format( "bearer_token={0}", this._credentials.AccessToken );
+			var querystring = string.Format( "bearer_token={0}", this._config.Credentials.AccessToken );
 			if( companyId.HasValue )
 				querystring += "id=" + companyId;
 
@@ -342,7 +372,7 @@ namespace TrueShipAccess
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
 				var jsonResponseList =
-					await this.GetOrdersByDateByShipStatus( this._credentials.AccessToken, id, datefilter, statusShipped, lastsync, ct ).
+					await this.GetOrdersByDateByShipStatus( this._config.Credentials.AccessToken, id, datefilter, statusShipped, lastsync, ct ).
 						ConfigureAwait( false );
 
 				if( jsonResponseList != null )
@@ -362,11 +392,11 @@ namespace TrueShipAccess
 			return boxList;
 		}
 
-		public async Task< bool > UpdateOrderItemPickLocations( IEnumerable< KeyValuePair< string, PickLocation > > orderitemlist )
+		public async Task< bool > UpdateOrderItemPickLocations( IEnumerable< KeyValuePair< string, PickLocation > > orderitemlist, CancellationToken ctx )
 		{
 			var client = new HttpClient();
 
-			foreach( var oneorderitem in orderitemlist )
+			var requestResults = await orderitemlist.ProcessInBatchAsync( 20, async oneorderitem =>
 			{
 				var request = this._webRequestServices.CreateUpdateOrderItemPickLocationRequest( oneorderitem );
 
@@ -375,20 +405,20 @@ namespace TrueShipAccess
 					HttpResponseMessage response = null;
 					await ActionPolicies.GetAsync.Do( async () =>
 					{
-						response = await client.SendAsync( request ).ConfigureAwait( false );
+						response = await client.SendAsync( request, ctx ).ConfigureAwait( false );
 					} );
 
-					if( response.StatusCode == HttpStatusCode.Accepted )
-						continue;
-					if( response.StatusCode == HttpStatusCode.Unauthorized )
+					if ( response.StatusCode == HttpStatusCode.Unauthorized )
 						throw new TrueShipAuthException( "Unauthorized", new Exception() );
 				}
-				catch( WebException )
+				catch ( WebException )
 				{
 					return false;
 				}
-			}
-			return true;
+				return true;
+			} );
+
+			return requestResults.All( x => x );
 		}
 
 		private void LogTraceException( string message, TrueShipException exception )
