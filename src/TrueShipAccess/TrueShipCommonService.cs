@@ -235,8 +235,7 @@ namespace TrueShipAccess
 			try
 			{
 				var uri = string.Format( "{0}/{1}", this._config.ApiBaseUri, "orders" );
-//				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}", this._config.Credentials.AccessToken, dateFrom, dateTo );
-				var query = string.Format( "bearer_token={0}&expand=all", this._config.Credentials.AccessToken );
+				var query = string.Format( "bearer_token={0}&updated_at__gte={1:s}&updated_at__lte={2:s}&expand=all", this._config.Credentials.AccessToken, dateFrom, dateTo );
 				var absoluteUri = WebRequestServices.MakeAbsoluteUri( uri, query ); 
 
 				var ordersAccumulator = new List< OrderResource.TrueShipOrder >();

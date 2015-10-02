@@ -40,7 +40,7 @@ namespace TrueShipAccessTests.Orders
 		public void CanGetBoxes()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Config );
+			var service = this._factory.CreateCommonService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
@@ -51,30 +51,30 @@ namespace TrueShipAccessTests.Orders
 			boxes.Result.Should().NotBeEmpty();
 		}
 
-		[ Test ]
-		public async Task CanUpdateOrderPickLocation()
-		{
-			//------------ Arrange
-			var service = this._factory.CreateService( this.Config );
-
-			//------------ Act
-			var wasUpdated = await service.UpdateOrderItemPickLocations( new List< KeyValuePair< string, PickLocation > >
-			{
-				new KeyValuePair< string, PickLocation >( ExistingOrderIds.BoxIds.First(), new PickLocation
-				{
-					Location = "Somwhere11111"
-				} )
-			} );
-
-			//------------ Assert
-			wasUpdated.Should().BeTrue();
-		}
+//		[ Test ]
+//		public async Task CanUpdateOrderPickLocation()
+//		{
+//			//------------ Arrange
+//			var service = this._factory.CreateCommonService( this.Config );
+//
+//			//------------ Act
+//			var wasUpdated = await service.UpdateOrderItemPickLocations( new List< KeyValuePair< string, PickLocation > >
+//			{
+//				new KeyValuePair< string, PickLocation >( ExistingOrderIds.BoxIds.First(), new PickLocation
+//				{
+//					Location = "Somwhere11111"
+//				} )
+//			} );
+//
+//			//------------ Assert
+//			wasUpdated.Should().BeTrue();
+//		}
 
 		[ Test ]
 		public void GetOrders()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Config );
+			var service = this._factory.CreateCommonService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
@@ -101,7 +101,7 @@ namespace TrueShipAccessTests.Orders
 		public void GetRemainingOrders()
 		{
 			//------------ Arrange
-			var service = this._factory.CreateService( this.Config );
+			var service = this._factory.CreateCommonService( this.Config );
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
