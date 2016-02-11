@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using NuGet;
+using ServiceStack;
 using ServiceStack.Text;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
+using HttpClient = System.Net.Http.HttpClient;
 
 namespace TrueShipAccess.WebServices
 {
@@ -16,6 +20,7 @@ namespace TrueShipAccess.WebServices
 	{
 		private readonly TrueShipConfiguration _config;
 		private readonly TrueShipLogger _logservice = new TrueShipLogger();
+		private readonly HttpClient _client = new HttpClient();
 
 		public WebRequestServices( TrueShipConfiguration config )
 		{
@@ -40,13 +45,41 @@ namespace TrueShipAccess.WebServices
 			return request;
 		}
 
-		public async Task< T > SubmitGet< T >( string serviceUrl, string querystring, CancellationToken ct ) where T : class
+		private string GetRawResponse( Stream stream )
 		{
-			var request = this.CreateHttpWebRequest( serviceUrl, querystring );
+			if ( stream == null ) return "";
+			var responseString = stream.ReadToEnd();
+//			stream.Seek( 0, SeekOrigin.Begin );
+//			return "Raw response content: {0}".FormatWith( responseString );
+			return responseString;
+		}
 
-			var response = await GetWrappedAsyncResponse( request, ct );
+		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequestBase request, CancellationToken ct, string logPrefix )
+		{
+			HttpResponseMessage response = null;
+			var httpRequest = request.ToHttpRequest();
+			this._logservice.LogTrace( logPrefix, "Submitting PATCH request to {0} with body: {1}".FormatWith( httpRequest.RequestUri, request.GetSerializedBody() ) );
+
+			await ActionPolicies.SubmitAsync.Do( async () =>
+			{
+				response = await this._client.SendAsync( httpRequest, ct );
+			} );
+			return response;
+		}  
+
+		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, CancellationToken ct, string logPrefix ) where T : class
+		{
+			var request = requestModel.ToHttpRequest();
+
+			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
+
+			HttpWebResponse response = null;
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				response = await GetWrappedAsyncResponse( request, ct );
+			} );
 			var stream = response.GetResponseStream();
-
+			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, "N/A" ) );
 			return JsonSerializer.DeserializeFromStream< T >( stream );
 		}
 
@@ -55,23 +88,46 @@ namespace TrueShipAccess.WebServices
 			return new Uri( string.Format( "{0}?{1}", path, query ) );
 		}
 
-		public async Task< T > SubmitGet< T >( Uri absoluteUri, CancellationToken ct ) where T : class
+		public async Task< T > SubmitGet< T >( Uri absoluteUri, CancellationToken ct, string logPrefix ) where T : class
 		{
 			var request = this.CreateHttpWebRequest( absoluteUri );
 
 			var response = await GetWrappedAsyncResponse( request, ct );
 			var stream = response.GetResponseStream();
 
+			return JsonSerializer.DeserializeFromStream< T >( stream );
+		}
+
+		public T SubmitGetBlocking< T >( Uri uri, string logPrefix ) where T : class
+		{
+			var request = this.CreateHttpWebRequest( uri );
+			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
+
+			HttpWebResponse response = null;
+			ActionPolicies.Get.Do( () =>
+			{
+				response = ( HttpWebResponse ) request.GetResponse();
+			} );
+
+			var stream = response.GetResponseStream();
+//			var rawResponseString = this.GetRawResponse( stream );
+			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, "N/A" ) );
 			return JsonSerializer.DeserializeFromStream<T>( stream );
 		}
 
-		public T SubmitGetBlocking< T >( string serviceUrl, string querystring ) where T : class
+		public T SubmitGetBlocking< T >( TrueShipGetRequestBase trueShipRequest, string logPrefix ) where T : class
 		{
-			var request = this.CreateHttpWebRequest( serviceUrl, querystring );
+			var request = trueShipRequest.ToHttpRequest();
+			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
 
-			var response = request.GetResponse();
+			HttpWebResponse response = null;
+			ActionPolicies.Get.Do( () =>
+			{
+				response = ( HttpWebResponse )request.GetResponse();
+			} );
+
 			var stream = response.GetResponseStream();
-
+			this._logservice.LogTrace( logPrefix, "Got response with status {0}. {1}".FormatWith( response.StatusCode, "N/A" ) );
 			return JsonSerializer.DeserializeFromStream< T >( stream );
 		}
 
@@ -94,19 +150,6 @@ namespace TrueShipAccess.WebServices
 					throw;
 				}
 			}
-		}
-
-		private HttpWebRequest CreateHttpWebRequest( string serviceUrl, string querystring )
-		{
-			var getApi = new Uri( string.Format( "{0}?{1}",
-				serviceUrl,
-				querystring ) );
-
-			var request = ( HttpWebRequest )WebRequest.Create( getApi );
-			request.Method = WebRequestMethods.Http.Get;
-			request.ContentType = "application/json";
-
-			return request;
 		}
 
 		private HttpWebRequest CreateHttpWebRequest( Uri absoluteUri )

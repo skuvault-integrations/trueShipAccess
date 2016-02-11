@@ -2,7 +2,9 @@
 using System.Globalization;
 using System.IO;
 using System.Net;
+using Netco.Extensions;
 using Netco.Logging;
+using TrueShipAccess.Models;
 
 namespace TrueShipAccess.Misc
 {
@@ -13,6 +15,17 @@ namespace TrueShipAccess.Misc
 		public static ILogger Log()
 		{
 			return NetcoLogger.GetLogger( "TrueShipLogger" );
+		}
+
+		public void LogTrace( string prefix, string info )
+		{
+			Log().Trace( "[trueship] {0}. {1}", prefix, info );
+		}
+
+		public void LogTracePagination< T >( string prefix, int pageNumber, TrueShipBaseResponse< T > response ) where T : class
+		{
+			var info = "Processed {0} pages of {1}".FormatWith( pageNumber, ( decimal )response.Meta.TotalCount );
+			Log().Trace( "[trueship] {0}. {1}", prefix, info );
 		}
 
 		public static void LogTraceEnded( string info )
