@@ -46,6 +46,7 @@ namespace TrueShipAccess.Models
 		[ DataMember( Name = "producer_info_code" ) ]
 		public string ProducerInfoCode { get; set; }
 
+		[ DataMember( Name = "quantity" ) ]
 		public int Quantity { get; set; }
 
 		[ DataMember( Name = "resource_uri" ) ]
