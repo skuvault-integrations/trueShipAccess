@@ -45,12 +45,10 @@ namespace TrueShipAccess.WebServices
 			return request;
 		}
 
-		private string GetRawResponse( Stream stream )
+		private static string GetRawResponse( Stream stream )
 		{
 			if ( stream == null ) return "";
 			var responseString = stream.ReadToEnd();
-//			stream.Seek( 0, SeekOrigin.Begin );
-//			return "Raw response content: {0}".FormatWith( responseString );
 			return responseString;
 		}
 
@@ -78,9 +76,9 @@ namespace TrueShipAccess.WebServices
 			{
 				response = await GetWrappedAsyncResponse( request, ct );
 			} );
-			var stream = response.GetResponseStream();
-			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, "N/A" ) );
-			return JsonSerializer.DeserializeFromStream< T >( stream );
+			var rawReponse = GetRawResponse( response.GetResponseStream() );
+			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, rawReponse ) );
+			return JsonSerializer.DeserializeFromString< T >( rawReponse );
 		}
 
 		public static Uri MakeAbsoluteUri( string path, string query )
@@ -110,9 +108,9 @@ namespace TrueShipAccess.WebServices
 			} );
 
 			var stream = response.GetResponseStream();
-//			var rawResponseString = this.GetRawResponse( stream );
-			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, "N/A" ) );
-			return JsonSerializer.DeserializeFromStream<T>( stream );
+			var rawResponseString = GetRawResponse( stream );
+			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, rawResponseString ) );
+			return JsonSerializer.DeserializeFromString< T >( rawResponseString );
 		}
 
 		public T SubmitGetBlocking< T >( TrueShipGetRequestBase trueShipRequest, string logPrefix ) where T : class
