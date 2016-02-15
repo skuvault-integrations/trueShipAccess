@@ -63,12 +63,10 @@ namespace TrueShipAccess.WebServices
 				response = await this._client.SendAsync( httpRequest, ct );
 			} );
 			return response;
-		}  
+		}
 
-		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, CancellationToken ct, string logPrefix ) where T : class
+		public async Task< T > ExecuteGetRequest< T >( HttpWebRequest request, string logPrefix, CancellationToken ct ) where T : class
 		{
-			var request = requestModel.ToHttpRequest();
-
 			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
 
 			HttpWebResponse response = null;
@@ -81,6 +79,12 @@ namespace TrueShipAccess.WebServices
 			return JsonSerializer.DeserializeFromString< T >( rawReponse );
 		}
 
+		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, CancellationToken ct, string logPrefix ) where T : class
+		{
+			var request = requestModel.ToHttpRequest();
+			return await this.ExecuteGetRequest< T >( request, logPrefix, ct );
+		}
+
 		public static Uri MakeAbsoluteUri( string path, string query )
 		{
 			return new Uri( string.Format( "{0}?{1}", path, query ) );
@@ -89,11 +93,7 @@ namespace TrueShipAccess.WebServices
 		public async Task< T > SubmitGet< T >( Uri absoluteUri, CancellationToken ct, string logPrefix ) where T : class
 		{
 			var request = this.CreateHttpWebRequest( absoluteUri );
-
-			var response = await GetWrappedAsyncResponse( request, ct );
-			var stream = response.GetResponseStream();
-
-			return JsonSerializer.DeserializeFromStream< T >( stream );
+			return await this.ExecuteGetRequest<T>( request, logPrefix, ct );
 		}
 
 		public T SubmitGetBlocking< T >( Uri uri, string logPrefix ) where T : class
