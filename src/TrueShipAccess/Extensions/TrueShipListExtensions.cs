@@ -16,7 +16,7 @@ namespace TrueShipAccess.Extensions
 			return string.Join( ",", list );
 		}
 
-			public static string MakeString<T>( this List<T> list )
+			public static string MakeString< T >( this List<T> list )
 			{
 				if ( typeof( T ) == typeof( OrderResource.TrueShipOrder ) )
 				{
@@ -38,9 +38,9 @@ namespace TrueShipAccess.Extensions
 				{
 					return ListToString( ( list as List< TrueShipItem > ).Select( i => i.ItemId ) );
 				}
-				if ( typeof( T ) == typeof( KeyValuePair< string, PickLocation > ) )
+				if ( typeof( T ) == typeof( ItemLocationUpdateModel ) )
 				{
-					return ListToString( ( list as List< KeyValuePair< string, PickLocation > > ).Select( i => "( {0} -> {1} )".FormatWith( i.Key, i.Value.Location ) ) );
+					return ListToString( ( list as List< ItemLocationUpdateModel > ).Select( i => "( {0} -> {1} )".FormatWith( i.Resource, i.Location.Location ) ) );
 				}
 				if ( typeof( T ) == typeof( Company ) )
 				{
