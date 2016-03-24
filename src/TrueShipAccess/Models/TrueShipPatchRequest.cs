@@ -32,7 +32,7 @@ namespace TrueShipAccess.Models
 
 		public TrueShipPatchRequestBase SetBody( object body )
 		{
-			this.serializedBody = JsonSerializer.SerializeToString( body );
+			this.serializedBody = JsonSerializer.SerializeToString( body );			
 			return this;
 		}
 

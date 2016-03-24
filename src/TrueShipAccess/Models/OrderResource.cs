@@ -83,9 +83,16 @@ namespace TrueShipAccess.Models
 			[ DataMember( Name = "address_2" ) ]
 			public string Address2 { get; set; }
 
+			[ DataMember( Name = "city" ) ]
 			public string City { get; set; }
+
+			[ DataMember( Name = "company" ) ]
 			public string Company { get; set; }
+
+			[ DataMember( Name = "country" ) ]
 			public string Country { get; set; }
+
+			[ DataMember( Name = "email" ) ]
 			public string Email { get; set; }
 
 			[ DataMember( Name = "first_name" ) ]
@@ -95,13 +102,18 @@ namespace TrueShipAccess.Models
 			public string LastName { get; set; }
 
 			public string Order { get; set; }
+
+			[ DataMember( Name = "phone" ) ]
 			public string Phone { get; set; }
 
 			[ DataMember( Name = "post_code" ) ]
 			public string PostCode { get; set; }
 
 			public bool Residential { get; set; }
+
+			[ DataMember( Name = "state" ) ]
 			public string State { get; set; }
+
 			public bool Validated { get; set; }
 		}
 
@@ -159,7 +171,7 @@ namespace TrueShipAccess.Models
 			public string NumericalId { get; set; }
 
 			[ DataMember( Name = "order_time" ) ]
-			public string OrderTime { get; set; }
+			public DateTime OrderTime { get; set; }
 
 			[ DataMember( Name = "po_number" ) ]
 			public string PoNumber { get; set; }

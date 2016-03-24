@@ -1,11 +1,12 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
 {
 	[ DataContract ]
 	public class Charges
 	{
-		[ DataMember( Name = "actual_ship_cost" ) ]
+		[ DataMember( Name = "actual_shipcost" ) ]
 		public string ActualShipCost { get; set; }
 
 		[ DataMember( Name = "calculated_grand_total" ) ]
@@ -58,5 +59,17 @@ namespace TrueShipAccess.Models
 
 		[ DataMember( Name = "total_source" ) ]
 		public string TotalSource { get; set; }
+
+		public decimal GetActualShippingCost()
+		{
+			if ( this.ActualShipCost == null )
+				return 0;
+			var splittedCost = this.ActualShipCost.Split( null );
+			if ( splittedCost.Length < 1 )
+				return 0;
+			decimal result;
+			return decimal.TryParse( splittedCost[ 0 ], out result ) ? result : 0;
+		} 
+
 	}
 }

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using NuGet;
 using ServiceStack;
 using ServiceStack.Text;
+using ServiceStack.Text.Common;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
 using HttpClient = System.Net.Http.HttpClient;
@@ -26,6 +28,7 @@ namespace TrueShipAccess.WebServices
 		{
 			Condition.Requires( config, "config" ).IsNotNull();
 			this._config = config;
+			JsonCustomSerializationOptionsProvider.Setup();
 		}
 
 		public HttpRequestMessage CreateUpdateOrderItemPickLocationRequest( KeyValuePair< string, PickLocation > oneorderitem )
@@ -48,7 +51,8 @@ namespace TrueShipAccess.WebServices
 		private static string GetRawResponse( Stream stream )
 		{
 			if ( stream == null ) return "";
-			var responseString = stream.ReadToEnd();
+			var reader = new StreamReader( stream );
+			var responseString = reader.ReadToEnd();
 			return responseString;
 		}
 
@@ -123,7 +127,6 @@ namespace TrueShipAccess.WebServices
 			{
 				response = ( HttpWebResponse )request.GetResponse();
 			} );
-
 			var stream = response.GetResponseStream();
 			this._logservice.LogTrace( logPrefix, "Got response with status {0}. {1}".FormatWith( response.StatusCode, "N/A" ) );
 			return JsonSerializer.DeserializeFromStream< T >( stream );
