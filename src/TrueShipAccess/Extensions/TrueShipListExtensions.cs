@@ -40,7 +40,7 @@ namespace TrueShipAccess.Extensions
 				}
 				if ( typeof( T ) == typeof( ItemLocationUpdateModel ) )
 				{
-					return ListToString( ( list as List< ItemLocationUpdateModel > ).Select( i => "( {0} -> {1} )".FormatWith( i.Resource, i.Location.Location ) ) );
+					return ListToString( ( list as List< ItemLocationUpdateModel > ).Select( i => "( {0} -> SKU = {1}, Location = {2} )".FormatWith( i.Resource, i.Sku, i.Location.Location ) ) );
 				}
 				if ( typeof( T ) == typeof( Company ) )
 				{

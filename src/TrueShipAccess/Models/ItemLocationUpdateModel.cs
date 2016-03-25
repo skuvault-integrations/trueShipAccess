@@ -11,11 +11,13 @@ namespace TrueShipAccess.Models
 	{
 		public readonly string Resource;
 		public readonly PickLocation Location;
+		public readonly string Sku; // used only for logging info
 
-		public ItemLocationUpdateModel( string itemResouurce, PickLocation location )
+		public ItemLocationUpdateModel( string itemResouurce, string sku, PickLocation location )
 		{
 			this.Resource = itemResouurce;
 			this.Location = location;
+			this.Sku = sku;
 		}
 
 		public TrueShipApiEndpoint GetEndPoint()

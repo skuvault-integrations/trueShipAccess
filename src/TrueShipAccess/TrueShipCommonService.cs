@@ -80,7 +80,7 @@ namespace TrueShipAccess
 
 				try
 				{
-					this._logservice.LogTrace( logPrefix, "Started sending request to update item {0} location".FormatWith( updateModel.Location.Location ) );
+					this._logservice.LogTrace( logPrefix, "Started sending request to update item {0} location to {1}".FormatWith( updateModel.Sku, updateModel.Location.Location ) );
 					var response = await this._webRequestServices.SubmitPatch( request, ctx, logPrefix );
 
 					this._logservice.LogTrace( logPrefix, "Got response for item {0}, result: {1}".FormatWith( updateModel.Resource, response.StatusCode ) );
