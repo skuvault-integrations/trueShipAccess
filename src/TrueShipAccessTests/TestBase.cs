@@ -17,7 +17,7 @@ namespace TrueShipAccessTests
 		[ SetUp ]
 		public void Init()
 		{
-			const string credentialsFilePath = @"..\..\Files\TrueShipCredentials.csv";
+			const string credentialsFilePath = @"D:\TrueShipCredentials.csv";
 
 			var cc = new CsvContext();
 			var testConfig =

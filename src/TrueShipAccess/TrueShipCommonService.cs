@@ -34,7 +34,7 @@ namespace TrueShipAccess
 		}
 
 		public TrueShipCommonService( TrueShipConfiguration config )
-			: this( config, new WebRequestServices( config ) )
+			: this( config, new WebRequestServices( config, new ThrottlerAsync() ) )
 		{
 		}
 

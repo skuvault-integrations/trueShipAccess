@@ -23,11 +23,13 @@ namespace TrueShipAccess.WebServices
 		private readonly TrueShipConfiguration _config;
 		private readonly TrueShipLogger _logservice = new TrueShipLogger();
 		private readonly HttpClient _client = new HttpClient();
+		private readonly ThrottlerAsync _throttler;
 
-		public WebRequestServices( TrueShipConfiguration config )
+		public WebRequestServices( TrueShipConfiguration config, ThrottlerAsync throttler )
 		{
 			Condition.Requires( config, "config" ).IsNotNull();
 			this._config = config;
+			this._throttler = throttler;
 			JsonCustomSerializationOptionsProvider.Setup();
 		}
 
@@ -64,7 +66,7 @@ namespace TrueShipAccess.WebServices
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
-				response = await this._client.SendAsync( httpRequest, ct );
+				response = await this._throttler.ExecuteAsync( () => this._client.SendAsync( httpRequest, ct ) );
 			} );
 			return response;
 		}
@@ -73,13 +75,13 @@ namespace TrueShipAccess.WebServices
 		{
 			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
 
-			HttpWebResponse response = null;
+			WebResponse response = null;
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
-				response = await GetWrappedAsyncResponse( request, ct );
+				response = await this._throttler.ExecuteAsync( request.GetResponseAsync ); 
 			} );
 			var rawReponse = GetRawResponse( response.GetResponseStream() );
-			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response.StatusCode, rawReponse ) );
+			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response is HttpWebResponse ? ( (HttpWebResponse ) response ).StatusCode.ToString() : "N/A", rawReponse ) );
 			return JsonSerializer.DeserializeFromString< T >( rawReponse );
 		}
 

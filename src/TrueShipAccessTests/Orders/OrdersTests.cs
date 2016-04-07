@@ -37,40 +37,6 @@ namespace TrueShipAccessTests.Orders
 	public class OrdersTests : TestBase
 	{
 		[ Test ]
-		public void CanGetBoxes()
-		{
-			//------------ Arrange
-			var service = this._factory.CreateCommonService( this.Config );
-			var ctSource = new CancellationTokenSource();
-
-			//------------ Act
-			var boxes = service.GetBoxes( 10, 0, ctSource.Token );
-			boxes.Wait();
-
-			//------------ Assert
-			boxes.Result.Should().NotBeEmpty();
-		}
-
-//		[ Test ]
-//		public async Task CanUpdateOrderPickLocation()
-//		{
-//			//------------ Arrange
-//			var service = this._factory.CreateCommonService( this.Config );
-//
-//			//------------ Act
-//			var wasUpdated = await service.UpdateOrderItemPickLocations( new List< KeyValuePair< string, PickLocation > >
-//			{
-//				new KeyValuePair< string, PickLocation >( ExistingOrderIds.BoxIds.First(), new PickLocation
-//				{
-//					Location = "Somwhere11111"
-//				} )
-//			} );
-//
-//			//------------ Assert
-//			wasUpdated.Should().BeTrue();
-//		}
-
-		[ Test ]
 		public void GetOrders()
 		{
 			//------------ Arrange
@@ -84,31 +50,7 @@ namespace TrueShipAccessTests.Orders
 			//------------ Assert
 			orders.Should().NotBeNull();
 			orders.Result.Should().NotBeEmpty();
-			orders.Result.Should().HaveCount( 3 );
-			orders.Result.Select( x => x.PrimaryId ).ShouldAllBeEquivalentTo( ExistingOrderIds.OrderIds );
-
-			var syncDate = orders.Result.Last().UpdatedAt;
-
-			var filteredOrders = service.GetOrdersAsync( syncDate, DateTime.MaxValue, ctSource.Token );
-			filteredOrders.Wait();
-
-			//------------ Assert
-			filteredOrders.Should().NotBeNull();
-			filteredOrders.Result.Should().HaveCount( orders.Result.Count( x => x.UpdatedAt > syncDate ) );
 		}
 
-		[ Test ]
-		public void GetRemainingOrders()
-		{
-			//------------ Arrange
-			var service = this._factory.CreateCommonService( this.Config );
-			var ctSource = new CancellationTokenSource();
-
-			//------------ Act
-			var orders = service.GetRemainingOrders( ctSource.Token );
-			orders.Wait();
-			//------------ Assert
-			orders.Result.remaining_orders.Should().BeGreaterThan( 0 );
-		}
 	}
 }

@@ -64,6 +64,7 @@
     <Compile Include="IMethodLogging.cs" />
     <Compile Include="ITrueShipAuthService.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
+    <Compile Include="Misc\ThrottlerAsync.cs" />
     <Compile Include="Models\AbstractTrueShipRequest.cs" />
     <Compile Include="Models\Charges.cs" />
     <Compile Include="Models\Conventions\TrueShipApiEndpoint.cs" />
