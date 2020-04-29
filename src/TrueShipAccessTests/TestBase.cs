@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using LINQtoCSV;
 using NUnit.Framework;
 using TrueShipAccess;
@@ -17,11 +19,12 @@ namespace TrueShipAccessTests
 		[ SetUp ]
 		public void Init()
 		{
-			const string credentialsFilePath = @"D:\TrueShipCredentials.csv";
+			string basePath = new Uri( Path.GetDirectoryName( Assembly.GetExecutingAssembly().CodeBase ) ).LocalPath;
+			const string credentialsFilePath = @"\..\..\credentials.csv";
 
 			var cc = new CsvContext();
 			var testConfig =
-				cc.Read< TestConfig >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' } ).FirstOrDefault();
+				cc.Read< TestConfig >( basePath + credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' } ).FirstOrDefault();
 
 			if( testConfig != null )
 			{
