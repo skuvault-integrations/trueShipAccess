@@ -69,6 +69,7 @@
     <Compile Include="Models\Charges.cs" />
     <Compile Include="Models\Conventions\TrueShipApiEndpoint.cs" />
     <Compile Include="Models\Conventions\TrueShipConventions.cs" />
+    <Compile Include="Models\Conventions\TrueShipFieldValues.cs" />
     <Compile Include="Models\ItemLocationUpdateModel.cs" />
     <Compile Include="Models\TrueShipBox.cs" />
     <Compile Include="Models\BoxesResource.cs" />

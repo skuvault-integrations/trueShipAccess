@@ -12,7 +12,6 @@
 
 	abstract class TrueShipFields
 	{
-		public static readonly TrueShipField All = new TrueShipField( "all" );
 		public static readonly TrueShipField OrderId = new TrueShipField( "order" );
 		public static readonly TrueShipField UpdateAt = new TrueShipField( "updated_at" );
 		public static readonly TrueShipField PrimaryId = new TrueShipField( "primary_id" );

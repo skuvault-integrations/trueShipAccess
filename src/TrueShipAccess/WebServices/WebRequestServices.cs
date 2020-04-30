@@ -14,6 +14,7 @@ using ServiceStack.Text;
 using ServiceStack.Text.Common;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
+using TrueShipAccess.Models.Conventions;
 using HttpClient = System.Net.Http.HttpClient;
 
 namespace TrueShipAccess.WebServices
@@ -38,7 +39,7 @@ namespace TrueShipAccess.WebServices
 			var reSerializedOrder = JsonSerializer.SerializeToString( oneorderitem.Value );
 
 			var putApi = new Uri( string.Format( "{0}/{1}?bearer_token={2}",
-				this._config.ServiceBaseUri,
+				TrueShipConventions.ServiceBaseUri,
 				oneorderitem.Key,
 				this._config.Credentials.AccessToken ) );
 

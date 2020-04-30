@@ -35,9 +35,9 @@ namespace TrueShipAccess.Models
 			return this;
 		}
 
-		public TrueShipGetRequestBase SetExpandField( TrueShipField field )
+		public TrueShipGetRequestBase SetExpandField( ExpandFieldValue fieldValue )
 		{
-			this.SetField( TrueShipFields.Expand, field.FieldName );
+			this.SetField( TrueShipFields.Expand, fieldValue.Value );
 			return this;
 		}
 
@@ -106,7 +106,7 @@ namespace TrueShipAccess.Models
 		{
 			return new TrueshipGetOrdersRequest()
 				.SetBearerToken( this.Token )
-				.SetExpandField( TrueShipFields.All )
+				.SetExpandField( ExpandFieldValues.BoxesItems )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).GreaterThan( dateTime ) );
 		}
 
@@ -114,7 +114,7 @@ namespace TrueShipAccess.Models
 		{
 			return new TrueshipGetBoxesRequest()
 				.SetBearerToken( this.Token )
-				.SetExpandField( TrueShipFields.All );
+				.SetExpandField( ExpandFieldValues.BoxesItems );
 		}
 
 		public TrueShipGetRequestBase CreateGetBoxesRequest( int? orderId )
@@ -140,14 +140,14 @@ namespace TrueShipAccess.Models
 			return new TrueshipGetOrdersRequest()
 				.SetBearerToken( this.Token )
 				.SetField( TrueShipFields.PrimaryId, orderId.ToString() )
-				.SetExpandField( TrueShipFields.All );
+				.SetExpandField( ExpandFieldValues.BoxesItems );
 		}
 
 		public TrueShipGetRequestBase CreateGetOrdersRequest( DateTime dateFrom, DateTime dateTo )
 		{
 			return new TrueshipGetOrdersRequest()
 				.SetBearerToken( this.Token )
-				.SetExpandField( TrueShipFields.All )
+				.SetExpandField( ExpandFieldValues.BoxesItems )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).LessThan( dateTo ) )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).GreaterThan( dateFrom ) );
 		}
@@ -163,7 +163,7 @@ namespace TrueShipAccess.Models
 		{
 			return new TrueShipGetRequestBase( TrueShipApiEndpoints.Orders )
 				.SetBearerToken( this.Token )
-				.SetExpandField( TrueShipFields.All )
+				.SetExpandField( ExpandFieldValues.BoxesItems )
 				.SetField( TrueShipFields.StatusShipped, "false" )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).LessThan( dateTo ) ); 
 		}
