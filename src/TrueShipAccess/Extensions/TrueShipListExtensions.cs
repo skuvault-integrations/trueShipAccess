@@ -26,7 +26,7 @@ namespace TrueShipAccess.Extensions
 				{
 					return ListToString( ( list as List<TrueShipBox> ).Select( b =>
 					{
-						var removedPrefix = "/api/v1/boxes/";
+						var removedPrefix = "/api/v2/boxes/";
 						int index = b.ResourceUri.IndexOf( removedPrefix, StringComparison.Ordinal );
 						string cleanedResources = ( index < 0 )
 							? b.ResourceUri
