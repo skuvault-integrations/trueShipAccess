@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Netco.Extensions;
 using TrueShipAccess.Models.Conventions;
 
@@ -11,11 +7,9 @@ namespace TrueShipAccess.Models
 {
 	public class TrueShipGetRequestBase : AbstractTrueShipRequest
 	{
-		public TrueShipGetRequestBase( TrueShipApiEndpoint endpoint )
-		{
-			this.Endpoint = endpoint;
-			this.UrlParams[ TrueShipFields.Format.FieldName ] = TrueShipConventions.DefaultFormat;
-		}
+		public TrueShipGetRequestBase( TrueShipApiEndpoint endpoint, string organizationKey ) 
+			: base( endpoint, organizationKey )
+		{ }
 
 		public TrueShipGetRequestBase SetLimit( int limit )
 		{
@@ -35,7 +29,7 @@ namespace TrueShipAccess.Models
 			return this;
 		}
 
-		public TrueShipGetRequestBase SetExpandField( ExpandFieldValue fieldValue )
+		public TrueShipGetRequestBase SetExpandField( ExpandFieldValues fieldValue )
 		{
 			this.SetField( TrueShipFields.Expand, fieldValue.Value );
 			return this;
@@ -57,6 +51,12 @@ namespace TrueShipAccess.Models
 			return this;
 		}
 
+		internal TrueShipGetRequestBase SetShippingStatusInField( ShippingStatusInFieldValues fieldValue )
+		{
+			this.SetField( TrueShipFields.Expand, fieldValue.Value );
+			return this;
+		}
+
 		public HttpWebRequest ToHttpRequest()
 		{
 			var requestUri = this.GetRequestUri();
@@ -66,45 +66,29 @@ namespace TrueShipAccess.Models
 //			request.Headers.Add( HttpRequestHeader.AcceptEncoding, "gzip" );
 			return request;
 		}
-
 	}
 
 	internal class TrueshipGetOrdersRequest : TrueShipGetRequestBase
 	{
-		public TrueshipGetOrdersRequest()
-			: base( TrueShipApiEndpoints.Orders ) { }
-	}
-
-	internal class TrueshipGetBoxesRequest : TrueShipGetRequestBase
-	{
-		public TrueshipGetBoxesRequest()
-			: base( TrueShipApiEndpoints.Boxes ) { }
-	}
-
-	internal class TrueshipGetCompanyRequest : TrueShipGetRequestBase
-	{
-		public TrueshipGetCompanyRequest()
-			: base( TrueShipApiEndpoints.Company ) { }
-	}
-
-	internal class TrueshipGetItemsRequest : TrueShipGetRequestBase
-	{
-		public TrueshipGetItemsRequest()
-			: base( TrueShipApiEndpoints.Items ) { }
+		public TrueshipGetOrdersRequest( string organizationKey )
+			: base( TrueShipApiEndpoints.Orders, organizationKey ) { }
 	}
 
 	internal class RequestCreatorService
 	{
 		private readonly string Token;
 
-		public RequestCreatorService( string token )
+		public string OrganizationKey { get; private set; }
+
+		public RequestCreatorService( string token, string organizationKey )
 		{
 			this.Token = token;
+			this.OrganizationKey = organizationKey;
 		}
 
 		public TrueShipGetRequestBase CreateGetOrdersRequest( DateTime dateTime )
 		{
-			return new TrueshipGetOrdersRequest()
+			return new TrueshipGetOrdersRequest( this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetExpandField( ExpandFieldValues.BoxesItems )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).GreaterThan( dateTime ) );
@@ -112,7 +96,7 @@ namespace TrueShipAccess.Models
 
 		public TrueShipGetRequestBase CreateGetBoxesRequest()
 		{
-			return new TrueshipGetBoxesRequest()
+			return new TrueShipGetRequestBase( TrueShipApiEndpoints.Boxes, this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetExpandField( ExpandFieldValues.BoxesItems );
 		}
@@ -125,19 +109,19 @@ namespace TrueShipAccess.Models
 
 		public TrueShipGetRequestBase CreateGetCompanyRequest()
 		{
-			return new TrueshipGetCompanyRequest()
+			return new TrueShipGetRequestBase( TrueShipApiEndpoints.Company, this.OrganizationKey )
 				.SetBearerToken( this.Token );
 		}
 
 		public TrueShipGetRequestBase CreateGetItemsRequest()
 		{
-			return new TrueshipGetItemsRequest()
+			return new TrueShipGetRequestBase( TrueShipApiEndpoints.Items, this.OrganizationKey )
 				.SetBearerToken( this.Token );
 		}
 
 		public TrueShipGetRequestBase CreateGetOrderRequest( int orderId )
 		{
-			return new TrueshipGetOrdersRequest()
+			return new TrueshipGetOrdersRequest( this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetField( TrueShipFields.PrimaryId, orderId.ToString() )
 				.SetExpandField( ExpandFieldValues.BoxesItems );
@@ -145,7 +129,7 @@ namespace TrueShipAccess.Models
 
 		public TrueShipGetRequestBase CreateGetOrdersRequest( DateTime dateFrom, DateTime dateTo )
 		{
-			return new TrueshipGetOrdersRequest()
+			return new TrueshipGetOrdersRequest( this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetExpandField( ExpandFieldValues.BoxesItems )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).LessThan( dateTo ) )
@@ -154,24 +138,23 @@ namespace TrueShipAccess.Models
 
 		public TrueShipGetRequestBase CreateGetRemainingOrdersRequest( int companyId )
 		{
-			return new TrueShipGetRequestBase( TrueShipApiEndpoints.RemainingOrders )
+			return new TrueShipGetRequestBase( TrueShipApiEndpoints.RemainingOrders, this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetField( TrueShipFields.Id, companyId.ToString() );
 		}
 
 		public TrueShipGetRequestBase CreateGetUnshippedOrdersRequest( DateTime dateTo )
 		{
-			return new TrueShipGetRequestBase( TrueShipApiEndpoints.Orders )
+			return new TrueshipGetOrdersRequest( this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetExpandField( ExpandFieldValues.BoxesItems )
-				.SetField( TrueShipFields.StatusShipped, "false" )
+				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.ShippingStatusIn ).In( ShippingStatusInFieldValues.NotFulfilled.Value ) )
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).LessThan( dateTo ) ); 
 		}
 
 		public TrueShipPatchRequestBase CreateUpdatePickLocationRequest( ItemLocationUpdateModel updateModel  )
 		{
-
-			return new TrueShipPatchRequestBase( updateModel.GetEndPoint() )
+			return new TrueShipPatchRequestBase( updateModel.GetEndPoint(), this.OrganizationKey )
 				.SetBearerToken( this.Token )
 				.SetBody( updateModel.Location );
 		}

@@ -2,7 +2,7 @@
 {
 	/// <summary>
 	///     Box Item Resource
-	///     https://www.readycloud.com/static/api-doc/apireference.html#box-item-resource
+	///     https://www.readycloud.com/static/api-doc/v2/02-apireference-v2-05-items.html#items-collection
 	/// </summary>
 	public class ItemsResource : TrueShipBaseResponse< TrueShipItem >
 	{

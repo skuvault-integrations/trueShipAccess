@@ -8,9 +8,11 @@ namespace TrueShipAccess.Models.Conventions
 		public static readonly string ApiBaseUri = ServiceBaseUri + "/api/v2";
 		public static readonly string DefaultFormat = "JSON";
 
-		public static Uri GetNextPaginationUri( Meta meta )
+		public static Uri GetNextPaginationUri( string next )
 		{
-			return meta.Next != null ? new Uri( string.Format( "{0}{1}", ServiceBaseUri, meta.Next ) ) : null;  
+			if( string.IsNullOrWhiteSpace( next ) )
+				return null;
+			return new Uri( string.Format( "{0}{1}", ServiceBaseUri, next ) );  
 		}
 	}
 }

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using Netco.Extensions;
+﻿using Netco.Extensions;
 using Netco.Logging;
+using System;
+using System.Runtime.CompilerServices;
 using TrueShipAccess.Models;
 
 namespace TrueShipAccess.Misc
 {
 	public class TrueShipLogger
 	{
-		private readonly string path = "C:\\Temp\\log.txt";
-
 		public static ILogger Log()
 		{
 			return NetcoLogger.GetLogger( "TrueShipLogger" );
@@ -24,7 +20,7 @@ namespace TrueShipAccess.Misc
 
 		public void LogTracePagination< T >( string prefix, int pageNumber, TrueShipBaseResponse< T > response ) where T : class
 		{
-			var info = "Processed {0} pages of {1}".FormatWith( pageNumber, ( decimal )response.Meta.TotalCount );
+			var info = "Processed {0} pages of {1}".FormatWith( pageNumber, ( decimal )response.Count );
 			Log().Trace( "[trueship] {0}. {1}", prefix, info );
 		}
 
@@ -53,60 +49,29 @@ namespace TrueShipAccess.Misc
 			Log().Trace( "[trueship] Start call:{0}.", info );
 		}
 
-		public bool clearLogs()
+		public static string CreateMethodCallInfo( Uri uri, Mark mark = null, string errors = "", string methodResult = "", string additionalInfo = "", string payload = "", [ CallerMemberName ] string memberName = "" )
 		{
-			var logDir = Path.GetDirectoryName( this.path );
-			if( logDir != null && !Directory.Exists( logDir ) )
-			{
-				Directory.CreateDirectory( logDir );
+			string serviceEndPoint = null;
+			string requestParameters = null;
 
-				var stream = new FileStream( this.path, FileMode.Truncate );
-				var logger = new StreamWriter( stream );
-				logger.Write( "TrueShip Logging Begin @ {0}\r\n\r\n", DateTime.Now.ToString( CultureInfo.InvariantCulture ) );
-				logger.Close();
+			if ( uri != null )
+			{
+				serviceEndPoint = uri.LocalPath;
+				requestParameters = uri.Query;
 			}
 
-			return true;
-		}
-
-		public bool tsLogLineBreak( string message )
-		{
-			var logger = new StreamWriter( this.path, true );
-			var logmessage = string.Format( "{0}\r\n", message );
-			logger.WriteLine( logmessage );
-			logger.Close();
-			return true;
-		}
-
-		public bool tsLogNoLineBreak( string message )
-		{
-			var logger = new StreamWriter( this.path, true );
-			var logmessage = string.Format( "{0}", message );
-			logger.WriteLine( logmessage );
-			logger.Close();
-			return true;
-		}
-
-		public bool tsLogWebService( string endpoint, string response )
-		{
-			var logger = new StreamWriter( this.path, true );
-			var logmessage = string.Format( "[TrueShip]\tResponse\t{0}\r\n{1}\r\n", endpoint, response );
-			logger.WriteLine( logmessage );
-			logger.Close();
-			return true;
-		}
-
-		public bool tsLogWebServiceError( WebException e, Uri uri )
-		{
-			var logger = new StreamWriter( this.path, true );
-			var logmessage = string.Format( "[TrueShip]\t{0}\t{1}\r\n{2}\r\n{3}\r\n",
-				"API Call Failed!",
-				uri,
-				e.Status,
-				e.Message );
-			logger.WriteLine( logmessage );
-			logger.Close();
-			return true;
+			var str = string.Format(
+				"{{\"MethodName\": \"{0}\", \"Mark\": \"{1}\", \"ServiceEndPoint\": \"{2}\" {3} {4}{5}{6}{7}}}",
+				memberName,
+				mark ?? Mark.Blank(),
+				string.IsNullOrWhiteSpace( serviceEndPoint ) ? string.Empty : serviceEndPoint,
+				string.IsNullOrWhiteSpace( requestParameters ) ? string.Empty : ", \"RequestParameters\": " + requestParameters,
+				string.IsNullOrWhiteSpace( errors ) ? string.Empty : ", \"Errors\":" + errors,
+				string.IsNullOrWhiteSpace( methodResult ) ? string.Empty : ", \"Result\":" + methodResult,
+				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", \"AdditionalInfo\": " + additionalInfo,
+				string.IsNullOrWhiteSpace( payload ) ? string.Empty : ", \"Payload\": " + payload
+			);
+			return str;
 		}
 	}
 }

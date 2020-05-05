@@ -24,15 +24,21 @@ namespace TrueShipAccessTests
 
 			var cc = new CsvContext();
 			var testConfig =
-				cc.Read< TestConfig >( basePath + credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ';' } ).FirstOrDefault();
+				cc.Read< TestConfig >( basePath + credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true, SeparatorChar = ',' } ).FirstOrDefault();
 
 			if( testConfig != null )
 			{
 				this.Credentials = new TrueShipCredentials( testConfig.AccessToken );
-				this.Config = new TrueShipConfiguration( this.Credentials );
+				this.Config = new TrueShipConfiguration( this.Credentials, testConfig.OrganizationKey );
 
 				this._factory = new TrueShipFactory( "" );
 			}
 		}
+	}
+
+	internal class TestConfig
+	{
+		public string AccessToken { get; set; }
+		public string OrganizationKey { get; set; }
 	}
 }

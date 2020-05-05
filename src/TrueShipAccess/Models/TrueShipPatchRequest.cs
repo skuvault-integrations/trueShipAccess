@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Netco.Extensions;
 using ServiceStack.Text;
 using TrueShipAccess.Models.Conventions;
@@ -15,10 +12,9 @@ namespace TrueShipAccess.Models
 	{
 		private string serializedBody;
 
-		public TrueShipPatchRequestBase( TrueShipApiEndpoint endpoint )
-		{
-			this.Endpoint = endpoint;
-		}
+		public TrueShipPatchRequestBase( TrueShipApiEndpoint endpoint, string organizationKey )
+			: base( endpoint, organizationKey )
+		{ }
 
 		public string GetSerializedBody() {
 			return this.serializedBody ?? "N/A";

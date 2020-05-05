@@ -1,17 +1,22 @@
 ﻿namespace TrueShipAccess.Models.Conventions
 {
-	public class ExpandFieldValue
+	public class ExpandFieldValues
 	{ 
-		public readonly string Value;
+		public string Value { get; private set; }
 
-		public ExpandFieldValue( string value )
+		public static readonly ExpandFieldValues BoxesItems = new ExpandFieldValues
 		{
-			this.Value = value;
-		}
+			Value = "boxes,items"
+		};
 	}
 
-	public static class ExpandFieldValues
+	public class ShippingStatusInFieldValues
 	{
-		public static readonly ExpandFieldValue BoxesItems = new ExpandFieldValue( "boxes,items"  );
+		public string Value { get; private set; }
+
+		public static readonly ShippingStatusInFieldValues NotFulfilled = new ShippingStatusInFieldValues
+		{
+			Value = "!" + OrderShippingStatusExtensions.ShippingStatusFulfilled
+		};
 	}
 }
