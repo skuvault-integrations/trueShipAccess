@@ -11,8 +11,10 @@
 			CurrencyCode = currencyCode;
 		}
 
-		public TrueShipMoney() : this( default( decimal ), string.Empty )
-		{ }
+		public static TrueShipMoney Zero()
+		{
+			return new TrueShipMoney( default( decimal ), string.Empty );
+		}
 	}
 
 	public static class MoneyExtensions
@@ -20,10 +22,10 @@
 		public static TrueShipMoney ToTrueShipMoney( this string cost )
 		{
 			if( cost == null )
-				return new TrueShipMoney();
+				return TrueShipMoney.Zero();
 			var parts = cost.Split( ' ' );
 			if( parts.Length < 1 )
-				return new TrueShipMoney();
+				return TrueShipMoney.Zero();
 			decimal amount;
 			decimal.TryParse( parts[ 0 ], out amount );
 			string currencyCode = "";
