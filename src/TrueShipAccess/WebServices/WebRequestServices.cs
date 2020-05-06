@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using Netco.Logging;
 using ServiceStack;
 using ServiceStack.Text;
 using ServiceStack.Text.Common;
@@ -59,11 +60,15 @@ namespace TrueShipAccess.WebServices
 			return responseString;
 		}
 
-		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequestBase request, CancellationToken ct, string logPrefix )
+		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequestBase request, string logPrefix, CancellationToken ct )
 		{
 			HttpResponseMessage response = null;
 			var httpRequest = request.ToHttpRequest();
 			this._logservice.LogTrace( logPrefix, "Submitting PATCH request to {0} with body: {1}".FormatWith( httpRequest.RequestUri, request.GetSerializedBody() ) );
+			if ( ct.IsCancellationRequested )
+			{
+				throw new TrueShipCommonException( string.Format( "{0}. Task was cancelled", logPrefix ) );
+			}
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
@@ -76,6 +81,11 @@ namespace TrueShipAccess.WebServices
 		{
 			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
 
+			if ( ct.IsCancellationRequested )
+			{
+				throw new TrueShipCommonException( string.Format( "{0}. Task was cancelled", logPrefix ) );
+			}
+
 			WebResponse response = null;
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
@@ -86,7 +96,7 @@ namespace TrueShipAccess.WebServices
 			return JsonSerializer.DeserializeFromString< T >( rawReponse );
 		}
 
-		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, CancellationToken ct, string logPrefix ) where T : class
+		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var request = requestModel.ToHttpRequest();
 			return await this.ExecuteGetRequest< T >( request, logPrefix, ct );
@@ -97,10 +107,10 @@ namespace TrueShipAccess.WebServices
 			return new Uri( string.Format( "{0}?{1}", path, query ) );
 		}
 
-		public async Task< T > SubmitGet< T >( Uri absoluteUri, CancellationToken ct, string logPrefix ) where T : class
+		public async Task< T > SubmitGet< T >( Uri absoluteUri, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var request = this.CreateHttpWebRequest( absoluteUri );
-			return await this.ExecuteGetRequest<T>( request, logPrefix, ct );
+			return await this.ExecuteGetRequest< T >( request, logPrefix, ct );
 		}
 
 		public T SubmitGetBlocking< T >( Uri uri, string logPrefix ) where T : class

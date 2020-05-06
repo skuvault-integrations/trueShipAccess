@@ -59,7 +59,6 @@
     <Compile Include="..\Global\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Extensions\TrueShipListExtensions.cs" />
     <Compile Include="ITrueShipAuthService.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Misc\ThrottlerAsync.cs" />

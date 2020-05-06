@@ -79,7 +79,7 @@ namespace TrueShipAccess
 				try
 				{
 					this._logservice.LogTrace( logPrefix, string.Format( "Started sending request to update item {0} location to {1}", updateModel.Sku, updateModel.Location.Location ) );
-					var response = await this._webRequestServices.SubmitPatch( request, ctx, logPrefix );
+					var response = await this._webRequestServices.SubmitPatch( request, logPrefix, ctx );
 
 					this._logservice.LogTrace( logPrefix, string.Format( "Got response for item {0}, result: {1}", updateModel.Resource, response.StatusCode ) );
 					if( response.StatusCode == HttpStatusCode.Unauthorized )

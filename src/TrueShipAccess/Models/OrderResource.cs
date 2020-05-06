@@ -12,26 +12,6 @@ namespace TrueShipAccess.Models
 	public class OrderResource : TrueShipBaseResponse< OrderResource.TrueShipOrder >
 	{
 		[ DataContract ]
-		public class CustomField
-		{
-			public string Box { get; set; }
-
-			[ DataMember( Name = "created_at" ) ]
-			public string CreatedAt { get; set; }
-
-			public int Id { get; set; }
-			public string Name { get; set; }
-
-			[ DataMember( Name = "url" ) ]
-			public string Url { get; set; }
-
-			[ DataMember( Name = "updated_at" ) ]
-			public string UpdatedAt { get; set; }
-
-			public string Value { get; set; }
-		}
-
-		[ DataContract ]
 		public class TrueShipOrder
 		{
 			[ DataMember( Name = "billing" ) ]

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Netco.Logging;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TrueShipAccess.Models;
@@ -18,19 +20,19 @@ namespace TrueShipAccess.WebServices
 		public async Task< IEnumerable< T > > GetPaginatedResult< T >( TrueShipGetRequestBase request, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var objectAccumulator = new List< T >();
-			var firstPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( request, ct, logPrefix );
+			var firstPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( request, logPrefix, ct );
 			if ( string.IsNullOrEmpty( firstPage.Next ) )
 				return firstPage.Results;
 			objectAccumulator.AddRange( firstPage.Results );
 
-			var nextPageUri = TrueShipConventions.GetNextPaginationUri( firstPage.Next );
+			var nextPageUri = new Uri( firstPage.Next );
 			while( true )
 			{
-				var nextPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( nextPageUri, ct, logPrefix );
+				var nextPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( nextPageUri, logPrefix, ct );
 				objectAccumulator.AddRange( nextPage.Results );
 				if( HasFinishedIteratingPages( nextPage ) )
 					break;
-				nextPageUri = TrueShipConventions.GetNextPaginationUri( nextPage.Next );
+				nextPageUri = new Uri( nextPage.Next );
 			}
 
 			return objectAccumulator;
@@ -43,14 +45,14 @@ namespace TrueShipAccess.WebServices
 			if( string.IsNullOrEmpty( fistPage.Next ) )
 				return fistPage.Results;
 
-			var nextPageUri = TrueShipConventions.GetNextPaginationUri( fistPage.Next );
+			var nextPageUri = new Uri( fistPage.Next );
 			while( true )
 			{
 				var nextPage = this._webRequestServices.SubmitGetBlocking< TrueShipBaseResponse< T > >( nextPageUri, logPrefix );
 				objectAccumulator.AddRange( nextPage.Results );
 				if( HasFinishedIteratingPages( nextPage ) )
 					break;
-				nextPageUri = TrueShipConventions.GetNextPaginationUri( nextPage.Next );
+				nextPageUri = new Uri( nextPage.Next );
 			}
 
 			return objectAccumulator;
