@@ -22,11 +22,21 @@ namespace TrueShipAccess.Models
 
 			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAtValue { get; set; }
-			public DateTime CreatedAt => CreatedAtValue.ToUtcDateTime();
+
+			public DateTime GetCreatedAt()
+			{
+				return CreatedAtValue.ToUtcDateTime();
+			}
 
 			[ DataMember( Name = "notes" ) ]
 			public IEnumerable< OrderNote > Notes { get; set; }
-			public string NotesText => string.Join( "; ", Notes.Select( x => x.Content ) );
+			public string NotesText
+			{
+				get
+				{
+					return string.Join( "; ", Notes.Select( x => x.Content ) );
+				}
+			}
 
 			[ DataMember( Name = "order_number" ) ]
 			public string OrderNumber { get; set; }
@@ -45,7 +55,11 @@ namespace TrueShipAccess.Models
 
 			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAtValue { get; set; }
-			public DateTime UpdatedAt => UpdatedAtValue.ToUtcDateTime();
+
+			public DateTime GetUpdatedAt()
+			{
+				return UpdatedAtValue.ToUtcDateTime();
+			}
 		}
 	}
 }

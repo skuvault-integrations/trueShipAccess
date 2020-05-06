@@ -2,8 +2,8 @@
 {
 	public class TrueShipMoney
 	{
-		public decimal Amount { get; }
-		public string CurrencyCode { get; }
+		public decimal Amount { get; private set; }
+		public string CurrencyCode { get; private set; }
 
 		public TrueShipMoney( decimal amount, string currencyCode )
 		{
@@ -11,7 +11,7 @@
 			CurrencyCode = currencyCode;
 		}
 
-		public TrueShipMoney() : this( default, string.Empty )
+		public TrueShipMoney() : this( default( decimal ), string.Empty )
 		{ }
 	}
 

@@ -9,7 +9,7 @@ namespace TrueShipAccess.Models
 		public DateTime LastOrderSync { get; set; }
 
 		public TrueShipCredentials Credentials{ get; private set; }
-		public string OrganizationKey { get; }
+		public string OrganizationKey { get; private set; }
 
 		public TrueShipConfiguration( TrueShipCredentials credentials, string organizationKey )
 		{

@@ -7,11 +7,19 @@ namespace TrueShipAccess.Models
 	{
 		[ DataMember( Name = "unit_price" ) ]
 		public string UnitPriceValue { get; set; }
-		public TrueShipMoney UnitPrice => UnitPriceValue.ToTrueShipMoney();
+
+		public TrueShipMoney GetUnitPrice()
+		{
+			return UnitPriceValue.ToTrueShipMoney();
+		}
 
 		[ DataMember( Name = "kind" )]
 		public string Kind { get; set; }
-		public bool IsDiscount => Kind == "discount";
+
+		public bool GetIsDiscount()
+		{
+			return Kind == "discount";
+		}
 
 		[ DataMember( Name = "part_number" ) ]
 		public string PartNumber { get; set; }

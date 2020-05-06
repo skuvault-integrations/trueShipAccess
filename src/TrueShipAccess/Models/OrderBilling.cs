@@ -7,23 +7,53 @@ namespace TrueShipAccess.Models
 	{
 		[ DataMember( Name = "status" ) ]
 		public string StatusValue { get; set; }
-		public OrderBillingStatusEnum Status => StatusValue.ToBillingStatus();
+		public OrderBillingStatusEnum Status
+		{
+			get
+			{
+				return StatusValue.ToBillingStatus();
+			}
+		}
 
 		[ DataMember( Name = "subtotal" ) ]
 		public string SubtotalAmountValue { get; set; }
-		public TrueShipMoney SubtotalAmount => SubtotalAmountValue.ToTrueShipMoney();
+		public TrueShipMoney SubtotalAmount
+		{
+			get
+			{
+				return SubtotalAmountValue.ToTrueShipMoney();
+			}
+		}
 
 		[ DataMember( Name = "shipping" ) ]
 		public string ShippingAmountValue { get; set; }
-		public TrueShipMoney ShippingAmount => ShippingAmountValue.ToTrueShipMoney();
+		public TrueShipMoney ShippingAmount
+		{
+			get
+			{
+				return ShippingAmountValue.ToTrueShipMoney();
+			}
+		}
 
 		[ DataMember( Name = "tax" )]
 		public string TaxAmountValue { get; set; }
-		public TrueShipMoney TaxAmount => TaxAmountValue.ToTrueShipMoney();
+		public TrueShipMoney TaxAmount
+		{
+			get
+			{
+				return TaxAmountValue.ToTrueShipMoney();
+			}
+		}
 
 		[ DataMember( Name = "total" )]
 		public string TotalAmountValue { get; set; }
-		public TrueShipMoney TotalAmount => TotalAmountValue.ToTrueShipMoney();
+		public TrueShipMoney TotalAmount
+		{
+			get
+			{
+				return TotalAmountValue.ToTrueShipMoney();
+			}
+		}
 	}
 
 	public enum OrderBillingStatusEnum
