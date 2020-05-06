@@ -1,10 +1,8 @@
-﻿using Netco.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TrueShipAccess.Models;
-using TrueShipAccess.Models.Conventions;
 
 namespace TrueShipAccess.WebServices
 {

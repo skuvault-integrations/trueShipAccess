@@ -3,6 +3,7 @@
 	public enum OrderShippingStatusEnum
 	{
 		Unshipped,
+		Unfulfilled,
 		Fulfilled, 
 		PartiallyFulfilled,
 		Undefined
@@ -18,6 +19,8 @@
 			{
 				case "unshipped":
 					return OrderShippingStatusEnum.Unshipped;
+				case "unfulfilled":
+					return OrderShippingStatusEnum.Unfulfilled;
 				case ShippingStatusFulfilled:
 					return OrderShippingStatusEnum.Fulfilled;
 				case "partially_fulfilled":

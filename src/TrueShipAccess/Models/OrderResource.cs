@@ -21,7 +21,8 @@ namespace TrueShipAccess.Models
 			public List< TrueShipBox > Boxes { get; set; }
 
 			[ DataMember( Name = "created_at" ) ]
-			public DateTime CreatedAt { get; set; }
+			public string CreatedAtValue { get; set; }
+			public DateTime CreatedAt => CreatedAtValue.ToUtcDateTime();
 
 			[ DataMember( Name = "notes" ) ]
 			public IEnumerable< OrderNote > Notes { get; set; }
@@ -43,7 +44,8 @@ namespace TrueShipAccess.Models
 			public string UniqueId { get; set; }
 
 			[ DataMember( Name = "updated_at" ) ]
-			public DateTime UpdatedAt { get; set; }
+			public string UpdatedAtValue { get; set; }
+			public DateTime UpdatedAt => UpdatedAtValue.ToUtcDateTime();
 		}
 	}
 }

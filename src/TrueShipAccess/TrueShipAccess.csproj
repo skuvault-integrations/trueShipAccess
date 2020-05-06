@@ -63,6 +63,7 @@
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Misc\ThrottlerAsync.cs" />
     <Compile Include="Models\AbstractTrueShipRequest.cs" />
+    <Compile Include="Models\DateTimeExtensions.cs" />
     <Compile Include="Models\OrderBilling.cs" />
     <Compile Include="Models\Money.cs" />
     <Compile Include="Models\Conventions\TrueShipApiEndpoint.cs" />

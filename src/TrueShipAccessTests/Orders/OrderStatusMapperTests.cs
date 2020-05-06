@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TrueShipAccess.Models;
 
-namespace TrueShipAccessTests
+namespace TrueShipAccessTests.Orders
 {
 	[ TestFixture ]
 	public class OrderStatusMapperTests
@@ -20,7 +20,7 @@ namespace TrueShipAccessTests
 		[ Test ]
 		public void ToShippingStatus()
 		{
-			var shippingStatusStr = "fulfilled";
+			var shippingStatusStr = OrderShippingStatusExtensions.ShippingStatusFulfilled;
 
 			var shippingStatus = shippingStatusStr.ToShippingStatus();
 

@@ -10,9 +10,9 @@ namespace TrueShipAccess.Models
 		public string StatusValue { get; set; }
 		public OrderShippingStatusEnum Status => StatusValue.ToShippingStatus();
 
-		//TODO GUARD-506 Verify that the Utc date is coming in 
 		[ DataMember( Name = "shipped_at" ) ]
-		public DateTime ShippedAt { get; set; }
+		public string ShippedAtValue { get; set; }
+		public DateTime ShippedAt => ShippedAtValue.ToUtcDateTime();
 
 		[ DataMember( Name = "ship_to" ) ]
 		public ShipTo ShipTo { get; set; }
@@ -39,8 +39,6 @@ namespace TrueShipAccess.Models
 
 		[ DataMember( Name = "address_2" ) ]
 		public string Address2 { get; set; }
-
-		//------------------------------
 
 		[ DataMember( Name = "city" ) ]
 		public string City { get; set; }

@@ -5,7 +5,6 @@
 		public decimal Amount { get; }
 		public string CurrencyCode { get; }
 
-
 		public TrueShipMoney( decimal amount, string currencyCode )
 		{
 			Amount = amount;
