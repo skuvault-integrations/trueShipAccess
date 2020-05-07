@@ -15,6 +15,6 @@ namespace TrueShipAccess.WebServices
 		Task< T > SubmitGet< T >( Uri absoluteUri, string logPrefix, CancellationToken ct ) where T : class;
 		T SubmitGetBlocking< T >( Uri uri, string logPrefix ) where T : class;
 		T SubmitGetBlocking< T >( TrueShipGetRequestBase trueShipRequest, string logPrefix ) where T : class;
-		Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequestBase request, string logPrefix, CancellationToken ct );
+		Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequest request, string logPrefix, CancellationToken ct );
 	}
 }

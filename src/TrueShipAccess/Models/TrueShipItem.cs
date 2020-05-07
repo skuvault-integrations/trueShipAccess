@@ -7,7 +7,6 @@ namespace TrueShipAccess.Models
 	{
 		[ DataMember( Name = "unit_price" ) ]
 		public string UnitPriceValue { get; set; }
-
 		public TrueShipMoney GetUnitPrice()
 		{
 			return UnitPriceValue.ToTrueShipMoney();
@@ -15,7 +14,6 @@ namespace TrueShipAccess.Models
 
 		[ DataMember( Name = "kind" )]
 		public string Kind { get; set; }
-
 		public bool GetIsDiscount()
 		{
 			return Kind == "discount";
@@ -30,6 +28,7 @@ namespace TrueShipAccess.Models
 		[ DataMember( Name = "quantity" ) ]
 		public int Quantity { get; set; }
 
+		//TODO GUARD-506 If it's not needed to push locations, then delete it
 		[ DataMember( Name = "url" ) ]
 		public string Url { get; set; }
 	}

@@ -60,7 +60,7 @@ namespace TrueShipAccess.WebServices
 			return responseString;
 		}
 
-		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequestBase request, string logPrefix, CancellationToken ct )
+		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequest request, string logPrefix, CancellationToken ct )
 		{
 			HttpResponseMessage response = null;
 			var httpRequest = request.ToHttpRequest();

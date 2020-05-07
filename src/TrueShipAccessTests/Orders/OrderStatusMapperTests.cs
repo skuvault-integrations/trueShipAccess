@@ -14,7 +14,7 @@ namespace TrueShipAccessTests.Orders
 
 			var billingStatus = billingStatusStr.ToBillingStatus();
 
-			billingStatus.Should().Be( OrderBillingStatusEnum.Pending );
+			billingStatus.Should().Be( TrueShipOrderBillingStatusEnum.Pending );
 		}
 
 		[ Test ]
@@ -24,7 +24,7 @@ namespace TrueShipAccessTests.Orders
 
 			var shippingStatus = shippingStatusStr.ToShippingStatus();
 
-			shippingStatus.Should().Be( OrderShippingStatusEnum.Fulfilled );
+			shippingStatus.Should().Be( TrueShipOrderShippingStatusEnum.Fulfilled );
 		}
 	}
 }

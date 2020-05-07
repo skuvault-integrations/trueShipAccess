@@ -8,11 +8,11 @@ using TrueShipAccess.Models.Conventions;
 
 namespace TrueShipAccess.Models
 {
-	public class TrueShipPatchRequestBase : AbstractTrueShipRequest
+	public class TrueShipPatchRequest : AbstractTrueShipRequest
 	{
 		private string serializedBody;
 
-		public TrueShipPatchRequestBase( TrueShipApiEndpoint endpoint, string organizationKey )
+		public TrueShipPatchRequest( TrueShipApiEndpoint endpoint, string organizationKey )
 			: base( endpoint, organizationKey )
 		{ }
 
@@ -20,13 +20,13 @@ namespace TrueShipAccess.Models
 			return this.serializedBody ?? "N/A";
 		}
 
-		public TrueShipPatchRequestBase SetBearerToken( string token )
+		public TrueShipPatchRequest SetBearerToken( string token )
 		{
 			this.SetField( TrueShipFields.Token, token );
 			return this;
 		}
 
-		public TrueShipPatchRequestBase SetBody( object body )
+		public TrueShipPatchRequest SetBody( object body )
 		{
 			this.serializedBody = JsonSerializer.SerializeToString( body );			
 			return this;

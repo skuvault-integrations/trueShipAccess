@@ -1,6 +1,6 @@
 ﻿namespace TrueShipAccess.Models
 {
-	public enum OrderShippingStatusEnum
+	public enum TrueShipOrderShippingStatusEnum
 	{
 		Unshipped,
 		Unfulfilled,
@@ -13,20 +13,20 @@
 	{
 		public const string ShippingStatusFulfilled = "fulfilled";
 
-		public static OrderShippingStatusEnum ToShippingStatus( this string shippingStatus )
+		public static TrueShipOrderShippingStatusEnum ToShippingStatus( this string shippingStatus )
 		{
 			switch( shippingStatus )
 			{
 				case "unshipped":
-					return OrderShippingStatusEnum.Unshipped;
+					return TrueShipOrderShippingStatusEnum.Unshipped;
 				case "unfulfilled":
-					return OrderShippingStatusEnum.Unfulfilled;
+					return TrueShipOrderShippingStatusEnum.Unfulfilled;
 				case ShippingStatusFulfilled:
-					return OrderShippingStatusEnum.Fulfilled;
+					return TrueShipOrderShippingStatusEnum.Fulfilled;
 				case "partially_fulfilled":
-					return OrderShippingStatusEnum.PartiallyFulfilled;
+					return TrueShipOrderShippingStatusEnum.PartiallyFulfilled;
 				default:
-					return OrderShippingStatusEnum.Undefined;
+					return TrueShipOrderShippingStatusEnum.Undefined;
 			}
 		}
 	}

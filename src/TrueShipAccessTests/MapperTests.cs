@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using TrueShipAccess.Models;
+using static TrueShipAccess.Models.OrderResource;
 
 namespace TrueShipAccessTests
 {
@@ -61,6 +62,18 @@ namespace TrueShipAccessTests
 			var utcDateTime = dateTimeStr.ToUtcDateTime();
 
 			utcDateTime.Should().Be( DateTime.MinValue );
+		}
+
+		[ Test ]
+		public void GetOrderKey()
+		{
+			var orderKey = "3mrRD";
+			var order = new TrueShipOrder
+			{
+				Url = $"/api/v2/orgs/H6j/orders/{orderKey}/"
+			};
+
+			order.GetOrderKey().Should().Be( orderKey );
 		}
 	}
 }

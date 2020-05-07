@@ -8,20 +8,16 @@ namespace TrueShipAccess.Models
 	{
 		[ DataMember( Name = "status" ) ]
 		public string StatusValue { get; set; }
-
-		public OrderShippingStatusEnum GetStatus()
+		public TrueShipOrderShippingStatusEnum GetStatus()
 		{
 			return StatusValue.ToShippingStatus();
 		}
 
 		[ DataMember( Name = "shipped_at" ) ]
 		public string ShippedAtValue { get; set; }
-		public DateTime ShippedAt
+		public DateTime GetShippedAt()
 		{
-			get
-			{
-				return ShippedAtValue.ToUtcDateTime();
-			}
+			return ShippedAtValue.ToUtcDateTime();
 		}
 
 		[ DataMember( Name = "ship_to" ) ]
@@ -35,7 +31,6 @@ namespace TrueShipAccess.Models
 
 		[ DataMember( Name = "ship_cost" ) ]
 		public string ShipCostValue { get; set; }
-
 		public TrueShipMoney GetShipCost()
 		{
 			return ShipCostValue.ToTrueShipMoney();

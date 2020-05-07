@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 
 // Keep in track with TrueSheep API version
 
-[ assembly : AssemblyVersion( "2.0.3.0" ) ]
+[ assembly : AssemblyVersion( "2.0.4.0" ) ]

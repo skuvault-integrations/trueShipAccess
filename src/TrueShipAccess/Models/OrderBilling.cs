@@ -7,56 +7,41 @@ namespace TrueShipAccess.Models
 	{
 		[ DataMember( Name = "status" ) ]
 		public string StatusValue { get; set; }
-		public OrderBillingStatusEnum Status
+		public TrueShipOrderBillingStatusEnum GetStatus()
 		{
-			get
-			{
-				return StatusValue.ToBillingStatus();
-			}
+			return StatusValue.ToBillingStatus();
 		}
 
 		[ DataMember( Name = "subtotal" ) ]
 		public string SubtotalAmountValue { get; set; }
-		public TrueShipMoney SubtotalAmount
+		public TrueShipMoney GetSubtotalAmount()
 		{
-			get
-			{
-				return SubtotalAmountValue.ToTrueShipMoney();
-			}
+			return SubtotalAmountValue.ToTrueShipMoney();
 		}
 
 		[ DataMember( Name = "shipping" ) ]
 		public string ShippingAmountValue { get; set; }
-		public TrueShipMoney ShippingAmount
+		public TrueShipMoney GetShippingAmount()
 		{
-			get
-			{
-				return ShippingAmountValue.ToTrueShipMoney();
-			}
+			return ShippingAmountValue.ToTrueShipMoney();
 		}
 
 		[ DataMember( Name = "tax" )]
 		public string TaxAmountValue { get; set; }
-		public TrueShipMoney TaxAmount
+		public TrueShipMoney GetTaxAmount()
 		{
-			get
-			{
-				return TaxAmountValue.ToTrueShipMoney();
-			}
+			return TaxAmountValue.ToTrueShipMoney();
 		}
 
 		[ DataMember( Name = "total" )]
 		public string TotalAmountValue { get; set; }
-		public TrueShipMoney TotalAmount
+		public TrueShipMoney GetTotalAmount()
 		{
-			get
-			{
-				return TotalAmountValue.ToTrueShipMoney();
-			}
+			return TotalAmountValue.ToTrueShipMoney();
 		}
 	}
 
-	public enum OrderBillingStatusEnum
+	public enum TrueShipOrderBillingStatusEnum
 	{
 		Pending,
 		Paid,
@@ -69,24 +54,24 @@ namespace TrueShipAccess.Models
 
 	public static class OrderBillingStatusExtensions
 	{
-		public static OrderBillingStatusEnum ToBillingStatus( this string billingStatus )
+		public static TrueShipOrderBillingStatusEnum ToBillingStatus( this string billingStatus )
 		{
 			switch( billingStatus )
 			{
 				case "pending":
-					return OrderBillingStatusEnum.Pending;
+					return TrueShipOrderBillingStatusEnum.Pending;
 				case "paid":
-					return OrderBillingStatusEnum.Paid;
+					return TrueShipOrderBillingStatusEnum.Paid;
 				case "partially_paid":
-					return OrderBillingStatusEnum.PartiallyPaid;
+					return TrueShipOrderBillingStatusEnum.PartiallyPaid;
 				case "refunded":
-					return OrderBillingStatusEnum.Refunded;
+					return TrueShipOrderBillingStatusEnum.Refunded;
 				case "partially_refunded":
-					return OrderBillingStatusEnum.PartiallyRefunded;
+					return TrueShipOrderBillingStatusEnum.PartiallyRefunded;
 				case "cancelled":
-					return OrderBillingStatusEnum.Cancelled;
+					return TrueShipOrderBillingStatusEnum.Cancelled;
 				default:
-					return OrderBillingStatusEnum.Undefined;
+					return TrueShipOrderBillingStatusEnum.Undefined;
 			}
 		}
 	}
