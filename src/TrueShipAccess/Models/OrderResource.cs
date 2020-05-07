@@ -22,16 +22,22 @@ namespace TrueShipAccess.Models
 
 			[ DataMember( Name = "created_at" ) ]
 			public string CreatedAtValue { get; set; }
-			public DateTime GetCreatedAt()
+			public DateTime CreatedAt
 			{
-				return CreatedAtValue.ToUtcDateTime();
+				get
+				{
+					return CreatedAtValue.ToUtcDateTime();
+				}
 			}
 
 			[ DataMember( Name = "ordered_at" ) ]
 			public string OrderedAtValue { get; set; }
-			public DateTime GetOrderedAt()
+			public DateTime OrderedAt
 			{
-				return OrderedAtValue.ToUtcDateTime();
+				get
+				{
+					return OrderedAtValue.ToUtcDateTime();
+				}
 			}
 
 			[ DataMember( Name = "notes" ) ]
@@ -52,12 +58,15 @@ namespace TrueShipAccess.Models
 
 			[ DataMember( Name = "url" ) ]
 			public string Url { get; set; }
-			public string GetOrderKey()
+			public string OrderKey
 			{
-				if( Url == null )
-					return string.Empty;
-				var urlParts = Url.Split( new [] { '/' }, StringSplitOptions.RemoveEmptyEntries );
-				return urlParts.LastOrDefault();
+				get
+				{
+					if ( Url == null )
+						return string.Empty;
+					var urlParts = Url.Split( new [] { '/' }, StringSplitOptions.RemoveEmptyEntries );
+					return urlParts.LastOrDefault();
+				}
 			}
 
 			[ DataMember( Name = "shipping") ]
@@ -68,9 +77,12 @@ namespace TrueShipAccess.Models
 
 			[ DataMember( Name = "updated_at" ) ]
 			public string UpdatedAtValue { get; set; }
-			public DateTime GetUpdatedAt()
+			public DateTime UpdatedAt
 			{
-				return UpdatedAtValue.ToUtcDateTime();
+				get
+				{
+					return UpdatedAtValue.ToUtcDateTime();
+				}
 			}
 		}
 	}

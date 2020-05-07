@@ -73,7 +73,7 @@ namespace TrueShipAccessTests
 				Url = $"/api/v2/orgs/H6j/orders/{orderKey}/"
 			};
 
-			order.GetOrderKey().Should().Be( orderKey );
+			order.OrderKey.Should().Be( orderKey );
 		}
 	}
 }
