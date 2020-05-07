@@ -41,7 +41,7 @@ namespace TrueShipAccess
 			var request = this._requestService.CreateGetOrdersRequest( dateFrom, dateTo );
 			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
 
-			var result = ( await this._paginationService.GetPaginatedResult< OrderResource.TrueShipOrder >( request, logPrefix, ct ) ).ToList();
+			var result = ( await this._paginationService.GetPaginatedResult< OrderResource.TrueShipOrder >( request, logPrefix, ct ).ConfigureAwait( false ) ).ToList();
 			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} orders: {1}", result.Count, result.ToJson() ) );
 		
 			return result;
@@ -52,7 +52,7 @@ namespace TrueShipAccess
 			var request = this._requestService.CreateGetUnshippedOrdersRequest( dateTo );
 			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
 
-			var result = ( await this._paginationService.GetPaginatedResult< OrderResource.TrueShipOrder >( request, logPrefix, ct ) ).ToList();
+			var result = ( await this._paginationService.GetPaginatedResult< OrderResource.TrueShipOrder >( request, logPrefix, ct ).ConfigureAwait( false ) ).ToList();
 			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} orders: {1}", result.Count, result.ToJson() ) );
 
 			return result;
@@ -79,7 +79,7 @@ namespace TrueShipAccess
 				try
 				{
 					this._logservice.LogTrace( logPrefix, string.Format( "Started sending request to update item {0} location to {1}", updateModel.Sku, updateModel.Location.Location ) );
-					var response = await this._webRequestServices.SubmitPatch( request, logPrefix, ctx );
+					var response = await this._webRequestServices.SubmitPatch( request, logPrefix, ctx ).ConfigureAwait( false );
 
 					this._logservice.LogTrace( logPrefix, string.Format( "Got response for item {0}, result: {1}", updateModel.Resource, response.StatusCode ) );
 					if( response.StatusCode == HttpStatusCode.Unauthorized )

@@ -48,7 +48,7 @@ namespace TrueShipAccess.Misc
 				try
 				{
 					TrueShipLogger.Log().Debug( "Throttler: trying execute request for the {0} time", retryCount );
-					return await this.TryExecuteAsync( funcToThrottle );
+					return await this.TryExecuteAsync( funcToThrottle ).ConfigureAwait( false );
 				}
 				catch( Exception ex )
 				{

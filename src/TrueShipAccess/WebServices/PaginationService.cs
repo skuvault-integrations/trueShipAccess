@@ -18,7 +18,7 @@ namespace TrueShipAccess.WebServices
 		public async Task< IEnumerable< T > > GetPaginatedResult< T >( TrueShipGetRequestBase request, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var objectAccumulator = new List< T >();
-			var firstPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( request, logPrefix, ct );
+			var firstPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( request, logPrefix, ct ).ConfigureAwait( false );
 			if ( string.IsNullOrEmpty( firstPage.Next ) )
 				return firstPage.Results;
 			objectAccumulator.AddRange( firstPage.Results );
@@ -26,7 +26,7 @@ namespace TrueShipAccess.WebServices
 			var nextPageUri = new Uri( firstPage.Next );
 			while( true )
 			{
-				var nextPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( nextPageUri, logPrefix, ct );
+				var nextPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( nextPageUri, logPrefix, ct ).ConfigureAwait( false );
 				objectAccumulator.AddRange( nextPage.Results );
 				if( HasFinishedIteratingPages( nextPage ) )
 					break;

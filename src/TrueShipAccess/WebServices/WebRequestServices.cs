@@ -72,7 +72,7 @@ namespace TrueShipAccess.WebServices
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
-				response = await this._throttler.ExecuteAsync( () => this._client.SendAsync( httpRequest, ct ) );
+				response = await this._throttler.ExecuteAsync( () => this._client.SendAsync( httpRequest, ct ) ).ConfigureAwait( false );
 			} );
 			return response;
 		}
@@ -89,7 +89,7 @@ namespace TrueShipAccess.WebServices
 			WebResponse response = null;
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
-				response = await this._throttler.ExecuteAsync( request.GetResponseAsync ); 
+				response = await this._throttler.ExecuteAsync( request.GetResponseAsync ).ConfigureAwait( false ); 
 			} );
 			var rawReponse = GetRawResponse( response.GetResponseStream() );
 			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response is HttpWebResponse ? ( (HttpWebResponse ) response ).StatusCode.ToString() : "N/A", rawReponse ) );
@@ -110,7 +110,7 @@ namespace TrueShipAccess.WebServices
 		public async Task< T > SubmitGet< T >( Uri absoluteUri, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var request = this.CreateHttpWebRequest( absoluteUri );
-			return await this.ExecuteGetRequest< T >( request, logPrefix, ct );
+			return await this.ExecuteGetRequest< T >( request, logPrefix, ct ).ConfigureAwait( false );
 		}
 
 		public T SubmitGetBlocking< T >( Uri uri, string logPrefix ) where T : class
