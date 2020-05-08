@@ -9,14 +9,12 @@ namespace TrueShipAccess.Models
 		public DateTime LastOrderSync { get; set; }
 
 		public TrueShipCredentials Credentials{ get; private set; }
-		public string OrganizationKey { get; private set; }
 
-		public TrueShipConfiguration( TrueShipCredentials credentials, string organizationKey )
+		public TrueShipConfiguration( TrueShipCredentials credentials )
 		{
-			Condition.Requires( organizationKey, "organizationKey" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( credentials, "credentials" ).IsNotNull();
 
 			this.Credentials = credentials;
-			this.OrganizationKey = organizationKey;
 		}
 	}
 }

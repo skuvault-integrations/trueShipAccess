@@ -14,6 +14,7 @@ namespace TrueShipAccessTests
 	{
 		internal ITrueShipFactory _factory;
 		internal TrueShipConfiguration Config { get; set; }
+		public string OrganizationKey { get; private set; }
 		internal TrueShipCredentials Credentials { get; set; }
 
 		[ SetUp ]
@@ -29,7 +30,8 @@ namespace TrueShipAccessTests
 			if( testConfig != null )
 			{
 				this.Credentials = new TrueShipCredentials( testConfig.AccessToken );
-				this.Config = new TrueShipConfiguration( this.Credentials, testConfig.OrganizationKey );
+				this.Config = new TrueShipConfiguration( this.Credentials );
+				this.OrganizationKey = testConfig.OrganizationKey;
 
 				this._factory = new TrueShipFactory( "" );
 			}

@@ -18,7 +18,9 @@ namespace TrueShipAccessTests.Orders
 			var ctSource = new CancellationTokenSource();
 
 			//------------ Act
-			var orders = service.GetOrdersAsync( DateTime.UtcNow.AddDays(-90), DateTime.UtcNow, ctSource.Token, Mark.Blank() );
+			var orders = service.GetOrdersAsync( base.OrganizationKey, new DateTime( 2020, 3, 30, 0, 0, 1, DateTimeKind.Utc ), 
+				new DateTime( 2020, 5, 30, 21, 42, 20, DateTimeKind.Utc ), 
+				ctSource.Token, Mark.Blank() );
 			orders.Wait();
 
 			//------------ Assert
@@ -31,7 +33,7 @@ namespace TrueShipAccessTests.Orders
 		{
 			var service = this._factory.CreateCommonService( this.Config );
 
-			var orders = await service.GetUnshippedOrdersAsync( DateTime.UtcNow, CancellationToken.None, Mark.Blank() );
+			var orders = await service.GetUnshippedOrdersAsync( base.OrganizationKey, DateTime.UtcNow, CancellationToken.None, Mark.Blank() );
 
 			orders.Should().NotBeEmpty();
 		}

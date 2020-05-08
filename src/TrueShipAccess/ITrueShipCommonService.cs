@@ -9,9 +9,10 @@ namespace TrueShipAccess
 {
 	public interface ITrueShipCommonService
 	{
-		Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken ct, Mark mark );
-		IEnumerable< OrderResource.TrueShipOrder > GetOrders( DateTime dateFrom, DateTime dateTo, Mark mark );
-		Task< bool > UpdateOrderItemPickLocations( IEnumerable< ItemLocationUpdateModel > orderitemlist, CancellationToken ct, Mark mark );
-		Task< IEnumerable< OrderResource.TrueShipOrder > > GetUnshippedOrdersAsync( DateTime dateTo, CancellationToken ct, Mark mark );
+		Task< IEnumerable< OrderResource.TrueShipOrder > > GetOrdersAsync( string organizationKey, DateTime dateFrom, DateTime dateTo, CancellationToken ct, Mark mark );
+		IEnumerable< OrderResource.TrueShipOrder > GetOrders( string organizationKey, DateTime dateFrom, DateTime dateTo, Mark mark );
+		Task< bool > UpdateOrderItemPickLocations( string organizationKey, IEnumerable< ItemLocationUpdateModel > orderitemlist, CancellationToken ct, Mark mark );
+		Task< IEnumerable< OrderResource.TrueShipOrder > > GetUnshippedOrdersAsync( string organizationKey, DateTime dateTo, CancellationToken ct, Mark mark );
+		Task< IEnumerable< OrganizationResource.TrueShipOrganization > > GetOrganizationsAsync( CancellationToken ct, Mark mark );
 	}
 }
