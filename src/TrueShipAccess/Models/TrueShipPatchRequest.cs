@@ -20,12 +20,6 @@ namespace TrueShipAccess.Models
 			return this.serializedBody ?? "N/A";
 		}
 
-		public TrueShipPatchRequest SetBearerToken( string token )
-		{
-			this.SetField( TrueShipFields.Token, token );
-			return this;
-		}
-
 		public TrueShipPatchRequest SetBody( object body )
 		{
 			this.serializedBody = JsonSerializer.SerializeToString( body );			

@@ -14,6 +14,9 @@ namespace TrueShipAccess.Models
 		protected TrueShipApiEndpoint Endpoint;
 		protected string OrganizationKey;
 
+		public AbstractTrueShipRequest()
+		{ }
+
 		public AbstractTrueShipRequest( TrueShipApiEndpoint endpoint, string organizationKey )
 		{
 			Condition.Requires( organizationKey, "organizationKey" ).IsNotNullOrWhiteSpace();
@@ -25,6 +28,12 @@ namespace TrueShipAccess.Models
 		public AbstractTrueShipRequest SetField( TrueShipField field, string value )
 		{
 			this.UrlParams[ field.FieldName ] = value;
+			return this;
+		}
+
+		public AbstractTrueShipRequest SetBearerToken( string token )
+		{
+			this.SetField( TrueShipFields.Token, token );
 			return this;
 		}
 

@@ -6,13 +6,13 @@ using LINQtoCSV;
 using NUnit.Framework;
 using TrueShipAccess;
 using TrueShipAccess.Models;
-using TrueShipAccessTests.Orders;
 
 namespace TrueShipAccessTests
 {
 	public class TestBase
 	{
 		internal ITrueShipFactory _factory;
+		protected ITrueShipCommonService _commonService;
 		internal TrueShipConfiguration Config { get; set; }
 		public string OrganizationKey { get; private set; }
 		internal TrueShipCredentials Credentials { get; set; }
@@ -34,6 +34,7 @@ namespace TrueShipAccessTests
 				this.OrganizationKey = testConfig.OrganizationKey;
 
 				this._factory = new TrueShipFactory( "" );
+				this._commonService = this._factory.CreateCommonService( this.Config );
 			}
 		}
 	}

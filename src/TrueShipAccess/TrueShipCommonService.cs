@@ -93,5 +93,16 @@ namespace TrueShipAccess
 			} );
 			return requestResults.All( x => x );
 		}
+
+		public async Task< IEnumerable< OrganizationResource.TrueShipOrganization > > GetActiveOrganizationsAsync( CancellationToken ct, Mark mark )
+		{
+			var request = this._requestService.CreateGetOrganizationsRequest();
+			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
+
+			var result = ( await this._paginationService.GetPaginatedResult< OrganizationResource.TrueShipOrganization >( request, logPrefix, ct).ConfigureAwait( false ) ).ToList();
+			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} organizations: {1}", result.Count, result.ToJson() ) );
+
+			return result.Where( o => !o.IsDeleted ).ToList();
+		}
 	}
 }

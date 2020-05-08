@@ -7,6 +7,9 @@ namespace TrueShipAccess.Models
 {
 	public class TrueShipGetRequestBase : AbstractTrueShipRequest
 	{
+		public TrueShipGetRequestBase()
+		{ }
+
 		public TrueShipGetRequestBase( TrueShipApiEndpoint endpoint, string organizationKey ) 
 			: base( endpoint, organizationKey )
 		{ }
@@ -151,9 +154,15 @@ namespace TrueShipAccess.Models
 
 		public TrueShipPatchRequest CreateUpdatePickLocationRequest( string organizationKey, ItemLocationUpdateModel updateModel  )
 		{
-			return new TrueShipPatchRequest( updateModel.GetEndPoint(), organizationKey )
-				.SetBearerToken( this.Token )
+			return ( ( TrueShipPatchRequest ) new TrueShipPatchRequest( updateModel.GetEndPoint(), organizationKey )
+				.SetBearerToken( this.Token ) )
 				.SetBody( updateModel.Location );
+		}
+
+		public TrueShipOrganizationsRequest CreateGetOrganizationsRequest()
+		{
+			return ( TrueShipOrganizationsRequest )new TrueShipOrganizationsRequest()
+				.SetBearerToken( this.Token ) ;
 		}
 	}
 }

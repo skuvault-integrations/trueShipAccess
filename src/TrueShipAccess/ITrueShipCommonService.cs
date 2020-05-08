@@ -13,6 +13,6 @@ namespace TrueShipAccess
 		IEnumerable< OrderResource.TrueShipOrder > GetOrders( string organizationKey, DateTime dateFrom, DateTime dateTo, Mark mark );
 		Task< bool > UpdateOrderItemPickLocations( string organizationKey, IEnumerable< ItemLocationUpdateModel > orderitemlist, CancellationToken ct, Mark mark );
 		Task< IEnumerable< OrderResource.TrueShipOrder > > GetUnshippedOrdersAsync( string organizationKey, DateTime dateTo, CancellationToken ct, Mark mark );
-		Task< IEnumerable< OrganizationResource.TrueShipOrganization > > GetOrganizationsAsync( CancellationToken ct, Mark mark );
+		Task< IEnumerable< OrganizationResource.TrueShipOrganization > > GetActiveOrganizationsAsync( CancellationToken ct, Mark mark );
 	}
 }

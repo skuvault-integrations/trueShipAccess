@@ -73,6 +73,7 @@
     <Compile Include="Models\OrderNote.cs" />
     <Compile Include="Models\OrderShipping.cs" />
     <Compile Include="Models\OrderShippingStatusEnum.cs" />
+    <Compile Include="Models\OrganizationResource.cs" />
     <Compile Include="Models\TrueShipBox.cs" />
     <Compile Include="Models\BoxesResource.cs" />
     <Compile Include="Models\ChargeUnit.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Models\OrderResource.cs" />
     <Compile Include="Models\TrueShipBaseResponse.cs" />
     <Compile Include="Models\TrueShipCredentials.cs" />
+    <Compile Include="Models\TrueShipOrganizationsRequest.cs" />
     <Compile Include="Models\TrueShipPatchRequest.cs" />
     <Compile Include="TrueShipAuthService.cs" />
     <Compile Include="TrueShipException.cs" />
