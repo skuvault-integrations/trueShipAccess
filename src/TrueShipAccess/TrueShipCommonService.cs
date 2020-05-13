@@ -42,7 +42,7 @@ namespace TrueShipAccess
 			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
 
 			var result = ( await this._paginationService.GetPaginatedResult< OrderResource.TrueShipOrder >( request, logPrefix, ct ).ConfigureAwait( false ) ).ToList();
-			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} orders: {1}, for organization {2}", result.Count, result.ToJson(), organizationKey ) );
+			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrieved {0} orders: {1}, for organization {2}", result.Count, result.ToJson(), organizationKey ) );
 		
 			return result;
 		}
@@ -53,7 +53,7 @@ namespace TrueShipAccess
 			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
 
 			var result = ( await this._paginationService.GetPaginatedResult< OrderResource.TrueShipOrder >( request, logPrefix, ct ).ConfigureAwait( false ) ).ToList();
-			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} orders: {1}, for organization {2}", result.Count, result.ToJson(), organizationKey ) );
+			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrieved {0} orders: {1}, for organization {2}", result.Count, result.ToJson(), organizationKey ) );
 
 			return result;
 		}
@@ -64,7 +64,7 @@ namespace TrueShipAccess
 			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
 
 			var result = (this._paginationService.GetPaginatedResultBlocking< OrderResource.TrueShipOrder >( request, logPrefix ) ).ToList();
-			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} orders: {1}, for organization {2}", result.Count, result.ToJson(), organizationKey ) );
+			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrieved {0} orders: {1}, for organization {2}", result.Count, result.ToJson(), organizationKey ) );
 		
 			return result;
 		}
@@ -100,7 +100,7 @@ namespace TrueShipAccess
 			var logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
 
 			var result = ( await this._paginationService.GetPaginatedResult< OrganizationResource.TrueShipOrganization >( request, logPrefix, ct).ConfigureAwait( false ) ).ToList();
-			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrived {0} organizations: {1}", result.Count, result.ToJson() ) );
+			this._logservice.LogTrace( logPrefix, string.Format( "Done. Retrieved {0} organizations: {1}", result.Count, result.ToJson() ) );
 
 			return result.Where( o => !o.IsDeleted ).ToList();
 		}

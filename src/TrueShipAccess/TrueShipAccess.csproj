@@ -39,6 +39,9 @@
     <Reference Include="Netco, Version=1.5.8.0, Culture=neutral, PublicKeyToken=9d732c15ac2ec2c9, processorArchitecture=MSIL">
       <HintPath>..\packages\Netco.1.5.8\lib\net45\Netco.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Text, Version=4.0.42.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ServiceStack.Text.4.0.42\lib\net40\ServiceStack.Text.dll</HintPath>
@@ -61,6 +64,7 @@
     </Compile>
     <Compile Include="ITrueShipAuthService.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
+    <Compile Include="Misc\CallInfo.cs" />
     <Compile Include="Misc\ThrottlerAsync.cs" />
     <Compile Include="Models\AbstractTrueShipRequest.cs" />
     <Compile Include="Models\DateTimeExtensions.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace TrueShipAccess.Models
 {
@@ -69,25 +70,22 @@ namespace TrueShipAccess.Models
 
 	public static class OrderBillingStatusExtensions
 	{
+		private static readonly Dictionary< string, TrueShipOrderBillingStatusEnum > BillingStatusMappings = 
+			new Dictionary< string, TrueShipOrderBillingStatusEnum >
+			{
+				{ "pending", TrueShipOrderBillingStatusEnum.Pending },
+				{ "paid", TrueShipOrderBillingStatusEnum.Paid },
+				{ "partially_paid", TrueShipOrderBillingStatusEnum.PartiallyPaid },
+				{ "refunded", TrueShipOrderBillingStatusEnum.Refunded },
+				{ "partially_refunded", TrueShipOrderBillingStatusEnum.PartiallyRefunded },
+				{ "cancelled", TrueShipOrderBillingStatusEnum.Cancelled }
+			};
+
 		public static TrueShipOrderBillingStatusEnum ToBillingStatus( this string billingStatus )
 		{
-			switch( billingStatus )
-			{
-				case "pending":
-					return TrueShipOrderBillingStatusEnum.Pending;
-				case "paid":
-					return TrueShipOrderBillingStatusEnum.Paid;
-				case "partially_paid":
-					return TrueShipOrderBillingStatusEnum.PartiallyPaid;
-				case "refunded":
-					return TrueShipOrderBillingStatusEnum.Refunded;
-				case "partially_refunded":
-					return TrueShipOrderBillingStatusEnum.PartiallyRefunded;
-				case "cancelled":
-					return TrueShipOrderBillingStatusEnum.Cancelled;
-				default:
-					return TrueShipOrderBillingStatusEnum.Undefined;
-			}
+			if( BillingStatusMappings.ContainsKey( billingStatus ) )
+				return BillingStatusMappings[ billingStatus ];
+			return TrueShipOrderBillingStatusEnum.Undefined;
 		}
 	}
 }

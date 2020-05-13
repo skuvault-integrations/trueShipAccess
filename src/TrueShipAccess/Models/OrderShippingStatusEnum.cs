@@ -1,4 +1,6 @@
-﻿namespace TrueShipAccess.Models
+﻿using System.Collections.Generic;
+
+namespace TrueShipAccess.Models
 {
 	public enum TrueShipOrderShippingStatusEnum
 	{
@@ -13,21 +15,20 @@
 	{
 		public const string ShippingStatusFulfilled = "fulfilled";
 
+		private static readonly Dictionary< string, TrueShipOrderShippingStatusEnum > ShippingStatusMappings = 
+			new Dictionary< string, TrueShipOrderShippingStatusEnum >
+			{
+				{ "unshipped", TrueShipOrderShippingStatusEnum.Unshipped },
+				{ "unfulfilled", TrueShipOrderShippingStatusEnum.Unfulfilled },
+				{ ShippingStatusFulfilled, TrueShipOrderShippingStatusEnum.Fulfilled },
+				{ "partially_fulfilled", TrueShipOrderShippingStatusEnum.PartiallyFulfilled }
+			};
+
 		public static TrueShipOrderShippingStatusEnum ToShippingStatus( this string shippingStatus )
 		{
-			switch( shippingStatus )
-			{
-				case "unshipped":
-					return TrueShipOrderShippingStatusEnum.Unshipped;
-				case "unfulfilled":
-					return TrueShipOrderShippingStatusEnum.Unfulfilled;
-				case ShippingStatusFulfilled:
-					return TrueShipOrderShippingStatusEnum.Fulfilled;
-				case "partially_fulfilled":
-					return TrueShipOrderShippingStatusEnum.PartiallyFulfilled;
-				default:
-					return TrueShipOrderShippingStatusEnum.Undefined;
-			}
+			if( ShippingStatusMappings.ContainsKey( shippingStatus ) )
+				return ShippingStatusMappings[ shippingStatus ];
+			return TrueShipOrderShippingStatusEnum.Undefined;
 		}
 	}
 }

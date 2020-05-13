@@ -1,6 +1,9 @@
 ﻿using Netco.Extensions;
 using Netco.Logging;
+using Newtonsoft.Json.Linq;
+using ServiceStack;
 using System;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using TrueShipAccess.Models;
 
@@ -20,7 +23,7 @@ namespace TrueShipAccess.Misc
 
 		public void LogTracePagination< T >( string prefix, int pageNumber, TrueShipBaseResponse< T > response ) where T : class
 		{
-			var info = "Processed {0} pages of {1}".FormatWith( pageNumber, ( decimal )response.Count );
+			var info = string.Format( "Processed {0} pages of {1}", pageNumber, ( decimal )response.Count );
 			Log().Trace( "[trueship] {0}. {1}", prefix, info );
 		}
 
@@ -49,29 +52,26 @@ namespace TrueShipAccess.Misc
 			Log().Trace( "[trueship] Start call:{0}.", info );
 		}
 
-		public static string CreateMethodCallInfo( Uri uri, Mark mark = null, string errors = "", string methodResult = "", string additionalInfo = "", string payload = "", [ CallerMemberName ] string memberName = "" )
+		public static string CreateMethodCallInfo( Uri uri, Mark mark = null, HttpMethod methodType = null, string errors = "", string responseBodyRaw = "", string additionalInfo = "", string payload = "", [ CallerMemberName ] string libMethodName = "" )
 		{
-			string serviceEndPoint = null;
-			string requestParameters = null;
-
-			if ( uri != null )
+			JObject responseBody = null;
+			try
 			{
-				serviceEndPoint = uri.LocalPath;
-				requestParameters = uri.Query;
+				responseBody = JObject.Parse( responseBodyRaw );
 			}
+			catch { }
 
-			var str = string.Format(
-				"{{\"MethodName\": \"{0}\", \"Mark\": \"{1}\", \"ServiceEndPoint\": \"{2}\" {3} {4}{5}{6}{7}}}",
-				memberName,
-				mark ?? Mark.Blank(),
-				string.IsNullOrWhiteSpace( serviceEndPoint ) ? string.Empty : serviceEndPoint,
-				string.IsNullOrWhiteSpace( requestParameters ) ? string.Empty : ", \"RequestParameters\": " + requestParameters,
-				string.IsNullOrWhiteSpace( errors ) ? string.Empty : ", \"Errors\":" + errors,
-				string.IsNullOrWhiteSpace( methodResult ) ? string.Empty : ", \"Result\":" + methodResult,
-				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", \"AdditionalInfo\": " + additionalInfo,
-				string.IsNullOrWhiteSpace( payload ) ? string.Empty : ", \"Payload\": " + payload
-			);
-			return str;
+			return new CallInfo()
+			{
+				Mark = mark?.ToString() ?? "Unknown",
+				Endpoint = uri.AbsoluteUri,
+				Method = methodType?.ToString() ?? "Uknown",
+				Body = payload,
+				LibMethodName = libMethodName,
+				AdditionalInfo = additionalInfo,
+				Response = (object)responseBody ?? responseBodyRaw,
+				Errors = errors
+			}.ToJson();
 		}
 	}
 }

@@ -21,11 +21,9 @@
 	{
 		public static TrueShipMoney ToTrueShipMoney( this string cost )
 		{
-			if( cost == null )
+			if( string.IsNullOrWhiteSpace( cost ) )
 				return TrueShipMoney.Zero();
 			var parts = cost.Split( ' ' );
-			if( parts.Length < 1 )
-				return TrueShipMoney.Zero();
 			decimal amount;
 			decimal.TryParse( parts[ 0 ], out amount );
 			string currencyCode = "";
