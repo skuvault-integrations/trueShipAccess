@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using CuttingEdge.Conditions;
 using Netco.Extensions;
 using TrueShipAccess.Models.Conventions;
 
@@ -15,6 +12,18 @@ namespace TrueShipAccess.Models
 		protected readonly Dictionary< string, string > UrlParams = new Dictionary< string, string >();
 
 		protected TrueShipApiEndpoint Endpoint;
+		protected string OrganizationKey;
+
+		public AbstractTrueShipRequest()
+		{ }
+
+		public AbstractTrueShipRequest( TrueShipApiEndpoint endpoint, string organizationKey )
+		{
+			Condition.Requires( organizationKey, "organizationKey" ).IsNotNullOrWhiteSpace();
+
+			this.Endpoint = endpoint;
+			this.OrganizationKey = organizationKey;
+		}
 
 		public AbstractTrueShipRequest SetField( TrueShipField field, string value )
 		{
@@ -22,9 +31,15 @@ namespace TrueShipAccess.Models
 			return this;
 		}
 
+		public AbstractTrueShipRequest SetBearerToken( string token )
+		{
+			this.SetField( TrueShipFields.Token, token );
+			return this;
+		}
+
 		public virtual Uri GetRequestUri()
 		{
-			var apiPrefix = string.Format( "{0}/{1}", TrueShipConventions.ApiBaseUri, this.Endpoint.Endpoint );
+			var apiPrefix = string.Format( "{0}/orgs/{1}/{2}/", TrueShipConventions.ApiBaseUri, this.OrganizationKey, this.Endpoint.Endpoint );
 			var querystring = string.Join( "&", this.UrlParams.Select( kv => "{0}={1}".FormatWith( kv.Key, kv.Value ) ) );
 
 			return new Uri( string.Format( "{0}?{1}",

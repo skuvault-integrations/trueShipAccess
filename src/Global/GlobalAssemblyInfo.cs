@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 [ assembly : ComVisible( false ) ]
 [ assembly : AssemblyProduct( "TrueShipAccess" ) ]
-[ assembly : AssemblyCompany( "Agile Harbor, LLC" ) ]
-[ assembly : AssemblyCopyright( "Copyright (C) 2015 Agile Harbor, LLC" ) ]
+[ assembly : AssemblyCompany( "SkuVault" ) ]
+[ assembly : AssemblyCopyright( "Copyright (C) 2020 SkuVaut" ) ]
 [ assembly : AssemblyDescription( "TrueShip webservices API wrapper." ) ]
 [ assembly : AssemblyTrademark( "" ) ]
 [ assembly : AssemblyCulture( "" ) ]
@@ -22,6 +22,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-// Keep in track with CA API version
+// Keep in track with TrueSheep API version
 
-[ assembly : AssemblyVersion( "1.0.10.0" ) ]
+[ assembly : AssemblyVersion( "2.0.12.0" ) ]

@@ -9,11 +9,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using Netco.Logging;
 using ServiceStack;
 using ServiceStack.Text;
 using ServiceStack.Text.Common;
 using TrueShipAccess.Misc;
 using TrueShipAccess.Models;
+using TrueShipAccess.Models.Conventions;
 using HttpClient = System.Net.Http.HttpClient;
 
 namespace TrueShipAccess.WebServices
@@ -38,7 +40,7 @@ namespace TrueShipAccess.WebServices
 			var reSerializedOrder = JsonSerializer.SerializeToString( oneorderitem.Value );
 
 			var putApi = new Uri( string.Format( "{0}/{1}?bearer_token={2}",
-				this._config.ServiceBaseUri,
+				TrueShipConventions.ServiceBaseUri,
 				oneorderitem.Key,
 				this._config.Credentials.AccessToken ) );
 
@@ -58,15 +60,19 @@ namespace TrueShipAccess.WebServices
 			return responseString;
 		}
 
-		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequestBase request, CancellationToken ct, string logPrefix )
+		public async Task< HttpResponseMessage > SubmitPatch( TrueShipPatchRequest request, string logPrefix, CancellationToken ct )
 		{
 			HttpResponseMessage response = null;
 			var httpRequest = request.ToHttpRequest();
 			this._logservice.LogTrace( logPrefix, "Submitting PATCH request to {0} with body: {1}".FormatWith( httpRequest.RequestUri, request.GetSerializedBody() ) );
+			if ( ct.IsCancellationRequested )
+			{
+				throw new TrueShipCommonException( string.Format( "{0}. Task was cancelled", logPrefix ) );
+			}
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
-				response = await this._throttler.ExecuteAsync( () => this._client.SendAsync( httpRequest, ct ) );
+				response = await this._throttler.ExecuteAsync( () => this._client.SendAsync( httpRequest, ct ) ).ConfigureAwait( false );
 			} );
 			return response;
 		}
@@ -75,17 +81,22 @@ namespace TrueShipAccess.WebServices
 		{
 			this._logservice.LogTrace( logPrefix, "Submitting GET request: {0}".FormatWith( request.RequestUri ) );
 
+			if ( ct.IsCancellationRequested )
+			{
+				throw new TrueShipCommonException( string.Format( "{0}. Task was cancelled", logPrefix ) );
+			}
+
 			WebResponse response = null;
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
-				response = await this._throttler.ExecuteAsync( request.GetResponseAsync ); 
+				response = await this._throttler.ExecuteAsync( request.GetResponseAsync ).ConfigureAwait( false ); 
 			} );
 			var rawReponse = GetRawResponse( response.GetResponseStream() );
 			this._logservice.LogTrace( logPrefix, "Got response with status {0}. Raw response stream: {1}".FormatWith( response is HttpWebResponse ? ( (HttpWebResponse ) response ).StatusCode.ToString() : "N/A", rawReponse ) );
 			return JsonSerializer.DeserializeFromString< T >( rawReponse );
 		}
 
-		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, CancellationToken ct, string logPrefix ) where T : class
+		public async Task< T > SubmitGet< T >( TrueShipGetRequestBase requestModel, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var request = requestModel.ToHttpRequest();
 			return await this.ExecuteGetRequest< T >( request, logPrefix, ct );
@@ -96,10 +107,10 @@ namespace TrueShipAccess.WebServices
 			return new Uri( string.Format( "{0}?{1}", path, query ) );
 		}
 
-		public async Task< T > SubmitGet< T >( Uri absoluteUri, CancellationToken ct, string logPrefix ) where T : class
+		public async Task< T > SubmitGet< T >( Uri absoluteUri, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var request = this.CreateHttpWebRequest( absoluteUri );
-			return await this.ExecuteGetRequest<T>( request, logPrefix, ct );
+			return await this.ExecuteGetRequest< T >( request, logPrefix, ct ).ConfigureAwait( false );
 		}
 
 		public T SubmitGetBlocking< T >( Uri uri, string logPrefix ) where T : class
