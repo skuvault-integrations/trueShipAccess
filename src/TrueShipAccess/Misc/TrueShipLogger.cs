@@ -63,9 +63,9 @@ namespace TrueShipAccess.Misc
 
 			return new CallInfo()
 			{
-				Mark = mark?.ToString() ?? "Unknown",
+				Mark = mark != null ? mark.ToString() : "Unknown",
 				Endpoint = uri.AbsoluteUri,
-				Method = methodType?.ToString() ?? "Uknown",
+				Method = methodType != null ? methodType.ToString() : "Uknown",
 				Body = payload,
 				LibMethodName = libMethodName,
 				AdditionalInfo = additionalInfo,
