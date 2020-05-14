@@ -152,9 +152,9 @@ namespace TrueShipAccess.Models
 				.SetFilter( new TrueShipFilterBuilder( TrueShipFields.UpdateAt ).LessThan( dateTo ) ); 
 		}
 
-		public TrueShipPatchRequest CreateUpdatePickLocationRequest( string organizationKey, ItemLocationUpdateModel updateModel  )
+		public TrueShipPatchRequest CreateUpdatePickLocationRequest( ItemLocationUpdateModel updateModel  )
 		{
-			return ( ( TrueShipPatchRequest ) new TrueShipPatchRequest( updateModel.GetEndPoint(), organizationKey )
+			return ( ( TrueShipPatchRequest ) new TrueShipPatchRequest( updateModel.GetEndPoint() )
 				.SetBearerToken( this.Token ) )
 				.SetBody( updateModel.Location );
 		}

@@ -12,8 +12,8 @@ namespace TrueShipAccess.Models
 	{
 		private string serializedBody;
 
-		public TrueShipPatchRequest( TrueShipApiEndpoint endpoint, string organizationKey )
-			: base( endpoint, organizationKey )
+		public TrueShipPatchRequest( TrueShipApiEndpoint endpoint )
+			: base( endpoint )
 		{ }
 
 		public string GetSerializedBody() {

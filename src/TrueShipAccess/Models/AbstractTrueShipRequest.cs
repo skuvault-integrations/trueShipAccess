@@ -25,6 +25,11 @@ namespace TrueShipAccess.Models
 			this.OrganizationKey = organizationKey;
 		}
 
+		public AbstractTrueShipRequest( TrueShipApiEndpoint endpoint )
+		{
+			this.Endpoint = endpoint;
+		}
+
 		public AbstractTrueShipRequest SetField( TrueShipField field, string value )
 		{
 			this.UrlParams[ field.FieldName ] = value;
