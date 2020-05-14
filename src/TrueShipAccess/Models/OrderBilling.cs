@@ -83,7 +83,7 @@ namespace TrueShipAccess.Models
 
 		public static TrueShipOrderBillingStatusEnum ToBillingStatus( this string billingStatus )
 		{
-			if( BillingStatusMappings.ContainsKey( billingStatus ) )
+			if( billingStatus != null && BillingStatusMappings.ContainsKey( billingStatus ) )
 				return BillingStatusMappings[ billingStatus ];
 			return TrueShipOrderBillingStatusEnum.Undefined;
 		}

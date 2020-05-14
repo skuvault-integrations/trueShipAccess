@@ -26,7 +26,7 @@ namespace TrueShipAccess.Models
 
 		public static TrueShipOrderShippingStatusEnum ToShippingStatus( this string shippingStatus )
 		{
-			if( ShippingStatusMappings.ContainsKey( shippingStatus ) )
+			if( shippingStatus != null && ShippingStatusMappings.ContainsKey( shippingStatus ) )
 				return ShippingStatusMappings[ shippingStatus ];
 			return TrueShipOrderShippingStatusEnum.Undefined;
 		}
