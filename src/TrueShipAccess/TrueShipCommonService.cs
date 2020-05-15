@@ -69,13 +69,13 @@ namespace TrueShipAccess
 			return result;
 		}
 
-		public async Task< bool > UpdateOrderItemPickLocations( string organizationKey, IEnumerable< ItemLocationUpdateModel > orderitemlist, CancellationToken ctx, Mark mark )
+		public async Task< bool > UpdateOrderItemPickLocations( IEnumerable< ItemLocationUpdateModel > orderitemlist, CancellationToken ctx, Mark mark )
 		{
 			string logPrefix;
 			var requestResults = await orderitemlist.ProcessInBatchAsync( 20, async updateModel =>
 			{
-				var request = this._requestService.CreateUpdatePickLocationRequest( organizationKey, updateModel );
-				logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark );
+				var request = this._requestService.CreateUpdatePickLocationRequest( updateModel );
+				logPrefix = TrueShipLogger.CreateMethodCallInfo( request.GetRequestUri(), mark, payload: updateModel.Location.ToJson() );
 				try
 				{
 					this._logservice.LogTrace( logPrefix, string.Format( "Started sending request to update item {0} location to {1}", updateModel.Sku, updateModel.Location.Location ) );
