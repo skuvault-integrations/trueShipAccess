@@ -41,6 +41,13 @@ namespace TrueShipAccess.Models.Conventions
 			return this;
 		}
 
+		public TrueShipFilterBuilder In( string value )
+		{
+			this.Relation = TrueShipFilterRelations.In;
+			this.Value = value;
+			return this;
+		}
+
 		public static implicit operator TrueShipFilter( TrueShipFilterBuilder tb )
 		{
 			return new TrueShipFilter( tb.Field, tb.Relation, tb.Value );
@@ -61,5 +68,6 @@ namespace TrueShipAccess.Models.Conventions
 	{
 		public static readonly TrueShipFilterRelation GreaterThan = new TrueShipFilterRelation( "__gte" );
 		public static readonly TrueShipFilterRelation LessThan = new TrueShipFilterRelation( "__lte" );
+		public static readonly TrueShipFilterRelation In = new TrueShipFilterRelation( "__in" );
 	}
 }

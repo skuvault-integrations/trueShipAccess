@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TrueShipAccess.Models;
-using TrueShipAccess.Models.Conventions;
 
 namespace TrueShipAccess.WebServices
 {
@@ -21,19 +18,19 @@ namespace TrueShipAccess.WebServices
 		public async Task< IEnumerable< T > > GetPaginatedResult< T >( TrueShipGetRequestBase request, string logPrefix, CancellationToken ct ) where T : class
 		{
 			var objectAccumulator = new List< T >();
-			var fistPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( request, ct, logPrefix );
-			if( string.IsNullOrEmpty( fistPage.Meta.Next ) )
-				return fistPage.Objects;
-			objectAccumulator.AddRange( fistPage.Objects );
+			var firstPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( request, logPrefix, ct ).ConfigureAwait( false );
+			if ( string.IsNullOrEmpty( firstPage.Next ) )
+				return firstPage.Results;
+			objectAccumulator.AddRange( firstPage.Results );
 
-			var nextPageUri = TrueShipConventions.GetNextPaginationUri( fistPage.Meta );
+			var nextPageUri = new Uri( firstPage.Next );
 			while( true )
 			{
-				var nextPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( nextPageUri, ct, logPrefix );
-				objectAccumulator.AddRange( nextPage.Objects );
+				var nextPage = await this._webRequestServices.SubmitGet< TrueShipBaseResponse< T > >( nextPageUri, logPrefix, ct ).ConfigureAwait( false );
+				objectAccumulator.AddRange( nextPage.Results );
 				if( HasFinishedIteratingPages( nextPage ) )
 					break;
-				nextPageUri = TrueShipConventions.GetNextPaginationUri( nextPage.Meta );
+				nextPageUri = new Uri( nextPage.Next );
 			}
 
 			return objectAccumulator;
@@ -43,17 +40,17 @@ namespace TrueShipAccess.WebServices
 		{
 			var objectAccumulator = new List< T >();
 			var fistPage = this._webRequestServices.SubmitGetBlocking< TrueShipBaseResponse< T > >( request, logPrefix );
-			if( string.IsNullOrEmpty( fistPage.Meta.Next ) )
-				return fistPage.Objects;
+			if( string.IsNullOrEmpty( fistPage.Next ) )
+				return fistPage.Results;
 
-			var nextPageUri = TrueShipConventions.GetNextPaginationUri( fistPage.Meta );
+			var nextPageUri = new Uri( fistPage.Next );
 			while( true )
 			{
 				var nextPage = this._webRequestServices.SubmitGetBlocking< TrueShipBaseResponse< T > >( nextPageUri, logPrefix );
-				objectAccumulator.AddRange( nextPage.Objects );
+				objectAccumulator.AddRange( nextPage.Results );
 				if( HasFinishedIteratingPages( nextPage ) )
 					break;
-				nextPageUri = TrueShipConventions.GetNextPaginationUri( nextPage.Meta );
+				nextPageUri = new Uri( nextPage.Next );
 			}
 
 			return objectAccumulator;
@@ -61,7 +58,7 @@ namespace TrueShipAccess.WebServices
 
 		private static bool HasFinishedIteratingPages< T >( TrueShipBaseResponse< T > response ) where T : class
 		{
-			return string.IsNullOrWhiteSpace( response.Meta.Next );
+			return string.IsNullOrWhiteSpace( response.Next );
 		}
 	}
 }

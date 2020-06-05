@@ -1,36 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Netco.Extensions;
 using ServiceStack.Text;
 using TrueShipAccess.Models.Conventions;
 
 namespace TrueShipAccess.Models
 {
-	public class TrueShipPatchRequestBase : AbstractTrueShipRequest
+	public class TrueShipPatchRequest : AbstractTrueShipRequest
 	{
 		private string serializedBody;
 
-		public TrueShipPatchRequestBase( TrueShipApiEndpoint endpoint )
-		{
-			this.Endpoint = endpoint;
-		}
+		public TrueShipPatchRequest( TrueShipApiEndpoint endpoint )
+			: base( endpoint )
+		{ }
 
 		public string GetSerializedBody() {
 			return this.serializedBody ?? "N/A";
 		}
 
-		public TrueShipPatchRequestBase SetBearerToken( string token )
-		{
-			this.SetField( TrueShipFields.Token, token );
-			return this;
-		}
-
-		public TrueShipPatchRequestBase SetBody( object body )
+		public TrueShipPatchRequest SetBody( object body )
 		{
 			this.serializedBody = JsonSerializer.SerializeToString( body );			
 			return this;
